@@ -35,3 +35,23 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+/* Samler ekte, ujevne telefonbilder til ett visuelt uttrykk: legg på et
+   <img>/<Image> så snart et ekte bilde erstatter en OrganicPanel-plassholder. */
+.warm-photo {
+  filter: saturate(1.08) contrast(1.03) brightness(1.02);
+  position: relative;
+}
+
+.warm-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    rgba(75, 107, 74, 0.14),
+    rgba(156, 59, 68, 0.1)
+  );
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
