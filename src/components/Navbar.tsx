@@ -12,29 +12,30 @@ const links = [
 
 export default function Navbar() {
   return (
-    <header className="sticky top-0 z-50 border-b border-line bg-cream/90 backdrop-blur-sm">
-      <div className="mx-auto flex h-24 max-w-6xl items-center justify-between px-6">
-        <Link href="/" className="flex items-center">
-          <div className="flex h-16 w-16 items-center justify-center rounded-xl border border-line bg-white p-2 shadow-sm">
-            <Image
-              src="/logo.jpg"
-              alt="Mangfoldhuset Vestland"
-              width={64}
-              height={64}
-              className="h-full w-full object-contain mix-blend-multiply"
-              priority
-            />
-          </div>
-        </Link>
+    <header className="sticky top-0 z-50 grid grid-cols-[auto_1fr_auto] items-stretch border-b border-line bg-cream/90 backdrop-blur-sm">
+      <Link
+        href="/"
+        className="flex items-center justify-center bg-cream px-6 py-2"
+      >
+        <Image
+          src="/logo.jpg"
+          alt="Mangfoldhuset Vestland"
+          width={144}
+          height={144}
+          className="h-24 w-24 object-contain mix-blend-multiply sm:h-32 sm:w-32"
+          priority
+        />
+      </Link>
 
-        <nav className="hidden items-center gap-8 text-sm font-medium text-ink-soft md:flex">
-          {links.map((l) => (
-            <Link key={l.href} href={l.href} className="hover:text-ink transition-colors">
-              {l.label}
-            </Link>
-          ))}
-        </nav>
+      <nav className="hidden items-center justify-center gap-8 text-sm font-medium text-ink-soft md:flex">
+        {links.map((l) => (
+          <Link key={l.href} href={l.href} className="hover:text-ink transition-colors">
+            {l.label}
+          </Link>
+        ))}
+      </nav>
 
+      <div className="flex items-center px-6">
         <Link
           href="/bli-med"
           className="rounded-full bg-fig px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
