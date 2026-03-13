@@ -1,14 +1,12 @@
 import Link from "next/link";
+import OrganicPanel from "./OrganicPanel";
 
 export default function AboutSnippet() {
   return (
     <section className="bg-cream-2 py-18">
       <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-14 px-6 py-12 md:grid-cols-[0.85fr_1.15fr]">
-        <div className="flex h-80 items-center justify-center rounded-[20px] bg-gradient-to-br from-[#B9614F] to-[#8B3A3C] text-center">
-          <span className="text-sm font-semibold text-white/80">
-            [foto: fellesskap]
-          </span>
-        </div>
+        {/* Bytt ut med next/image (ekte foto) + className="warm-photo" fra globals.css når bildet er klart */}
+        <OrganicPanel variant="fig" className="h-80 rounded-[20px]" />
         <div>
           <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
             Om oss
