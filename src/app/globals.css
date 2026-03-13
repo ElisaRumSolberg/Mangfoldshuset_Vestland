@@ -28,7 +28,7 @@
   --color-fig-dark: var(--color-fig-dark);
   --color-line: var(--color-line);
   --font-sans: var(--font-inter);
-  --font-serif: var(--font-fraunces);
+  --font-serif: var(--font-lora);
 }
 
 body {
