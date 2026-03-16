@@ -6,6 +6,9 @@ export default function CookieConsent() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    // Samtykkestatus finnes kun i nettleserens localStorage, så den kan
+    // først leses etter mount – umulig å vite ved første render.
+    /* eslint-disable react-hooks/set-state-in-effect */
     try {
       if (!localStorage.getItem("cookie-consent")) {
         setVisible(true);
@@ -13,6 +16,7 @@ export default function CookieConsent() {
     } catch {
       setVisible(true);
     }
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   function decide(value: "godkjent" | "avvist") {
