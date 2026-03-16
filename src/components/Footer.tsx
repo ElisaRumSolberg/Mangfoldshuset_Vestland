@@ -45,9 +45,13 @@ export default function Footer() {
         <div>
           <p className="mb-3.5 text-xs font-bold text-white">Kontakt</p>
           <div className="flex flex-col gap-2.5 text-sm text-[#B7AF9C]">
-            <p>[Adresse], Bergen</p>
-            <p>post@vestland.mangfoldhuset.no</p>
-            <p>[Telefon]</p>
+            <p>Arne Abrahamsens vei 1, Bergen</p>
+            <a href="mailto:ali.mangfoldhuset@gmail.com" className="hover:text-white">
+              ali.mangfoldhuset@gmail.com
+            </a>
+            <a href="tel:40567853" className="hover:text-white">
+              405 67 853
+            </a>
           </div>
         </div>
 
