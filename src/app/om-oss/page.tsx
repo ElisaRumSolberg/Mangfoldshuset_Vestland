@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import OrganicPanel from "@/components/OrganicPanel";
+import ImpactCounters from "@/components/ImpactCounters";
 
 export const metadata: Metadata = {
   title: "Om oss – Mangfoldhuset Vestland",
@@ -19,29 +21,51 @@ const verdier = [
   "Ytringsfrihet",
 ];
 
-const malgrupper = ["Barn", "Ungdom", "Voksne", "Seniorer"];
+const malgrupper = ["Barn", "Ungdom", "Voksne", "Seniorer", "Familie"];
 
 const grupper = [
   {
     title: "Barn og familie",
     desc: "Aktiviteter og samlinger for barnefamilier på tvers av bakgrunn.",
+    grad: "from-[#6E8B67] to-[#3F5A3E]",
+  },
+  {
+    title: "Barn og ungdom",
+    desc: "Aktiviteter og fritidstilbud som engasjerer barn og ungdom i lokalmiljøet.",
+    grad: "from-[#9CA86B] to-[#4B6B4A]",
   },
   {
     title: "Kvinner",
     desc: "Et trygt møtested for kvinner i lokalmiljøet.",
+    grad: "from-[#C08A5C] to-[#9C3B44]",
   },
   {
     title: "Kultur",
     desc: "Kulturkvelder, mat og markeringer som viser mangfoldet i Vestland.",
+    grad: "from-[#9CA86B] to-[#4B6B4A]",
   },
   {
     title: "Språk og dialog",
     desc: "Språkkafé og samtalegrupper for å styrke norskferdigheter og fellesskap.",
+    grad: "from-[#6E8B67] to-[#3F5A3E]",
   },
   {
-    title: "Tur og aktivitet",
-    desc: "Turer og fysisk aktivitet i naturen, sammen med andre.",
+    title: "Aktivitet for familie",
+    desc: "Felles aktiviteter og opplevelser der hele familien kan delta sammen.",
+    grad: "from-[#C08A5C] to-[#9C3B44]",
   },
+];
+
+const tints = [
+  { bg: "#F7E9E9", text: "#9C3B44" },
+  { bg: "#EAF0E9", text: "#3A5439" },
+];
+
+const solidGrupper = [
+  { bg: "#9C3B44" },
+  { bg: "#4B6B4A" },
+  { bg: "#C08A5C" },
+  { bg: "#3F5A3E" },
 ];
 
 const formal = [
@@ -88,6 +112,39 @@ export default function OmOssPage() {
           </div>
         </section>
 
+        {/* Misjon og visjon */}
+        <section className="bg-cream py-20">
+          <div className="mx-auto max-w-6xl px-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div
+                className="rounded-[18px] border-2 p-8"
+                style={{ backgroundColor: "#F7E9E9", borderColor: "#9C3B44" }}
+              >
+                <p className="text-xs font-bold uppercase tracking-widest text-fig">
+                  Misjon
+                </p>
+                <p className="mt-3 text-lg leading-relaxed text-ink">
+                  Vi skaper trygge møteplasser der mennesker med ulike
+                  bakgrunner kan bygge relasjoner, lære av hverandre og delta
+                  aktivt i lokalsamfunnet.
+                </p>
+              </div>
+              <div
+                className="rounded-[18px] border-2 p-8"
+                style={{ backgroundColor: "#EAF0E9", borderColor: "#3A5439" }}
+              >
+                <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
+                  Visjon
+                </p>
+                <p className="mt-3 text-lg leading-relaxed text-ink">
+                  Et Vestland der mangfold oppleves som en styrke, og der
+                  alle – uansett bakgrunn – føler tilhørighet og likeverd.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Vårt formål */}
         <section className="bg-cream-2 py-20">
           <div className="mx-auto max-w-6xl px-6">
@@ -98,14 +155,23 @@ export default function OmOssPage() {
               Vårt formål
             </h2>
             <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {formal.map((f) => (
-                <div
-                  key={f}
-                  className="rounded-xl border border-line bg-cream px-5 py-4 text-sm leading-relaxed text-ink-soft"
-                >
-                  {f}
-                </div>
-              ))}
+              {formal.map((f, i) => {
+                const tint = tints[i % tints.length];
+                return (
+                  <div
+                    key={f}
+                    className="flex items-start gap-3.5 rounded-xl border border-line bg-cream px-5 py-4"
+                  >
+                    <span
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold"
+                      style={{ backgroundColor: tint.bg, color: tint.text }}
+                    >
+                      {i + 1}
+                    </span>
+                    <p className="text-sm leading-relaxed text-ink-soft">{f}</p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>
@@ -119,14 +185,18 @@ export default function OmOssPage() {
             Våre verdier
           </h2>
           <div className="mt-8 flex flex-wrap gap-3">
-            {verdier.map((v) => (
-              <span
-                key={v}
-                className="rounded-full border border-line bg-white px-5 py-2.5 text-sm font-semibold text-ink"
-              >
-                {v}
-              </span>
-            ))}
+            {verdier.map((v, i) => {
+              const tint = tints[i % tints.length];
+              return (
+                <span
+                  key={v}
+                  className="rounded-full px-5 py-2.5 text-sm font-semibold"
+                  style={{ backgroundColor: tint.bg, color: tint.text }}
+                >
+                  {v}
+                </span>
+              );
+            })}
           </div>
         </section>
 
@@ -143,11 +213,12 @@ export default function OmOssPage() {
               Aktivitetene i Mangfoldhuset Vestland er åpne for alle
               aldersgrupper.
             </p>
-            <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-              {malgrupper.map((m) => (
+            <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
+              {malgrupper.map((m, i) => (
                 <div
                   key={m}
-                  className="rounded-xl border border-line bg-cream py-6 text-center font-serif text-lg"
+                  className="rounded-xl py-6 text-center font-serif text-lg text-white"
+                  style={{ backgroundColor: solidGrupper[i % solidGrupper.length].bg }}
                 >
                   {m}
                 </div>
@@ -173,12 +244,15 @@ export default function OmOssPage() {
             {grupper.map((g) => (
               <div
                 key={g.title}
-                className="rounded-[18px] border border-line bg-white p-6"
+                className="overflow-hidden rounded-[18px] border border-line bg-white"
               >
-                <h3 className="font-serif text-lg">{g.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-                  {g.desc}
-                </p>
+                <div className={`h-2 bg-gradient-to-r ${g.grad}`} />
+                <div className="p-6">
+                  <h3 className="font-serif text-lg">{g.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+                    {g.desc}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
@@ -217,6 +291,36 @@ export default function OmOssPage() {
             demokratiske struktur.
           </p>
         </section>
+
+        {/* Bli med oss */}
+        <section className="bg-cream py-20 text-center">
+          <div className="mx-auto max-w-2xl px-6">
+            <h2 className="font-serif text-3xl font-medium md:text-4xl">
+              Bli med oss!
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-ink-soft">
+              Er du interessert i å bidra til et mer inkluderende og
+              mangfoldig samfunn? Bli medlem eller frivillig i Mangfoldhuset
+              Vestland!
+            </p>
+            <div className="mt-8 flex flex-wrap justify-center gap-4">
+              <Link
+                href="/bli-med"
+                className="rounded-full bg-fig px-6 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-fig-dark"
+              >
+                Bli medlem
+              </Link>
+              <Link
+                href="/kontakt"
+                className="rounded-full border border-ink px-6 py-3.5 text-sm font-semibold text-ink transition-all hover:-translate-y-0.5 hover:bg-ink hover:text-cream"
+              >
+                Kontakt oss
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <ImpactCounters />
       </main>
       <Footer />
     </>
