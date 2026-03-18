@@ -25,19 +25,24 @@ const malgrupper = ["Barn", "Ungdom", "Voksne", "Seniorer", "Familie"];
 
 const grupper = [
   {
-    title: "Barn og familie",
-    desc: "Aktiviteter og samlinger for barnefamilier på tvers av bakgrunn.",
-    grad: "from-[#6E8B67] to-[#3F5A3E]",
-  },
-  {
     title: "Barn og ungdom",
     desc: "Aktiviteter og fritidstilbud som engasjerer barn og ungdom i lokalmiljøet.",
     grad: "from-[#9CA86B] to-[#4B6B4A]",
   },
   {
+    title: "Aktivitet for familie",
+    desc: "Felles aktiviteter og opplevelser der hele familien kan delta sammen.",
+    grad: "from-[#C08A5C] to-[#9C3B44]",
+  },
+  {
     title: "Kvinner",
     desc: "Et trygt møtested for kvinner i lokalmiljøet.",
     grad: "from-[#C08A5C] to-[#9C3B44]",
+  },
+  {
+    title: "Menn",
+    desc: "Et fellesskap og møtested for menn i lokalmiljøet.",
+    grad: "from-[#6E8B67] to-[#3F5A3E]",
   },
   {
     title: "Kultur",
@@ -50,8 +55,8 @@ const grupper = [
     grad: "from-[#6E8B67] to-[#3F5A3E]",
   },
   {
-    title: "Aktivitet for familie",
-    desc: "Felles aktiviteter og opplevelser der hele familien kan delta sammen.",
+    title: "Seniorer",
+    desc: "Sosiale samlinger og arrangementer for eldre, som vår årlige seniordag.",
     grad: "from-[#C08A5C] to-[#9C3B44]",
   },
 ];
