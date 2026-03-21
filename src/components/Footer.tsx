@@ -1,45 +1,19 @@
 import Link from "next/link";
 import { subscribeNewsletter } from "@/app/actions/newsletter";
+import { LocationIcon, MailIcon, PhoneIcon } from "./ContactIcons";
 
-function LocationIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0">
-      <path
-        d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z"
-        stroke="currentColor"
-        strokeWidth="1.6"
-      />
-      <circle cx="12" cy="9.5" r="2.3" stroke="currentColor" strokeWidth="1.6" />
-    </svg>
-  );
-}
-
-function MailIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0">
-      <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M4 7l8 6 8-6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function PhoneIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0">
-      <path
-        d="M6.5 4h3l1.5 4-2 1.5a11 11 0 0 0 5.5 5.5L16 13l4 1.5v3a2 2 0 0 1-2.2 2C10.6 18.9 5.1 13.4 4.5 6.2A2 2 0 0 1 6.5 4Z"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-export default function Footer() {
+export default function Footer({
+  showNewsletter = true,
+}: {
+  showNewsletter?: boolean;
+}) {
   return (
     <footer className="mt-auto border-t border-line bg-cream-2 text-ink-soft">
-      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-6 py-16 sm:grid-cols-2 md:grid-cols-5">
+      <div
+        className={`mx-auto grid max-w-6xl grid-cols-1 gap-10 px-6 py-16 sm:grid-cols-2 ${
+          showNewsletter ? "md:grid-cols-5" : "md:grid-cols-4"
+        }`}
+      >
         <div>
           <p className="font-serif text-lg font-semibold text-ink">
             Mangfoldhuset Vestland
@@ -115,27 +89,29 @@ export default function Footer() {
           </div>
         </div>
 
-        <div>
-          <p className="mb-3.5 text-xs font-bold text-ink">Hold deg oppdatert!</p>
-          <p className="mb-3.5 text-sm leading-relaxed text-ink-soft">
-            Meld deg på nyhetsbrevet og få info om kommende aktiviteter.
-          </p>
-          <form action={subscribeNewsletter} className="flex flex-col gap-2.5">
-            <input
-              type="email"
-              name="email"
-              required
-              placeholder="Din e-post"
-              className="w-full rounded-full border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none focus:border-fig"
-            />
-            <button
-              type="submit"
-              className="w-fit rounded-full bg-fig px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
-            >
-              Meld meg på
-            </button>
-          </form>
-        </div>
+        {showNewsletter && (
+          <div>
+            <p className="mb-3.5 text-xs font-bold text-ink">Hold deg oppdatert!</p>
+            <p className="mb-3.5 text-sm leading-relaxed text-ink-soft">
+              Meld deg på nyhetsbrevet og få info om kommende aktiviteter.
+            </p>
+            <form action={subscribeNewsletter} className="flex flex-col gap-2.5">
+              <input
+                type="email"
+                name="email"
+                required
+                placeholder="Din e-post"
+                className="w-full rounded-full border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none focus:border-fig"
+              />
+              <button
+                type="submit"
+                className="w-fit rounded-full bg-fig px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
+              >
+                Meld meg på
+              </button>
+            </form>
+          </div>
+        )}
       </div>
 
       <div className="border-t border-line">
