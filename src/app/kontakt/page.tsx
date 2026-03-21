@@ -20,10 +20,7 @@ export default async function KontaktPage({
     <>
       <Navbar />
       <main className="mx-auto max-w-6xl px-6 py-20">
-        <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
-          Kontakt
-        </p>
-        <h1 className="mt-2 font-serif text-4xl font-medium">Ta kontakt</h1>
+        <h1 className="font-serif text-4xl font-medium">Ta kontakt</h1>
         <p className="mt-4 max-w-xl text-base leading-relaxed text-ink-soft">
           Har du et spørsmål, en idé eller ønsker du å samarbeide med oss?
           Send oss en melding, så svarer vi så snart vi kan.
@@ -72,7 +69,9 @@ export default async function KontaktPage({
                   </svg>
                 </a>
                 <a
-                  href="#"
+                  href="https://www.instagram.com/mangfoldhusetvestlandet/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label="Instagram"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-white transition-opacity hover:opacity-85"
                   style={{ backgroundColor: "#4B6B4A" }}
