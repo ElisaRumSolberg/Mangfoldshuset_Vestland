@@ -20,14 +20,14 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 grid grid-cols-[auto_1fr_auto] items-stretch border-b border-line bg-cream/90 backdrop-blur-sm">
       <Link
         href="/"
-        className="flex items-center justify-center bg-cream px-6 py-2"
+        className="flex items-center justify-center bg-cream px-8 py-4"
       >
         <Image
-          src="/logo.jpg"
+          src="/logo.png"
           alt="Mangfoldhuset Vestland"
-          width={144}
-          height={144}
-          className="h-24 w-24 object-contain mix-blend-multiply sm:h-32 sm:w-32"
+          width={368}
+          height={190}
+          className="h-16 w-auto sm:h-24"
           priority
         />
       </Link>
