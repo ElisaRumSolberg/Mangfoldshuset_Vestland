@@ -36,7 +36,9 @@ export default function Footer({
               </svg>
             </a>
             <a
-              href="#"
+              href="https://www.instagram.com/mangfoldhusetvestlandet/"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="Instagram"
               className="flex h-9 w-9 items-center justify-center rounded-lg text-white transition-opacity hover:opacity-85"
               style={{ backgroundColor: "#4B6B4A" }}
