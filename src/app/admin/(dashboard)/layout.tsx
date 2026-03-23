@@ -7,6 +7,7 @@ const links = [
   { href: "/admin/nyheter", label: "Nyheter" },
   { href: "/admin/mangfoldsposten", label: "Mangfoldsposten" },
   { href: "/admin/meldinger", label: "Meldinger" },
+  { href: "/admin/skjema", label: "Skjema" },
   { href: "/admin/statistikk", label: "Statistikk" },
 ];
 
