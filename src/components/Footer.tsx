@@ -1,33 +1,23 @@
 import Link from "next/link";
 import Image from "next/image";
-import { subscribeNewsletter } from "@/app/actions/newsletter";
 import { LocationIcon, MailIcon, PhoneIcon } from "./ContactIcons";
 
-export default function Footer({
-  showNewsletter = true,
-}: {
-  showNewsletter?: boolean;
-}) {
+export default function Footer() {
   return (
     <footer className="mt-auto bg-[#36452F] text-[#D9D4C2]">
-      <div
-        className={`mx-auto grid max-w-6xl grid-cols-1 gap-10 px-6 py-16 sm:grid-cols-2 ${
-          showNewsletter ? "md:grid-cols-4" : "md:grid-cols-3"
-        }`}
-      >
-        <div>
+      <div className="flex flex-col gap-10 px-8 py-14 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-8 sm:flex-row sm:items-center sm:gap-12">
           <Image
             src="/logo-white.png"
             alt="Mangfoldhuset Vestland"
             width={368}
             height={190}
-            className="h-24 w-auto"
+            className="h-28 w-auto self-start sm:self-center"
           />
-          <p className="mt-4 max-w-[280px] text-sm leading-relaxed">
-            Et inkluderende fellesskap der mennesker, ideer og muligheter
-            møtes.
-          </p>
-          <div className="mt-5 flex flex-col gap-3 text-sm">
+          <div className="flex flex-col gap-3 text-sm">
+            <p>
+              <span className="font-semibold text-white">Org.nr:</span> 914 732 999
+            </p>
             <p className="flex items-start gap-2.5">
               <span className="text-[#E7A5AC]"><LocationIcon /></span>
               Arne Abrahamsens vei 1, Bergen
@@ -47,26 +37,18 @@ export default function Footer({
               <span className="font-semibold italic text-[#E7A5AC]">Vipps</span>{" "}
               #595791
             </p>
-            <p>
-              <span className="font-semibold text-white">Org.nr:</span> 914 732 999
-            </p>
           </div>
         </div>
 
-        <div>
-          <p className="mb-3.5 text-sm font-bold uppercase tracking-wider text-white">
-            Snarveier
-          </p>
-          <div className="flex flex-col gap-2.5 text-sm">
-            <Link href="/om-oss" className="hover:text-white">Om oss</Link>
-            <Link href="/aktiviteter" className="hover:text-white">Aktiviteter</Link>
-            <Link href="/bli-med" className="hover:text-white">Bli frivillig</Link>
-            <Link href="/kontakt" className="hover:text-white">Kontakt</Link>
-            <Link href="/personvern" className="hover:text-white">Personvern</Link>
-          </div>
-        </div>
-
-        <div>
+        <div className="md:pr-8">
+          <a
+            href="https://forms.gle/VjdDRAu9LJs8gfiy8"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mb-8 inline-block rounded-full bg-fig px-6 py-3 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-fig-dark"
+          >
+            Bli medlem
+          </a>
           <p className="mb-3.5 text-sm font-bold uppercase tracking-wider text-white">
             Følg oss videre
           </p>
@@ -98,46 +80,15 @@ export default function Footer({
               </svg>
             </a>
           </div>
-          <p className="mt-4 max-w-[260px] text-sm leading-relaxed">
-            Følg oss på sosiale medier og få med deg aktiviteter, nyheter og
-            små glimt fra Mangfoldhuset Vestland.
-          </p>
         </div>
-
-        {showNewsletter && (
-          <div>
-            <p className="mb-3.5 text-sm font-bold uppercase tracking-wider text-white">
-              Meld deg på
-            </p>
-            <p className="mb-3.5 text-sm leading-relaxed">
-              Hold deg oppdatert! Meld deg på nyhetsbrevet og få informasjon om
-              kommende aktiviteter og arrangementer.
-            </p>
-            <form action={subscribeNewsletter} className="flex flex-col gap-2.5">
-              <input
-                type="email"
-                name="email"
-                required
-                placeholder="Skriv inn e-posten din"
-                className="w-full rounded-full border border-white/25 bg-white/10 px-4 py-2.5 text-sm text-white outline-none placeholder:text-[#B4B8A6] focus:border-white/50"
-              />
-              <button
-                type="submit"
-                className="w-fit rounded-full bg-fig px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
-              >
-                Meld meg på
-              </button>
-            </form>
-            <p className="mt-3 text-xs leading-relaxed text-[#B4B8A6]">
-              Du kan når som helst melde deg av. Vi deler ikke kontaktinformasjonen din med andre.
-            </p>
-          </div>
-        )}
       </div>
 
       <div className="border-t border-white/15">
-        <div className="mx-auto max-w-6xl px-6 py-5 text-xs text-[#B4B8A6]">
-          © {new Date().getFullYear()} Mangfoldhuset Vestland
+        <div className="flex items-center justify-between px-8 py-5 text-xs text-[#B4B8A6]">
+          <span>© {new Date().getFullYear()} Mangfoldhuset Vestland</span>
+          <Link href="/personvern" className="hover:text-white">
+            Personvern
+          </Link>
         </div>
       </div>
     </footer>
