@@ -152,7 +152,7 @@ export default async function KontaktPage({
           </div>
         </div>
       </main>
-      <Footer showNewsletter={false} />
+      <Footer />
     </>
   );
 }
