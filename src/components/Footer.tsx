@@ -41,14 +41,12 @@ export default function Footer() {
         </div>
 
         <div className="md:pr-8">
-          <a
-            href="https://forms.gle/VjdDRAu9LJs8gfiy8"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/bli-med#medlem"
             className="mb-8 inline-block rounded-full bg-fig px-6 py-3 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-fig-dark"
           >
             Bli medlem
-          </a>
+          </Link>
           <p className="mb-3.5 text-sm font-bold uppercase tracking-wider text-white">
             Følg oss videre
           </p>
