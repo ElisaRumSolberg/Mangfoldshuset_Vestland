@@ -14,6 +14,40 @@ const LABELS: Record<ApplicationType, string> = {
   samarbeid: "Ny samarbeidsforespørsel",
 };
 
+export async function submitMembership(formData: FormData) {
+  const str = (k: string) => ((formData.get(k) as string) || "").trim() || null;
+  const first_name = str("first_name") ?? "";
+  const last_name = str("last_name") ?? "";
+  const email = str("email") ?? "";
+
+  if (isSupabaseConfigured()) {
+    const supabase = await createClient();
+    await supabase.from("members").insert({
+      first_name,
+      last_name,
+      email,
+      birth_date: str("birth_date"),
+      address: str("address"),
+      phone: str("phone"),
+      guardian: str("guardian"),
+      comment: str("comment"),
+      accepted_terms: formData.get("terms") === "on",
+    });
+  }
+
+  if (isResendConfigured()) {
+    await getResendClient().emails.send({
+      from: "Mangfoldhuset Vestland <onboarding@resend.dev>",
+      to: NOTIFY_EMAIL,
+      replyTo: email,
+      subject: `Ny medlemssøknad: ${first_name} ${last_name}`,
+      text: `${first_name} ${last_name} (${email}) har meldt seg inn. Se admin → Medlemmer.`,
+    });
+  }
+
+  redirect("/bli-med?sendt=medlem#medlem");
+}
+
 export async function submitApplication(formData: FormData) {
   const type = formData.get("type") as ApplicationType;
   if (!TYPES.includes(type)) redirect("/bli-med");
