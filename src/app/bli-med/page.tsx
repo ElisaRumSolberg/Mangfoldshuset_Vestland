@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { submitApplication } from "./actions";
+import { submitApplication, submitMembership } from "./actions";
 
 export const metadata: Metadata = {
   title: "Bli med – Mangfoldhuset Vestland",
   description:
     "Bli medlem, frivillig eller samarbeidspartner i Mangfoldhuset Vestland – eller del en idé.",
 };
-
-const MEMBER_FORM = "https://forms.gle/VjdDRAu9LJs8gfiy8";
 
 const interesser = [
   "Barn og unge",
@@ -137,21 +135,59 @@ export default async function BliMedPage({
             title="Bli medlem"
             intro="Som medlem støtter du arbeidet vårt og er med på å bestemme retningen. Medlemskap og frivillig arbeid er to ulike ting – du kan gjerne være begge deler."
           >
-            <div className="flex flex-col gap-5">
-              <a
-                href={MEMBER_FORM}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={button}
-              >
-                Fyll ut medlemsskjema
-              </a>
-              <p className="text-sm text-ink-soft">
-                Medlemskontingent betales med Vipps til{" "}
-                <span className="font-semibold text-ink">#595791</span>.
-                [Pris for medlemskap legges inn her.]
-              </p>
-            </div>
+            {sendt === "medlem" ? (
+              <Thanks text="Takk for at du melder deg inn! Betal kontingenten med Vipps til #595791, så aktiverer vi medlemskapet ditt." />
+            ) : (
+              <form action={submitMembership} className="flex flex-col gap-5">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className={label}>Fornavn</label>
+                    <input name="first_name" required className={input} />
+                  </div>
+                  <div>
+                    <label className={label}>Etternavn</label>
+                    <input name="last_name" required className={input} />
+                  </div>
+                  <div>
+                    <label className={label}>Fødselsdato</label>
+                    <input type="date" name="birth_date" className={input} />
+                  </div>
+                  <div>
+                    <label className={label}>Telefon</label>
+                    <input name="phone" className={input} />
+                  </div>
+                  <div>
+                    <label className={label}>E-post</label>
+                    <input type="email" name="email" required className={input} />
+                  </div>
+                  <div>
+                    <label className={label}>Adresse</label>
+                    <input name="address" className={input} />
+                  </div>
+                </div>
+                <div>
+                  <label className={label}>Foresatt (hvis under 18 år)</label>
+                  <input name="guardian" className={input} />
+                </div>
+                <div>
+                  <label className={label}>Kommentar</label>
+                  <textarea name="comment" rows={2} className={input} />
+                </div>
+                <label className="flex items-start gap-2 text-sm text-ink-soft">
+                  <input type="checkbox" name="terms" required className="mt-1 accent-[#9C3B44]" />
+                  Jeg godtar medlemsvilkårene og at opplysningene lagres i
+                  medlemsregisteret (se personvern).
+                </label>
+                <p className="text-sm text-ink-soft">
+                  Medlemskontingent betales med Vipps til{" "}
+                  <span className="font-semibold text-ink">#595791</span>.
+                  [Pris for medlemskap legges inn her.]
+                </p>
+                <button type="submit" className={button}>
+                  Meld meg inn
+                </button>
+              </form>
+            )}
           </Section>
 
           <Section
