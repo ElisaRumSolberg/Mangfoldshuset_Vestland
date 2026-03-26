@@ -42,6 +42,7 @@ export async function addMember(formData: FormData) {
     last_name: formData.get("last_name") as string,
     email: formData.get("email") as string,
     phone: (formData.get("phone") as string) || null,
+    membership_type: formData.get("membership_type") === "familie" ? "familie" : "enkelt",
     accepted_terms: true,
     paid_at: expires ? iso(new Date()) : null,
     expires_at: expires,
