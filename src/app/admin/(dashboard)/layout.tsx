@@ -3,6 +3,7 @@ import LogoutButton from "./LogoutButton";
 
 const links = [
   { href: "/admin", label: "Dashboard" },
+  { href: "/admin/medlemmer", label: "Medlemmer" },
   { href: "/admin/aktiviteter", label: "Aktiviteter" },
   { href: "/admin/nyheter", label: "Nyheter" },
   { href: "/admin/mangfoldsposten", label: "Mangfoldsposten" },
