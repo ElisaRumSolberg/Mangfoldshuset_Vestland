@@ -52,10 +52,13 @@ export default async function AdminMedlemmerPage({
       email: string;
       phone: string | null;
       expires_at: string | null;
+      membership_type: "enkelt" | "familie";
+      family_members: { name: string; birth_date: string | null }[];
       status: Status;
       days: number | null;
     };
   });
+  const persons = members.reduce((n, m) => n + 1 + (m.family_members?.length ?? 0), 0);
   const counts = (s: string) => members.filter((m) => m.status === s).length;
   const shown = filter === "alle" ? members : members.filter((m) => m.status === filter);
 
@@ -63,7 +66,7 @@ export default async function AdminMedlemmerPage({
     <div>
       <h1 className="font-serif text-2xl font-medium text-ink">Medlemmer</h1>
       <p className="mt-1 text-sm text-ink-soft">
-        {members.length} totalt · {counts("aktiv") + counts("snart")} aktive ·{" "}
+        {members.length} medlemskap ({persons} personer) · {counts("aktiv") + counts("snart")} aktive ·{" "}
         {counts("snart")} utløper snart · {counts("utlopt")} utløpt ·{" "}
         {counts("ubetalt")} ikke betalt
       </p>
@@ -77,6 +80,10 @@ export default async function AdminMedlemmerPage({
           <input name="last_name" required placeholder="Etternavn" className={field} />
           <input name="email" type="email" required placeholder="E-post" className={field} />
           <input name="phone" placeholder="Telefon" className={field} />
+          <select name="membership_type" className={field} defaultValue="enkelt">
+            <option value="enkelt">Enkelt person (100 kr)</option>
+            <option value="familie">Familie (150 kr)</option>
+          </select>
           <label className="text-sm text-ink-soft sm:col-span-2">
             Medlemskap gjelder til (la stå tom hvis ikke betalt)
             <input name="expires_at" type="date" className={`${field} mt-1 block w-full`} />
@@ -119,9 +126,15 @@ export default async function AdminMedlemmerPage({
                   </span>
                 </p>
                 <p className="text-sm text-ink-soft">
+                  {m.membership_type === "familie" ? "Familie (150 kr)" : "Enkelt (100 kr)"} ·{" "}
                   {m.email}
                   {m.phone ? ` · ${m.phone}` : ""}
                 </p>
+                {m.family_members?.length > 0 && (
+                  <p className="text-sm text-ink-soft">
+                    Familie: {m.family_members.map((f) => f.name).join(", ")}
+                  </p>
+                )}
                 <p className="text-sm text-ink-soft">
                   {m.expires_at
                     ? `Gyldig til ${m.expires_at} (${
