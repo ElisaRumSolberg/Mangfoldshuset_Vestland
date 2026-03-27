@@ -139,6 +139,19 @@ export default async function BliMedPage({
               <Thanks text="Takk for at du melder deg inn! Betal kontingenten med Vipps til #595791, så aktiverer vi medlemskapet ditt." />
             ) : (
               <form action={submitMembership} className="flex flex-col gap-5">
+                <fieldset>
+                  <legend className={label}>Medlemskap</legend>
+                  <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:gap-6">
+                    <label className="flex items-center gap-2 text-sm text-ink-soft">
+                      <input type="radio" name="membership_type" value="enkelt" defaultChecked className="accent-[#9C3B44]" />
+                      Enkelt person (100 kr)
+                    </label>
+                    <label className="flex items-center gap-2 text-sm text-ink-soft">
+                      <input type="radio" name="membership_type" value="familie" className="accent-[#9C3B44]" />
+                      Familie (150 kr)
+                    </label>
+                  </div>
+                </fieldset>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
                     <label className={label}>Fornavn</label>
@@ -165,6 +178,19 @@ export default async function BliMedPage({
                     <input name="address" className={input} />
                   </div>
                 </div>
+                <details className="rounded-lg border border-line bg-cream px-4 py-3">
+                  <summary className="cursor-pointer text-sm font-medium text-ink">
+                    Familiemedlemmer (kun for familiemedlemskap, opptil 5 personer til)
+                  </summary>
+                  <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    {[2, 3, 4, 5, 6].map((n) => (
+                      <div key={n} className="contents">
+                        <input name={`fam_name_${n}`} placeholder={`Person ${n}: navn og etternavn`} className={input} />
+                        <input type="date" name={`fam_birth_${n}`} className={input} aria-label={`Person ${n}: fødselsdato`} />
+                      </div>
+                    ))}
+                  </div>
+                </details>
                 <div>
                   <label className={label}>Foresatt (hvis under 18 år)</label>
                   <input name="guardian" className={input} />
@@ -179,9 +205,11 @@ export default async function BliMedPage({
                   medlemsregisteret (se personvern).
                 </label>
                 <p className="text-sm text-ink-soft">
-                  Medlemskontingent betales med Vipps til{" "}
-                  <span className="font-semibold text-ink">#595791</span>.
-                  [Pris for medlemskap legges inn her.]
+                  Medlemskontingent (enkelt 100 kr, familie 150 kr per år)
+                  betales med Vipps til{" "}
+                  <span className="font-semibold text-ink">#595791</span> eller
+                  bankkonto{" "}
+                  <span className="font-semibold text-ink">3207 31 01688</span>.
                 </p>
                 <button type="submit" className={button}>
                   Meld meg inn
