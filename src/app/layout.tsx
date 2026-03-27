@@ -14,10 +14,24 @@ const lora = Lora({
   weight: ["400", "500", "600"],
 });
 
+const description =
+  "Mangfoldhuset Vestland skaper møteplasser der mennesker med ulike bakgrunner kan møtes, delta, lære og bidra.";
+
 export const metadata: Metadata = {
-  title: "Mangfoldhuset Vestland",
-  description:
-    "Mangfoldhuset Vestland skaper møteplasser der mennesker med ulike bakgrunner kan møtes, delta, lære og bidra.",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  title: {
+    default: "Mangfoldhuset Vestland",
+    template: "%s",
+  },
+  description,
+  openGraph: {
+    type: "website",
+    locale: "nb_NO",
+    siteName: "Mangfoldhuset Vestland",
+    title: "Mangfoldhuset Vestland",
+    description,
+    images: [{ url: "/logo.jpg", width: 428, height: 429, alt: "Mangfoldhuset Vestland" }],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
