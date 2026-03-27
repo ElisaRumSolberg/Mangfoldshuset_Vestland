@@ -19,10 +19,20 @@ export async function submitMembership(formData: FormData) {
   const first_name = str("first_name") ?? "";
   const last_name = str("last_name") ?? "";
   const email = str("email") ?? "";
+  const membership_type = formData.get("membership_type") === "familie" ? "familie" : "enkelt";
+
+  const family_members =
+    membership_type === "familie"
+      ? [2, 3, 4, 5, 6]
+          .map((n) => ({ name: str(`fam_name_${n}`), birth_date: str(`fam_birth_${n}`) }))
+          .filter((f) => f.name)
+      : [];
 
   if (isSupabaseConfigured()) {
     const supabase = await createClient();
     await supabase.from("members").insert({
+      membership_type,
+      family_members,
       first_name,
       last_name,
       email,
