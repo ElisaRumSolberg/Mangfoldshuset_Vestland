@@ -2,6 +2,7 @@ import Link from "next/link";
 import ActivityCard from "./ActivityCard";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
+import { fetchPrograms, occurrenceCards } from "@/lib/recurring";
 
 const grads = [
   "from-[#6E8B67] to-[#3F5A3E]",
@@ -11,6 +12,7 @@ const grads = [
 
 const fallback = [
   {
+    iso: "",
     title: "Kulturkveld i Bergen",
     category: "Kultur",
     date: "4. okt",
@@ -21,6 +23,7 @@ const fallback = [
     externalLink: null as string | null,
   },
   {
+    iso: "",
     title: "Språkkafé",
     category: "Språk",
     date: "11. okt",
@@ -31,6 +34,7 @@ const fallback = [
     externalLink: null as string | null,
   },
   {
+    iso: "",
     title: "Familiedag i parken",
     category: "Barn & familie",
     date: "18. okt",
@@ -50,7 +54,7 @@ function formatDate(iso: string) {
 }
 
 export default async function UpcomingActivities() {
-  let events = fallback;
+  let events: (typeof fallback)[number][] = [];
 
   if (isSupabaseConfigured()) {
     const supabase = await createClient();
@@ -59,21 +63,29 @@ export default async function UpcomingActivities() {
       .select("*")
       .gte("event_date", new Date().toISOString().slice(0, 10))
       .order("event_date", { ascending: true })
-      .limit(3);
+      .limit(6);
 
-    if (data?.length) {
-      events = data.map((a) => ({
-        title: a.title,
-        category: a.category,
+    // Neste dato for hvert faste tilbud blandes inn, sortert etter dato.
+    const programs = await fetchPrograms();
+    events = [
+      ...(data ?? []).map((a) => ({
+        iso: a.event_date as string,
+        title: a.title as string,
+        category: a.category as string,
         date: formatDate(a.event_date),
-        place: a.place,
-        desc: a.description,
-        imageUrl: a.image_url,
-        videoUrl: a.video_url,
-        externalLink: a.external_link,
-      }));
-    }
+        place: a.place as string,
+        desc: a.description as string,
+        imageUrl: a.image_url as string | null,
+        videoUrl: a.video_url as string | null,
+        externalLink: a.external_link as string | null,
+      })),
+      ...occurrenceCards(programs, 1),
+    ]
+      .sort((a, b) => a.iso.localeCompare(b.iso))
+      .slice(0, 6);
   }
+
+  if (!events.length) events = fallback;
 
   return (
     <section className="mx-auto max-w-6xl px-6 py-24">
@@ -96,7 +108,7 @@ export default async function UpcomingActivities() {
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {events.map((ev, i) => (
-          <ActivityCard key={ev.title} {...ev} grad={grads[i % grads.length]} />
+          <ActivityCard key={ev.title + ev.iso} {...ev} grad={grads[i % grads.length]} />
         ))}
       </div>
     </section>
