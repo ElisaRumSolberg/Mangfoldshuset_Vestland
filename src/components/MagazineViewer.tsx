@@ -4,7 +4,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { PageFlip as PageFlipType } from "page-flip";
 
 const PAGE_RATIO = 595.5 / 842.25; // A4 stående
-const RENDER_WIDTH = 1000; // px per side ved opptegning
+const RENDER_WIDTH = 1200; // px per side ved opptegning
+const ZOOMS = [1, 1.5, 2];
+const ARCHIVE_PAGE_SIZE = 4;
 
 export type Issue = {
   id: string;
@@ -21,6 +23,9 @@ function formatMonth(date: string) {
 export default function MagazineViewer({ issues }: { issues: Issue[] }) {
   const [selectedId, setSelectedId] = useState(issues[0].id);
   const selected = issues.find((i) => i.id === selectedId) ?? issues[0];
+  const [start, setStart] = useState(0);
+  const visible = issues.slice(start, start + ARCHIVE_PAGE_SIZE);
+  const canPage = issues.length > ARCHIVE_PAGE_SIZE;
 
   return (
     <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_280px]">
@@ -47,7 +52,8 @@ export default function MagazineViewer({ issues }: { issues: Issue[] }) {
       <aside aria-label="Arkiv">
         <h2 className="font-serif text-2xl">Arkiv</h2>
         <ul className="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-1 lg:gap-3">
-          {issues.map((i, idx) => {
+          {visible.map((i, vIdx) => {
+            const idx = start + vIdx;
             const active = i.id === selected.id;
             return (
               <li key={i.id}>
@@ -89,6 +95,35 @@ export default function MagazineViewer({ issues }: { issues: Issue[] }) {
             );
           })}
         </ul>
+        {canPage && (
+          <div className="mt-4 flex items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={() => setStart((v) => Math.max(0, v - ARCHIVE_PAGE_SIZE))}
+              disabled={start === 0}
+              aria-label="Nyere utgaver"
+              className="rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-cream disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-ink"
+            >
+              ←
+            </button>
+            <span className="text-xs text-ink-soft" aria-live="polite">
+              {start + 1}–{Math.min(start + ARCHIVE_PAGE_SIZE, issues.length)} av {issues.length}
+            </span>
+            <button
+              type="button"
+              onClick={() =>
+                setStart((v) =>
+                  Math.min(v + ARCHIVE_PAGE_SIZE, Math.max(0, issues.length - 1))
+                )
+              }
+              disabled={start + ARCHIVE_PAGE_SIZE >= issues.length}
+              aria-label="Eldre utgaver"
+              className="rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-cream disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-ink"
+            >
+              →
+            </button>
+          </div>
+        )}
       </aside>
     </div>
   );
@@ -103,16 +138,21 @@ function Book({ pdfUrl }: { pdfUrl: string }) {
   const [total, setTotal] = useState(0);
   const [error, setError] = useState(false);
   const [page, setPage] = useState(0);
-  const [availW, setAvailW] = useState(0);
-  const [availH, setAvailH] = useState(0);
+  const [frameW, setFrameW] = useState(0);
+  const [frameH, setFrameH] = useState(0);
+  const [winH, setWinH] = useState(0);
+  const [full, setFull] = useState(false);
+  const [zoom, setZoom] = useState(1);
+  const stageRef = useRef<HTMLDivElement>(null);
 
-  // Mål plassen boken har (bredde fra rammen, høyde fra vinduet).
+  // Mål rammen (og vinduet). I fullskjerm styrer rammen selv høyden, så vi slipper å vente på vinduet.
   useEffect(() => {
     const frame = frameRef.current;
     if (!frame) return;
     function measure() {
-      setAvailW(frame!.clientWidth);
-      setAvailH(Math.max(360, window.innerHeight - 260));
+      setFrameW(frame!.clientWidth);
+      setFrameH(frame!.clientHeight);
+      setWinH(window.innerHeight);
     }
     measure();
     const ro = new ResizeObserver(measure);
@@ -122,12 +162,19 @@ function Book({ pdfUrl }: { pdfUrl: string }) {
       ro.disconnect();
       window.removeEventListener("resize", measure);
     };
-  }, []);
+  }, [full]);
 
-  const spread = availW >= 640;
-  const pageW = availW ? Math.min(availH * PAGE_RATIO, spread ? availW / 2 : availW) : 0;
+  const pad = full ? 16 : 32;
+  const spread = frameW >= 760;
+  const gutter = spread ? 72 : 0; // plass til pilene ved siden av boken
+  const availW = frameW - pad * 2 - gutter * 2;
+  const availH = full ? frameH - pad * 2 - 80 : Math.max(380, winH - 330);
+  const basePageW =
+    frameW > 0 ? Math.max(0, Math.min(availH * PAGE_RATIO, spread ? availW / 2 : availW)) : 0;
+  const pageW = basePageW * zoom;
   const bookW = Math.floor(spread ? pageW * 2 : pageW);
   const bookH = Math.floor(pageW / PAGE_RATIO);
+  const baseBookH = Math.floor(basePageW / PAGE_RATIO);
 
   // Last PDF og tegn hver side til et bilde.
   useEffect(() => {
@@ -181,9 +228,9 @@ function Book({ pdfUrl }: { pdfUrl: string }) {
         height: Math.round(500 / PAGE_RATIO),
         size: "stretch",
         minWidth: 200,
-        maxWidth: 1200,
+        maxWidth: 4000,
         minHeight: 280,
-        maxHeight: 1700,
+        maxHeight: 5600,
         showCover: true,
         maxShadowOpacity: 0.45,
         flippingTime: 700,
@@ -205,8 +252,22 @@ function Book({ pdfUrl }: { pdfUrl: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, spread]);
 
+  // page-flip måler bare på vindusendring; si fra når rammen (f.eks. fullskjerm) endrer størrelse.
+  useEffect(() => {
+    if (!ready) return;
+    const ids = [60, 350].map((ms) =>
+      window.setTimeout(() => window.dispatchEvent(new Event("resize")), ms)
+    );
+    return () => ids.forEach((id) => window.clearTimeout(id));
+  }, [ready, bookW, bookH]);
+
   const prev = useCallback(() => flipRef.current?.flipPrev(), []);
-  const next = useCallback(() => flipRef.current?.flipNext(), []);
+  const atEnd = spread && page > 0 ? page + 1 >= images.length - 1 : page >= images.length - 1;
+  const next = useCallback(() => {
+    // Siste side: neste-knappen blar tilbake til forsiden.
+    if (atEnd) flipRef.current?.flip(0);
+    else flipRef.current?.flipNext();
+  }, [atEnd]);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -219,102 +280,240 @@ function Book({ pdfUrl }: { pdfUrl: string }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [prev, next]);
 
-  function fullscreen() {
-    const el = frameRef.current;
-    if (!el) return;
-    if (document.fullscreenElement) void document.exitFullscreen();
-    else void el.requestFullscreen?.();
+  // Ved zoom: start midt i den forstørrede boken.
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el || zoom === 1) return;
+    const id = window.setTimeout(() => {
+      el.scrollLeft = (el.scrollWidth - el.clientWidth) / 2;
+      el.scrollTop = 0;
+    }, 400);
+    return () => window.clearTimeout(id);
+  }, [zoom, full]);
+
+  // Zoomet inn: sürükle for å flytte deg rundt (sidevending skjer med pilene/tastene).
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el || zoom === 1) return;
+    let drag: { x: number; y: number; left: number; top: number } | null = null;
+
+    function down(e: MouseEvent) {
+      if (e.button !== 0) return;
+      e.stopPropagation(); // hindrer page-flip i å starte en sidevending
+      e.preventDefault();
+      drag = { x: e.clientX, y: e.clientY, left: el!.scrollLeft, top: el!.scrollTop };
+      el!.style.cursor = "grabbing";
+    }
+    function move(e: MouseEvent) {
+      if (!drag) return;
+      el!.scrollLeft = drag.left - (e.clientX - drag.x);
+      el!.scrollTop = drag.top - (e.clientY - drag.y);
+    }
+    function up() {
+      drag = null;
+      el!.style.cursor = "grab";
+    }
+    function touch(e: TouchEvent) {
+      e.stopPropagation(); // la nettleseren rulle med fingeren
+    }
+
+    el.style.cursor = "grab";
+    el.addEventListener("mousedown", down, true);
+    el.addEventListener("touchstart", touch, true);
+    window.addEventListener("mousemove", move);
+    window.addEventListener("mouseup", up);
+    return () => {
+      el.style.cursor = "";
+      el.removeEventListener("mousedown", down, true);
+      el.removeEventListener("touchstart", touch, true);
+      window.removeEventListener("mousemove", move);
+      window.removeEventListener("mouseup", up);
+    };
+  }, [zoom, full]);
+
+  function stepZoom(dir: 1 | -1) {
+    setZoom((z) => ZOOMS[Math.min(ZOOMS.length - 1, Math.max(0, ZOOMS.indexOf(z) + dir))]);
   }
+
+  function closeFull() {
+    setFull(false);
+    if (document.fullscreenElement) void document.exitFullscreen().catch(() => {});
+  }
+
+  function toggleFull() {
+    if (full) {
+      closeFull();
+      return;
+    }
+    setFull(true);
+    // Ekte fullskjerm der nettleseren tillater det; ellers dekker rammen bare vinduet.
+    void frameRef.current?.requestFullscreen?.().catch(() => {});
+  }
+
+  useEffect(() => {
+    if (!full) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setFull(false);
+    }
+    function onFsChange() {
+      if (!document.fullscreenElement) setFull(false);
+    }
+    window.addEventListener("keydown", onKey);
+    document.addEventListener("fullscreenchange", onFsChange);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKey);
+      document.removeEventListener("fullscreenchange", onFsChange);
+    };
+  }, [full]);
+
+  // Kapittelet står alene: skyv boken så forsiden/baksiden havner midt i rammen.
+  const lastIndex = images.length - 1;
+  const shift = !spread
+    ? 0
+    : page === 0
+      ? -pageW / 2
+      : page >= lastIndex && images.length % 2 === 0
+        ? pageW / 2
+        : 0;
+
+  const navBtn =
+    "absolute top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-white/95 text-xl text-ink shadow-md transition-colors hover:bg-ink hover:text-cream disabled:opacity-30";
+
+  const tool =
+    "rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-ink shadow-sm transition-colors hover:bg-ink hover:text-cream disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-ink";
 
   return (
     <div
       ref={frameRef}
-      className="rounded-[18px] border border-line bg-cream-2 p-4 [&:fullscreen]:flex [&:fullscreen]:flex-col [&:fullscreen]:justify-center [&:fullscreen]:bg-[#2b2a26]"
+      className={
+        full
+          ? "fixed inset-0 z-[100] flex flex-col justify-center bg-[#2b2a26] p-4"
+          : "relative rounded-[18px] border border-line bg-cream-2 p-8 max-sm:p-4"
+      }
     >
-      <div
-        className="flex items-center justify-center"
-        style={{ minHeight: bookH || 360 }}
-      >
-        {error ? (
-          <div className="text-center">
-            <p className="text-ink-soft">Kunne ikke åpne magasinet her.</p>
-            <a
-              href={pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 inline-block rounded-full bg-fig px-5 py-2 text-sm font-semibold text-white hover:bg-fig-dark"
-            >
-              Åpne PDF i ny fane
-            </a>
-          </div>
-        ) : !ready ? (
-          <div className="text-center" role="status">
-            <p className="text-sm text-ink-soft">
-              Åpner magasinet… {total > 0 ? `${progress} av ${total} sider` : ""}
-            </p>
-            <div className="mx-auto mt-3 h-1.5 w-48 overflow-hidden rounded-full bg-line">
-              <div
-                className="h-full bg-fig transition-all"
-                style={{ width: total ? `${(progress / total) * 100}%` : "8%" }}
-              />
-            </div>
-          </div>
-        ) : (
-          <div
-            key={String(spread)}
-            ref={bookRef}
-            style={{ width: bookW, height: bookH }}
-            className="shadow-2xl"
-          >
-            {images.map((src, i) => (
-              <div key={i} className="mag-page bg-white">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={src}
-                  alt={`Side ${i + 1}`}
-                  draggable={false}
-                  className="h-full w-full select-none object-cover"
-                />
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div className="mt-4 flex items-center justify-center gap-4">
-        <button
-          type="button"
-          onClick={prev}
-          disabled={!ready}
-          aria-label="Forrige side"
-          className="rounded-full border border-line bg-white px-5 py-2 text-lg transition-colors hover:bg-ink hover:text-cream disabled:opacity-30"
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <p
+          className={`text-sm ${full ? "text-white/80" : "text-ink-soft"}`}
+          aria-live="polite"
         >
-          ←
-        </button>
-        <p className="min-w-28 text-center text-sm text-ink-soft" aria-live="polite">
           {ready
             ? `Side ${page + 1}${
                 spread && page > 0 && page + 2 <= images.length ? `–${page + 2}` : ""
               } av ${images.length}`
             : ""}
         </p>
-        <button
-          type="button"
-          onClick={next}
-          disabled={!ready}
-          aria-label="Neste side"
-          className="rounded-full border border-line bg-white px-5 py-2 text-lg transition-colors hover:bg-ink hover:text-cream disabled:opacity-30"
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => stepZoom(-1)}
+            disabled={!ready || zoom === ZOOMS[0]}
+            aria-label="Zoom ut"
+            className={`${tool} px-3.5`}
+          >
+            −
+          </button>
+          <span
+            className={`w-12 text-center text-xs font-semibold ${full ? "text-white/80" : "text-ink-soft"}`}
+          >
+            {Math.round(zoom * 100)}%
+          </span>
+          <button
+            type="button"
+            onClick={() => stepZoom(1)}
+            disabled={!ready || zoom === ZOOMS[ZOOMS.length - 1]}
+            aria-label="Zoom inn"
+            className={`${tool} px-3.5`}
+          >
+            +
+          </button>
+          <button type="button" onClick={toggleFull} disabled={!ready} className={`${tool} ml-2`}>
+            {full ? "Lukk fullskjerm ✕" : "Fullskjerm"}
+          </button>
+        </div>
+      </div>
+
+      <div className="relative">
+        {ready && (
+          <>
+            <button
+              type="button"
+              onClick={prev}
+              aria-label="Forrige side"
+              className={`${navBtn} left-0`}
+            >
+              ←
+            </button>
+            <button
+              type="button"
+              onClick={next}
+              aria-label="Neste side"
+              className={`${navBtn} right-0`}
+            >
+              →
+            </button>
+          </>
+        )}
+        <div
+          ref={stageRef}
+          className={`flex ${zoom > 1 ? "overflow-auto" : ""}`}
+          style={{
+            minHeight: baseBookH || 360,
+            height: zoom > 1 ? baseBookH + 8 : undefined,
+          }}
         >
-          →
-        </button>
-        <button
-          type="button"
-          onClick={fullscreen}
-          disabled={!ready}
-          className="ml-2 rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold transition-colors hover:bg-ink hover:text-cream disabled:opacity-30"
-        >
-          Fullskjerm
-        </button>
+          {error ? (
+            <div className="m-auto text-center">
+              <p className="text-ink-soft">Kunne ikke åpne magasinet her.</p>
+              <a
+                href={pdfUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-block rounded-full bg-fig px-5 py-2 text-sm font-semibold text-white hover:bg-fig-dark"
+              >
+                Åpne PDF i ny fane
+              </a>
+            </div>
+          ) : !ready ? (
+            <div className="m-auto text-center" role="status">
+              <p className="text-sm text-ink-soft">
+                Åpner magasinet… {total > 0 ? `${progress} av ${total} sider` : ""}
+              </p>
+              <div className="mx-auto mt-3 h-1.5 w-48 overflow-hidden rounded-full bg-line">
+                <div
+                  className="h-full bg-fig transition-all"
+                  style={{ width: total ? `${(progress / total) * 100}%` : "8%" }}
+                />
+              </div>
+            </div>
+          ) : (
+            <div
+              key={String(spread)}
+              ref={bookRef}
+              className="m-auto shrink-0 drop-shadow-2xl"
+              style={{
+                width: bookW,
+                height: bookH,
+                transform: `translateX(${shift}px)`,
+                transition: "transform 0.5s ease",
+              }}
+            >
+              {images.map((src, i) => (
+                <div key={i} className="mag-page bg-white">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={src}
+                    alt={`Side ${i + 1}`}
+                    draggable={false}
+                    className="h-full w-full select-none object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
