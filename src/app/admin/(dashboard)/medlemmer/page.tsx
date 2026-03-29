@@ -38,7 +38,7 @@ export default async function AdminMedlemmerPage({
 }) {
   const { filter = "alle" } = await searchParams;
   const supabase = await createClient();
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("members")
     .select("*")
     .order("created_at", { ascending: false });
@@ -70,6 +70,12 @@ export default async function AdminMedlemmerPage({
         {counts("snart")} utløper snart · {counts("utlopt")} utløpt ·{" "}
         {counts("ubetalt")} ikke betalt
       </p>
+
+      {error && (
+        <p className="mt-4 rounded-lg bg-[#F7E9E9] px-4 py-3 text-sm text-fig">
+          Kunne ikke hente medlemmer: {error.message}
+        </p>
+      )}
 
       <details className="mt-6 rounded-2xl border border-line bg-cream p-5">
         <summary className="cursor-pointer text-sm font-semibold text-ink">
