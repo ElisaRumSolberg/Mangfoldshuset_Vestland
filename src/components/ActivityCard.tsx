@@ -9,6 +9,7 @@ export default function ActivityCard({
   imageUrl,
   videoUrl,
   externalLink,
+  banner,
   grad,
 }: {
   title: string;
@@ -19,6 +20,8 @@ export default function ActivityCard({
   imageUrl?: string | null;
   videoUrl?: string | null;
   externalLink?: string | null;
+  /** Vises som kort bånd i stedet for foto-plassholder (faste tilbud uten bilde). */
+  banner?: string;
   grad: string;
 }) {
   return (
@@ -36,6 +39,12 @@ export default function ActivityCard({
           alt={title}
           className="warm-photo aspect-[4/3] w-full object-cover object-top"
         />
+      ) : banner ? (
+        <div
+          className={`flex h-28 items-center justify-center bg-gradient-to-br ${grad}`}
+        >
+          <span className="font-serif text-2xl text-white">{banner}</span>
+        </div>
       ) : (
         <div
           className={`flex aspect-[4/3] items-center justify-center bg-gradient-to-br ${grad}`}
