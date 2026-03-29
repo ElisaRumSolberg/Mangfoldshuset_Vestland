@@ -18,6 +18,7 @@ const fallback = [
     desc: "En kveld med mat, musikk og møter på tvers av kulturer.",
     imageUrl: null as string | null,
     videoUrl: null as string | null,
+    externalLink: null as string | null,
   },
   {
     title: "Språkkafé",
@@ -27,6 +28,7 @@ const fallback = [
     desc: "Praktisér norsk i en avslappet og hyggelig atmosfære.",
     imageUrl: null as string | null,
     videoUrl: null as string | null,
+    externalLink: null as string | null,
   },
   {
     title: "Familiedag i parken",
@@ -36,6 +38,7 @@ const fallback = [
     desc: "Aktiviteter og lek for hele familien, uansett bakgrunn.",
     imageUrl: null as string | null,
     videoUrl: null as string | null,
+    externalLink: null as string | null,
   },
 ];
 
@@ -67,6 +70,7 @@ export default async function UpcomingActivities() {
         desc: a.description,
         imageUrl: a.image_url,
         videoUrl: a.video_url,
+        externalLink: a.external_link,
       }));
     }
   }
