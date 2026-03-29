@@ -5,7 +5,7 @@ const cards = [
     title: "Bli frivillig",
     desc: "Bruk tiden, erfaringene eller ferdighetene dine i fellesskapet.",
     cta: "Bli frivillig",
-    href: "/bli-med",
+    href: "/bli-med#frivillig",
     iconBg: "bg-[#EAF0E9]",
     ctaColor: "text-green-dark",
     icon: (
@@ -22,7 +22,7 @@ const cards = [
     title: "Har du en idé?",
     desc: "Har du lyst til å starte en aktivitet, et kurs eller et prosjekt?",
     cta: "Del ideen din",
-    href: "/har-du-en-ide",
+    href: "/bli-med#ide",
     iconBg: "bg-[#F7E9E9]",
     ctaColor: "text-fig",
     icon: (
@@ -39,7 +39,7 @@ const cards = [
     title: "Samarbeid med oss",
     desc: "Vi ønsker samarbeid med organisasjoner, bedrifter og offentlige aktører.",
     cta: "Kontakt oss",
-    href: "/samarbeid",
+    href: "/bli-med#samarbeid",
     iconBg: "bg-[#EFE7D6]",
     ctaColor: "text-[#7A6A3F]",
     icon: (
