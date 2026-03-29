@@ -26,6 +26,7 @@ declare module "page-flip" {
   export class PageFlip {
     constructor(element: HTMLElement, settings: PageFlipSettings);
     loadFromHTML(items: NodeListOf<HTMLElement> | HTMLElement[]): void;
+    flip(page: number, corner?: "top" | "bottom"): void;
     flipNext(corner?: "top" | "bottom"): void;
     flipPrev(corner?: "top" | "bottom"): void;
     getCurrentPageIndex(): number;
