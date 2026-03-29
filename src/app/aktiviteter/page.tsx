@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ActivityCard from "@/components/ActivityCard";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
+
+export const metadata: Metadata = {
+  title: "Aktiviteter – Mangfoldhuset Vestland",
+  description: "Kommende og tidligere aktiviteter i Mangfoldhuset Vestland.",
+};
 
 const grads = [
   "from-[#6E8B67] to-[#3F5A3E]",
@@ -110,6 +116,7 @@ function mapActivities(
     description: string;
     image_url: string | null;
     video_url: string | null;
+    external_link: string | null;
   }[]
 ) {
   return data.map((a) => ({
@@ -120,5 +127,6 @@ function mapActivities(
     desc: a.description,
     imageUrl: a.image_url,
     videoUrl: a.video_url,
+    externalLink: a.external_link,
   }));
 }
