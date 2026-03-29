@@ -8,6 +8,7 @@ export default function ActivityCard({
   desc,
   imageUrl,
   videoUrl,
+  externalLink,
   grad,
 }: {
   title: string;
@@ -17,6 +18,7 @@ export default function ActivityCard({
   desc: string;
   imageUrl?: string | null;
   videoUrl?: string | null;
+  externalLink?: string | null;
   grad: string;
 }) {
   return (
@@ -53,12 +55,23 @@ export default function ActivityCard({
         <h3 className="font-serif text-lg">{title}</h3>
         <p className="mt-1.5 text-sm text-ink-soft">{place}</p>
         <p className="mt-2.5 text-sm leading-relaxed text-ink-soft">{desc}</p>
-        <Link
-          href="/aktiviteter"
-          className="mt-3.5 inline-block text-sm font-semibold text-green-dark"
-        >
-          Les mer →
-        </Link>
+        {externalLink ? (
+          <a
+            href={externalLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3.5 inline-block text-sm font-semibold text-green-dark"
+          >
+            Se innlegget →
+          </a>
+        ) : (
+          <Link
+            href="/aktiviteter"
+            className="mt-3.5 inline-block text-sm font-semibold text-green-dark"
+          >
+            Les mer →
+          </Link>
+        )}
       </div>
     </article>
   );
