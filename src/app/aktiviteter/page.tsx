@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ActivityCard from "@/components/ActivityCard";
+import FasteTilbud from "@/components/FasteTilbud";
+import { fetchPrograms, occurrenceCards } from "@/lib/recurring";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
 
@@ -29,6 +31,7 @@ type MappedActivity = ReturnType<typeof mapActivities>[number];
 export default async function AktiviteterPage() {
   let upcoming: MappedActivity[] = [];
   let past: MappedActivity[] = [];
+  const programs = await fetchPrograms();
 
   if (isSupabaseConfigured()) {
     const supabase = await createClient();
@@ -51,6 +54,11 @@ export default async function AktiviteterPage() {
     past = mapActivities(pastData ?? []);
   }
 
+  // Faste tilbud (hver uke/måned) blandes inn i "Kommende", sortert etter dato.
+  const merged = [...upcoming, ...occurrenceCards(programs, 2)].sort((a, b) =>
+    a.iso.localeCompare(b.iso)
+  );
+
   return (
     <>
       <Navbar />
@@ -60,15 +68,17 @@ export default async function AktiviteterPage() {
         </p>
         <h1 className="mt-2 font-serif text-4xl font-medium">Aktiviteter</h1>
 
+        <FasteTilbud programs={programs} />
+
         <section className="mt-12">
           <h2 className="font-serif text-2xl font-medium">
             Kommende aktiviteter
           </h2>
-          {upcoming.length ? (
+          {merged.length ? (
             <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
-              {upcoming.map((ev, i) => (
+              {merged.map((ev, i) => (
                 <ActivityCard
-                  key={ev.title + ev.date}
+                  key={ev.title + ev.iso}
                   {...ev}
                   grad={grads[i % grads.length]}
                 />
@@ -120,6 +130,7 @@ function mapActivities(
   }[]
 ) {
   return data.map((a) => ({
+    iso: a.event_date,
     title: a.title,
     category: a.category,
     date: formatDate(a.event_date),
