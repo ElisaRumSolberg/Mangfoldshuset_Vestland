@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { updateNews } from "../actions";
+import FileUpload from "../../FileUpload";
 
 export default async function EditNewsPage({
   params,
@@ -62,23 +63,13 @@ export default async function EditNewsPage({
             <label className="mb-1 block text-sm font-medium text-ink">
               Nytt bilde (valgfritt – erstatter gjeldende)
             </label>
-            <input
-              name="image"
-              type="file"
-              accept="image/*"
-              className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-            />
+            <FileUpload name="image_url" folder="nyheter" accept="image/*" />
           </div>
           <div>
             <label className="mb-1 block text-sm font-medium text-ink">
               Ny video (valgfritt – erstatter gjeldende)
             </label>
-            <input
-              name="video"
-              type="file"
-              accept="video/*"
-              className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-            />
+            <FileUpload name="video_url" folder="nyheter" accept="video/*" />
           </div>
         </div>
         <div>
