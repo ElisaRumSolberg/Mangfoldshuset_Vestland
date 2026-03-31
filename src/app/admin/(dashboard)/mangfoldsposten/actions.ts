@@ -3,35 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-
-async function uploadFile(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  file: File | null,
-  folder: string
-) {
-  if (!file || file.size === 0) return null;
-
-  const ext = file.name.split(".").pop();
-  const path = `${folder}/${crypto.randomUUID()}.${ext}`;
-
-  const { error } = await supabase.storage.from("images").upload(path, file);
-  if (error) return null;
-
-  return supabase.storage.from("images").getPublicUrl(path).data.publicUrl;
-}
+import { formUrl } from "@/lib/form-url";
 
 export async function addIssue(formData: FormData) {
   const supabase = await createClient();
-  const coverUrl = await uploadFile(
-    supabase,
-    formData.get("cover") as File,
-    "mangfoldsposten"
-  );
-  const pdfUrl = await uploadFile(
-    supabase,
-    formData.get("pdf") as File,
-    "mangfoldsposten"
-  );
+  const coverUrl = formUrl(formData, "cover_url");
+  const pdfUrl = formUrl(formData, "pdf_url");
 
   if (!pdfUrl) return;
 
@@ -49,16 +26,8 @@ export async function addIssue(formData: FormData) {
 
 export async function updateIssue(id: string, formData: FormData) {
   const supabase = await createClient();
-  const coverUrl = await uploadFile(
-    supabase,
-    formData.get("cover") as File,
-    "mangfoldsposten"
-  );
-  const pdfUrl = await uploadFile(
-    supabase,
-    formData.get("pdf") as File,
-    "mangfoldsposten"
-  );
+  const coverUrl = formUrl(formData, "cover_url");
+  const pdfUrl = formUrl(formData, "pdf_url");
 
   const updates: Record<string, unknown> = {
     title: formData.get("title") as string,
