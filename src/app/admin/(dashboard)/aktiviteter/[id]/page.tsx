@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { updateActivity } from "../actions";
+import FileUpload from "../../FileUpload";
 
 export default async function EditActivityPage({
   params,
@@ -84,23 +85,13 @@ export default async function EditActivityPage({
           <label className="mb-1 block text-sm font-medium text-ink">
             Nytt bilde (valgfritt – erstatter gjeldende)
           </label>
-          <input
-            name="image"
-            type="file"
-            accept="image/*"
-            className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-          />
+          <FileUpload name="image_url" folder="aktiviteter" accept="image/*" />
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium text-ink">
             Ny video (valgfritt – erstatter gjeldende)
           </label>
-          <input
-            name="video"
-            type="file"
-            accept="video/*"
-            className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-          />
+          <FileUpload name="video_url" folder="aktiviteter" accept="video/*" />
         </div>
         <div className="sm:col-span-2">
           <label className="mb-1 block text-sm font-medium text-ink">
