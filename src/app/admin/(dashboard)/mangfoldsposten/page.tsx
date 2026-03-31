@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { addIssue, deleteIssue } from "./actions";
+import FileUpload from "../FileUpload";
 
 export default async function AdminMangfoldspostenPage() {
   const supabase = await createClient();
@@ -35,24 +36,13 @@ export default async function AdminMangfoldspostenPage() {
           <label className="mb-1 block text-sm font-medium text-ink">
             Forsidebilde
           </label>
-          <input
-            name="cover"
-            type="file"
-            accept="image/*"
-            className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-          />
+          <FileUpload name="cover_url" folder="mangfoldsposten" accept="image/*" />
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium text-ink">
             PDF
           </label>
-          <input
-            name="pdf"
-            type="file"
-            accept="application/pdf"
-            required
-            className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-          />
+          <FileUpload name="pdf_url" folder="mangfoldsposten" accept="application/pdf" required />
         </div>
         <button
           type="submit"
