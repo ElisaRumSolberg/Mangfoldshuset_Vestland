@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { addActivity, deleteActivity } from "./actions";
+import FileUpload from "../FileUpload";
 
 export default async function AdminAktiviteterPage() {
   const supabase = await createClient();
@@ -52,23 +53,13 @@ export default async function AdminAktiviteterPage() {
           <label className="mb-1 block text-sm font-medium text-ink">
             Bilde
           </label>
-          <input
-            name="image"
-            type="file"
-            accept="image/*"
-            className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-          />
+          <FileUpload name="image_url" folder="aktiviteter" accept="image/*" />
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium text-ink">
             Video (valgfritt)
           </label>
-          <input
-            name="video"
-            type="file"
-            accept="video/*"
-            className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-          />
+          <FileUpload name="video_url" folder="aktiviteter" accept="video/*" />
         </div>
         <div className="sm:col-span-2">
           <label className="mb-1 block text-sm font-medium text-ink">
