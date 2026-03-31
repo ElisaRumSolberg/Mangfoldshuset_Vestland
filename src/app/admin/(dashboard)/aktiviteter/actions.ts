@@ -3,35 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-
-async function uploadFile(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  file: File | null,
-  folder: string
-) {
-  if (!file || file.size === 0) return null;
-
-  const ext = file.name.split(".").pop();
-  const path = `${folder}/${crypto.randomUUID()}.${ext}`;
-
-  const { error } = await supabase.storage.from("images").upload(path, file);
-  if (error) return null;
-
-  return supabase.storage.from("images").getPublicUrl(path).data.publicUrl;
-}
+import { formUrl } from "@/lib/form-url";
 
 export async function addActivity(formData: FormData) {
   const supabase = await createClient();
-  const imageUrl = await uploadFile(
-    supabase,
-    formData.get("image") as File,
-    "aktiviteter"
-  );
-  const videoUrl = await uploadFile(
-    supabase,
-    formData.get("video") as File,
-    "aktiviteter"
-  );
+  const imageUrl = formUrl(formData, "image_url");
+  const videoUrl = formUrl(formData, "video_url");
 
   await supabase.from("activities").insert({
     title: formData.get("title") as string,
@@ -51,16 +28,8 @@ export async function addActivity(formData: FormData) {
 
 export async function updateActivity(id: string, formData: FormData) {
   const supabase = await createClient();
-  const imageUrl = await uploadFile(
-    supabase,
-    formData.get("image") as File,
-    "aktiviteter"
-  );
-  const videoUrl = await uploadFile(
-    supabase,
-    formData.get("video") as File,
-    "aktiviteter"
-  );
+  const imageUrl = formUrl(formData, "image_url");
+  const videoUrl = formUrl(formData, "video_url");
 
   const updates: Record<string, unknown> = {
     title: formData.get("title") as string,
