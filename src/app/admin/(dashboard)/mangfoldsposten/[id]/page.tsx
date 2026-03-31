@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { updateIssue } from "../actions";
+import FileUpload from "../../FileUpload";
 
 export default async function EditIssuePage({
   params,
@@ -64,23 +65,13 @@ export default async function EditIssuePage({
           <label className="mb-1 block text-sm font-medium text-ink">
             Nytt forsidebilde (valgfritt – erstatter gjeldende)
           </label>
-          <input
-            name="cover"
-            type="file"
-            accept="image/*"
-            className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-          />
+          <FileUpload name="cover_url" folder="mangfoldsposten" accept="image/*" />
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium text-ink">
             Ny PDF (valgfritt – erstatter gjeldende)
           </label>
-          <input
-            name="pdf"
-            type="file"
-            accept="application/pdf"
-            className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-          />
+          <FileUpload name="pdf_url" folder="mangfoldsposten" accept="application/pdf" />
         </div>
 
         <button
