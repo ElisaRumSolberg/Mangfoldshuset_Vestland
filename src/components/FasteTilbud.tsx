@@ -125,15 +125,27 @@ export default function FasteTilbud({ programs }: { programs: Program[] }) {
                         Se på Facebook →
                       </a>
                     )}
-                    {p.contact && (
-                      <a
-                        href={`mailto:${p.contact}`}
-                        className="break-all font-normal"
-                      >
-                        {p.contact}
-                      </a>
-                    )}
                   </div>
+                  {(p.responsible_name || p.responsible_phone || p.contact) && (
+                    <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-soft">
+                      <span>
+                        Ansvarlig{p.responsible_name ? `: ${p.responsible_name}` : ""}
+                      </span>
+                      {p.responsible_phone && (
+                        <a
+                          href={`tel:${p.responsible_phone.replace(/\s/g, "")}`}
+                          className="font-semibold text-green-dark"
+                        >
+                          {p.responsible_phone}
+                        </a>
+                      )}
+                      {p.contact && (
+                        <a href={`mailto:${p.contact}`} className="break-all font-semibold text-green-dark">
+                          {p.contact}
+                        </a>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </article>
