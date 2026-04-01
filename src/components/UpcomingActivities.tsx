@@ -20,6 +20,9 @@ type Ev = {
   imageUrl: string | null;
   videoUrl: string | null;
   externalLink: string | null;
+  responsibleName?: string | null;
+  responsiblePhone?: string | null;
+  responsibleEmail?: string | null;
   banner?: string;
   imageHref?: string | null;
   featured?: boolean;
@@ -110,6 +113,9 @@ export default async function UpcomingActivities() {
         imageUrl: a.image_url as string | null,
         videoUrl: a.video_url as string | null,
         externalLink: a.external_link as string | null,
+        responsibleName: a.responsible_name as string | null,
+        responsiblePhone: a.responsible_phone as string | null,
+        responsibleEmail: a.responsible_email as string | null,
         featured: !!a.featured,
         recurring: false,
         href: `/aktiviteter/${a.id}`,
