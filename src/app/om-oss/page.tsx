@@ -25,6 +25,14 @@ const verdier = [
 
 const malgrupper = ["Barn", "Ungdom", "Voksne", "Seniorer", "Familie"];
 
+const partnere = [
+  { name: "Vestland fylkeskommune", logo: "/samarbeid/vestland-fylkeskommune.png" },
+  { name: "Bergen kommune", logo: "/samarbeid/bergen-kommune.png" },
+  { name: "Kirkens Bymisjon", logo: "/samarbeid/kirkens-bymisjon.jpg" },
+  { name: "OBOS", logo: "/samarbeid/obos.png" },
+  { name: "Frifond", logo: "/samarbeid/frifond.png" },
+];
+
 const grupper = [
   {
     title: "Barn og ungdom",
@@ -285,6 +293,37 @@ export default async function OmOssPage() {
                     {g.desc}
                   </p>
                 </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Samarbeidspartnere */}
+        <section className="mx-auto max-w-6xl px-6 py-20">
+          <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
+            Støttespillere
+          </p>
+          <h2 className="mt-2 font-serif text-3xl font-medium">
+            Samarbeidspartnere
+          </h2>
+          <p className="mt-3 max-w-xl text-sm text-ink-soft">
+            Arbeidet vårt er mulig takket være støtte og samarbeid med:
+          </p>
+          <div className="mt-8 flex flex-wrap gap-6">
+            {partnere.map((p) => (
+              <div
+                key={p.name}
+                className="flex w-36 flex-col items-center gap-3 rounded-2xl border border-line bg-white p-5"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={p.logo}
+                  alt={p.name}
+                  className="h-16 w-full object-contain"
+                />
+                <p className="text-center text-xs font-medium text-ink-soft">
+                  {p.name}
+                </p>
               </div>
             ))}
           </div>
