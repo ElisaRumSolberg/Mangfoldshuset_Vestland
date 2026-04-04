@@ -8,15 +8,19 @@ import SupportUs from "@/components/SupportUs";
 import NewsAndMagazine from "@/components/NewsAndMagazine";
 import Footer from "@/components/Footer";
 import { fetchSiteSettings } from "@/lib/site-settings";
+import { fetchActivityShowcaseSlides } from "@/lib/activity-showcase";
 
 export default async function Home() {
-  const settings = await fetchSiteSettings();
+  const [settings, showcaseSlides] = await Promise.all([
+    fetchSiteSettings(),
+    fetchActivityShowcaseSlides(),
+  ]);
 
   return (
     <>
       <Navbar />
       <main>
-        <Hero images={settings.hero_images} />
+        <Hero images={settings.hero_images} slides={showcaseSlides} />
         <UpcomingActivities />
         <AboutSnippet />
         <ContributeSection />

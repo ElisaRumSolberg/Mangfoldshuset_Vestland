@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { requireOwner } from "@/lib/auth-guard";
 
 function iso(d: Date) {
   return d.toISOString().slice(0, 10);
@@ -14,6 +15,7 @@ function plusOneYear(base: Date) {
 }
 
 export async function markPaid(id: string) {
+  await requireOwner();
   const supabase = await createClient();
   const { data: m } = await supabase
     .from("members")
@@ -34,6 +36,7 @@ export async function markPaid(id: string) {
 }
 
 export async function addMember(formData: FormData) {
+  await requireOwner();
   const supabase = await createClient();
   const expires = (formData.get("expires_at") as string) || null;
 
@@ -51,6 +54,7 @@ export async function addMember(formData: FormData) {
 }
 
 export async function deleteMember(id: string) {
+  await requireOwner();
   const supabase = await createClient();
   await supabase.from("members").delete().eq("id", id);
   revalidatePath("/admin/medlemmer");

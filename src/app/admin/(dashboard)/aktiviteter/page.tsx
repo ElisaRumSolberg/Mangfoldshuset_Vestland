@@ -31,12 +31,25 @@ export default async function AdminAktiviteterPage() {
           </label>
           <CategoryPicker />
         </div>
-        <input
-          name="event_date"
-          type="date"
-          required
-          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-        />
+        <div>
+          <label className="mb-1 block text-sm font-medium text-ink">Startdato</label>
+          <input
+            name="event_date"
+            type="date"
+            required
+            className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+          />
+        </div>
+        <div>
+          <label className="mb-1 block text-sm font-medium text-ink">
+            Sluttdato (valgfritt – for flerdagers aktiviteter)
+          </label>
+          <input
+            name="end_date"
+            type="date"
+            className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+          />
+        </div>
         <input
           name="place"
           required
@@ -114,6 +127,15 @@ export default async function AdminAktiviteterPage() {
             className="h-4 w-4 accent-fig"
           />
           Fremhevet – vis øverst i «Kommende aktiviteter»
+        </label>
+        <label className="flex items-center gap-2 text-sm text-ink sm:col-span-2">
+          <input
+            name="show_on_homepage"
+            type="checkbox"
+            defaultChecked={false}
+            className="h-4 w-4 accent-fig"
+          />
+          Vis bilde i karusellen på forsiden
         </label>
 
         <button
