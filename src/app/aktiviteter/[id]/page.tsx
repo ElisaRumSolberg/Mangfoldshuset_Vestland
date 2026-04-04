@@ -7,8 +7,12 @@ import ReportSection from "@/components/ReportSection";
 import { todayOslo } from "@/lib/recurring";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
+import { signUpForActivity } from "./actions";
 
-type Props = { params: Promise<{ id: string }> };
+type Props = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ meldt?: string }>;
+};
 
 async function getActivity(id: string) {
   if (!isSupabaseConfigured()) return null;
@@ -37,8 +41,9 @@ function longDate(iso: string) {
   });
 }
 
-export default async function ActivityPage({ params }: Props) {
+export default async function ActivityPage({ params, searchParams }: Props) {
   const { id } = await params;
+  const { meldt } = await searchParams;
   const a = await getActivity(id);
   if (!a) notFound();
 
@@ -79,12 +84,16 @@ export default async function ActivityPage({ params }: Props) {
         <p className="text-base text-ink-soft">{a.place}</p>
 
         {(a.video_url || a.image_url) && (
-          <div className="mt-8 overflow-hidden rounded-[18px] border border-line">
+          <div className="mt-8 overflow-hidden rounded-[18px] border border-line bg-cream-2">
             {a.video_url ? (
               <video src={a.video_url} controls className="w-full bg-black" />
             ) : (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={a.image_url} alt={a.title} className="max-h-[520px] w-full object-cover" />
+              <img
+                src={a.image_url}
+                alt={a.title}
+                className="max-h-[80vh] w-full object-contain"
+              />
             )}
           </div>
         )}
@@ -118,6 +127,64 @@ export default async function ActivityPage({ params }: Props) {
               </a>
             )}
           </div>
+        )}
+
+        {a.registration_open && !isPast && (
+          <section className="mt-10 rounded-[18px] border border-line bg-cream p-6 sm:p-8">
+            <h2 className="font-serif text-2xl font-medium">Meld deg på</h2>
+            {meldt === "1" ? (
+              <div className="mt-4 rounded-xl bg-[#EAF0E9] px-6 py-8 text-center">
+                <p className="font-serif text-xl text-green-dark">Takk!</p>
+                <p className="mt-1 text-sm text-ink-soft">
+                  Du er nå påmeldt. Vi gleder oss til å se deg!
+                </p>
+              </div>
+            ) : (
+              <form
+                action={signUpForActivity.bind(null, a.id)}
+                className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2"
+              >
+                <input
+                  name="name"
+                  required
+                  placeholder="Navn"
+                  className="rounded-lg border border-line bg-white px-3 py-2.5 text-sm outline-none focus:border-fig"
+                />
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  placeholder="E-post"
+                  className="rounded-lg border border-line bg-white px-3 py-2.5 text-sm outline-none focus:border-fig"
+                />
+                <input
+                  name="phone"
+                  placeholder="Telefon (valgfritt)"
+                  className="rounded-lg border border-line bg-white px-3 py-2.5 text-sm outline-none focus:border-fig"
+                />
+                <input
+                  type="number"
+                  name="participants"
+                  min={1}
+                  defaultValue={1}
+                  placeholder="Antall deltakere"
+                  className="rounded-lg border border-line bg-white px-3 py-2.5 text-sm outline-none focus:border-fig"
+                />
+                <textarea
+                  name="comment"
+                  rows={2}
+                  placeholder="Kommentar (valgfritt)"
+                  className="rounded-lg border border-line bg-white px-3 py-2.5 text-sm outline-none focus:border-fig sm:col-span-2"
+                />
+                <button
+                  type="submit"
+                  className="rounded-full bg-fig px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-fig-dark sm:col-span-2 sm:w-fit"
+                >
+                  Meld meg på
+                </button>
+              </form>
+            )}
+          </section>
         )}
 
         <ReportSection
