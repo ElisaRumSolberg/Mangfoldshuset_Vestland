@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { updateActivity } from "../actions";
+import { updateActivity, deleteSignup } from "../actions";
 import FileUpload from "../../FileUpload";
 import ReportFields from "../../ReportFields";
 import CategoryPicker from "../../CategoryPicker";
+import ShareBox from "../../ShareBox";
 
 export default async function EditActivityPage({
   params,
@@ -13,15 +14,19 @@ export default async function EditActivityPage({
 }) {
   const { id } = await params;
   const supabase = await createClient();
-  const { data: activity } = await supabase
-    .from("activities")
-    .select("*")
-    .eq("id", id)
-    .single();
+  const [{ data: activity }, { data: signups }] = await Promise.all([
+    supabase.from("activities").select("*").eq("id", id).single(),
+    supabase
+      .from("activity_signups")
+      .select("*")
+      .eq("activity_id", id)
+      .order("created_at", { ascending: false }),
+  ]);
 
   if (!activity) notFound();
 
   const updateWithId = updateActivity.bind(null, id);
+  const totalParticipants = (signups ?? []).reduce((sum, s) => sum + (s.participants ?? 1), 0);
 
   return (
     <div>
@@ -31,6 +36,10 @@ export default async function EditActivityPage({
       <h1 className="mt-3 font-serif text-2xl font-medium text-ink">
         Rediger aktivitet
       </h1>
+
+      <ShareBox
+        url={`${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/aktiviteter/${id}`}
+      />
 
       <form
         action={updateWithId}
@@ -148,6 +157,16 @@ export default async function EditActivityPage({
 
         <label className="flex items-center gap-2 text-sm text-ink sm:col-span-2">
           <input
+            name="registration_open"
+            type="checkbox"
+            defaultChecked={activity.registration_open ?? false}
+            className="h-4 w-4 accent-fig"
+          />
+          Åpne for påmelding – vis skjema på aktivitetens side
+        </label>
+
+        <label className="flex items-center gap-2 text-sm text-ink sm:col-span-2">
+          <input
             name="featured"
             type="checkbox"
             defaultChecked={activity.featured ?? false}
@@ -163,6 +182,49 @@ export default async function EditActivityPage({
           Lagre endringer
         </button>
       </form>
+
+      <div className="mt-10">
+        <h2 className="font-serif text-xl font-medium text-ink">
+          Påmeldte {signups && signups.length > 0 && `(${signups.length} – ${totalParticipants} personer)`}
+        </h2>
+        {signups && signups.length > 0 ? (
+          <div className="mt-4 flex flex-col gap-3">
+            {signups.map((s) => (
+              <div
+                key={s.id}
+                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-cream px-5 py-4"
+              >
+                <div>
+                  <p className="font-semibold text-ink">
+                    {s.name}{" "}
+                    <span className="font-normal text-ink-soft">
+                      · {s.participants} {s.participants === 1 ? "person" : "personer"}
+                    </span>
+                  </p>
+                  <p className="text-sm text-ink-soft">
+                    {s.email}
+                    {s.phone ? ` · ${s.phone}` : ""} ·{" "}
+                    {new Date(s.created_at).toLocaleString("nb-NO")}
+                  </p>
+                  {s.comment && (
+                    <p className="mt-1 text-sm text-ink-soft">«{s.comment}»</p>
+                  )}
+                </div>
+                <form action={deleteSignup.bind(null, id, s.id)}>
+                  <button
+                    type="submit"
+                    className="rounded-full border border-line px-4 py-2 text-sm text-ink-soft transition-colors hover:border-fig hover:text-fig"
+                  >
+                    Slett
+                  </button>
+                </form>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-3 text-sm text-ink-soft">Ingen påmeldte ennå.</p>
+        )}
+      </div>
     </div>
   );
 }
