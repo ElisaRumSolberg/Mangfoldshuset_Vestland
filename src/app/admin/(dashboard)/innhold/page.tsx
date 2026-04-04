@@ -1,6 +1,17 @@
 import { fetchSiteSettings } from "@/lib/site-settings";
 import { updateSiteSettings } from "./actions";
 import PhotosField from "../PhotosField";
+import ShareBox from "../ShareBox";
+
+const site = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
+const faste_lenker = [
+  { label: "Hjemmeside", url: site },
+  { label: "Bli medlem", url: `${site}/bli-med#medlem` },
+  { label: "Bli frivillig", url: `${site}/bli-med#frivillig` },
+  { label: "Facebook", url: "https://www.facebook.com/mangfoldhusetvestlandet/" },
+  { label: "Instagram", url: "https://www.instagram.com/mangfoldhusetvestlandet/" },
+];
 
 export default async function AdminInnholdPage() {
   const settings = await fetchSiteSettings();
@@ -37,6 +48,17 @@ export default async function AdminInnholdPage() {
           Lagre bilder
         </button>
       </form>
+
+      <h2 className="mt-12 font-serif text-xl font-medium text-ink">
+        Lenker og QR-koder til plakater
+      </h2>
+      <p className="mt-2 max-w-2xl text-sm text-ink-soft">
+        Ferdige lenker og QR-koder til de vanligste stedene – klar til å lime
+        inn i en plakat.
+      </p>
+      {faste_lenker.map((l) => (
+        <ShareBox key={l.label} url={l.url} title={l.label} />
+      ))}
     </div>
   );
 }
