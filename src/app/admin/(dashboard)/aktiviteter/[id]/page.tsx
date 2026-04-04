@@ -58,13 +58,27 @@ export default async function EditActivityPage({
           </label>
           <CategoryPicker initial={activity.categories ?? []} />
         </div>
-        <input
-          name="event_date"
-          type="date"
-          required
-          defaultValue={activity.event_date}
-          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-        />
+        <div>
+          <label className="mb-1 block text-sm font-medium text-ink">Startdato</label>
+          <input
+            name="event_date"
+            type="date"
+            required
+            defaultValue={activity.event_date}
+            className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+          />
+        </div>
+        <div>
+          <label className="mb-1 block text-sm font-medium text-ink">
+            Sluttdato (valgfritt – for flerdagers aktiviteter)
+          </label>
+          <input
+            name="end_date"
+            type="date"
+            defaultValue={activity.end_date ?? ""}
+            className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+          />
+        </div>
         <input
           name="place"
           required
@@ -82,13 +96,17 @@ export default async function EditActivityPage({
         />
 
         {activity.image_url && (
-          <div className="sm:col-span-2">
+          <div className="flex items-center gap-3 sm:col-span-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={activity.image_url}
               alt=""
               className="h-24 w-24 rounded-lg object-cover"
             />
+            <label className="flex items-center gap-2 text-sm text-fig">
+              <input type="checkbox" name="remove_image" className="h-4 w-4 accent-fig" />
+              Fjern bildet
+            </label>
           </div>
         )}
         <div>
@@ -173,6 +191,16 @@ export default async function EditActivityPage({
             className="h-4 w-4 accent-fig"
           />
           Fremhevet – vis øverst i «Kommende aktiviteter»
+        </label>
+
+        <label className="flex items-center gap-2 text-sm text-ink sm:col-span-2">
+          <input
+            name="show_on_homepage"
+            type="checkbox"
+            defaultChecked={activity.show_on_homepage ?? false}
+            className="h-4 w-4 accent-fig"
+          />
+          Vis bilde i karusellen på forsiden (bruker bilde fra «Slik gikk det», ellers plakaten)
         </label>
 
         <button

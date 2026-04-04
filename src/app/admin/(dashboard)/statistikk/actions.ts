@@ -2,8 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { requireOwner } from "@/lib/auth-guard";
 
 export async function updateStats(formData: FormData) {
+  await requireOwner();
   const supabase = await createClient();
 
   const updates = [
