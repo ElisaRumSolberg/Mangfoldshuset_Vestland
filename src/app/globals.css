@@ -40,6 +40,11 @@ body {
    <img>/<Image> så snart et ekte bilde erstatter en OrganicPanel-plassholder. */
 .warm-photo {
   filter: saturate(1.08) contrast(1.03) brightness(1.02);
+}
+
+/* Bildekaruseller bruker allerede Tailwinds "absolute" for å stable bildene
+   oppå hverandre – ikke overstyr det med position:relative her. */
+.warm-photo:not(.absolute) {
   position: relative;
 }
 
