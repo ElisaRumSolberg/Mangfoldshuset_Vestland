@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { toProgram } from "@/lib/recurring";
 import { updateProgram } from "../actions";
 import TilbudForm from "../TilbudForm";
+import ShareBox from "../../ShareBox";
 
 export default async function EditProgramPage({
   params,
@@ -27,6 +28,10 @@ export default async function EditProgramPage({
         ← Tilbake til faste tilbud
       </Link>
       <h1 className="mt-3 font-serif text-2xl font-medium text-ink">Rediger tilbud</h1>
+
+      <ShareBox
+        url={`${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/tilbud/${id}`}
+      />
 
       <TilbudForm
         action={updateProgram.bind(null, id)}
