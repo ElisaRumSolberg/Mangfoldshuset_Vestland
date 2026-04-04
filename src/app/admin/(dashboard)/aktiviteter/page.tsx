@@ -99,6 +99,15 @@ export default async function AdminAktiviteterPage() {
         </div>
         <label className="flex items-center gap-2 text-sm text-ink sm:col-span-2">
           <input
+            name="registration_open"
+            type="checkbox"
+            defaultChecked={false}
+            className="h-4 w-4 accent-fig"
+          />
+          Åpne for påmelding – vis skjema på aktivitetens side
+        </label>
+        <label className="flex items-center gap-2 text-sm text-ink sm:col-span-2">
+          <input
             name="featured"
             type="checkbox"
             defaultChecked={false}
