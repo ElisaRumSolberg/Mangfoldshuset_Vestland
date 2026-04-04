@@ -22,6 +22,7 @@ export async function addActivity(formData: FormData) {
     responsible_name: formText(formData, "responsible_name"),
     responsible_phone: formText(formData, "responsible_phone"),
     responsible_email: formText(formData, "responsible_email"),
+    registration_open: formData.get("registration_open") === "on",
     featured: formData.get("featured") === "on",
   });
   if (error) throw new Error(`Kunne ikke legge til aktivitet: ${error.message}`);
@@ -46,6 +47,7 @@ export async function updateActivity(id: string, formData: FormData) {
     responsible_name: formText(formData, "responsible_name"),
     responsible_phone: formText(formData, "responsible_phone"),
     responsible_email: formText(formData, "responsible_email"),
+    registration_open: formData.get("registration_open") === "on",
     featured: formData.get("featured") === "on",
     participants: formInt(formData, "participants"),
     summary: formText(formData, "summary"),
@@ -84,4 +86,10 @@ export async function deleteActivity(id: string) {
   revalidatePath("/admin/aktiviteter");
   revalidatePath("/aktiviteter");
   revalidatePath("/");
+}
+
+export async function deleteSignup(activityId: string, signupId: string) {
+  const supabase = await createClient();
+  await supabase.from("activity_signups").delete().eq("id", signupId);
+  revalidatePath(`/admin/aktiviteter/${activityId}`);
 }
