@@ -4,11 +4,12 @@ import { createClient } from "@/lib/supabase/server";
 export type SiteSettings = {
   hero_images: string[];
   om_oss_images: string[];
+  vipps_link: string | null;
 };
 
-const empty: SiteSettings = { hero_images: [], om_oss_images: [] };
+const empty: SiteSettings = { hero_images: [], om_oss_images: [], vipps_link: null };
 
-/** Globale bilder (forside, Om oss). Tomt hvis tabellen mangler eller Supabase ikke er satt opp. */
+/** Globale bilder (forside, Om oss) og lenker. Tomt hvis tabellen mangler eller Supabase ikke er satt opp. */
 export async function fetchSiteSettings(): Promise<SiteSettings> {
   if (!isSupabaseConfigured()) return empty;
   const supabase = await createClient();
@@ -17,5 +18,6 @@ export async function fetchSiteSettings(): Promise<SiteSettings> {
   return {
     hero_images: (data.hero_images as string[] | null) ?? [],
     om_oss_images: (data.om_oss_images as string[] | null) ?? [],
+    vipps_link: (data.vipps_link as string | null) ?? null,
   };
 }
