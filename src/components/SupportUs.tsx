@@ -1,4 +1,4 @@
-export default function SupportUs() {
+export default function SupportUs({ vippsLink }: { vippsLink?: string | null }) {
   return (
     <section className="mx-auto max-w-6xl px-6 pb-24">
       <div className="flex flex-col items-center gap-8 rounded-[20px] bg-gradient-to-br from-[#6E8B67] to-[#3F5A3E] px-8 py-12 text-center text-white sm:px-14">
@@ -17,14 +17,31 @@ export default function SupportUs() {
         </div>
 
         <div className="flex flex-col items-center gap-3 sm:flex-row sm:gap-6">
-          <div className="rounded-2xl px-6 py-4" style={{ backgroundColor: "#FF5B24" }}>
-            <p className="text-xs font-semibold uppercase tracking-wide text-white/80">
-              Vipps
-            </p>
-            <p className="mt-1 font-serif text-2xl font-medium text-white">
-              #595791
-            </p>
-          </div>
+          {vippsLink ? (
+            <a
+              href={vippsLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-2xl px-8 py-4 text-center transition-transform hover:-translate-y-0.5"
+              style={{ backgroundColor: "#FF5B24" }}
+            >
+              <p className="text-xs font-semibold uppercase tracking-wide text-white/80">
+                Vipps
+              </p>
+              <p className="mt-1 font-serif text-2xl font-medium text-white">
+                Gi med Vipps
+              </p>
+            </a>
+          ) : (
+            <div className="rounded-2xl px-6 py-4" style={{ backgroundColor: "#FF5B24" }}>
+              <p className="text-xs font-semibold uppercase tracking-wide text-white/80">
+                Vipps
+              </p>
+              <p className="mt-1 font-serif text-2xl font-medium text-white">
+                #595791
+              </p>
+            </div>
+          )}
           <div className="rounded-2xl px-6 py-4" style={{ backgroundColor: "#9C3B44" }}>
             <p className="text-xs font-semibold uppercase tracking-wide text-white/80">
               Bankkonto

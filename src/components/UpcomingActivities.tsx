@@ -3,6 +3,7 @@ import ActivityCard from "./ActivityCard";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
 import { fetchPrograms, occurrenceCards, sortUpcoming } from "@/lib/recurring";
+import { shortDateRange } from "@/lib/activity-date";
 
 const grads = [
   "from-[#6E8B67] to-[#3F5A3E]",
@@ -66,12 +67,6 @@ const fallback: Ev[] = [
   },
 ];
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("nb-NO", {
-    day: "numeric",
-    month: "short",
-  });
-}
 
 export default async function UpcomingActivities() {
   let events: Ev[] = [];
@@ -81,17 +76,18 @@ export default async function UpcomingActivities() {
     const today = new Date().toISOString().slice(0, 10);
 
     // De 6 nærmeste + alle fremhevede (også de som ligger lenger frem i tid).
+    const stillOngoing = `end_date.gte.${today},and(end_date.is.null,event_date.gte.${today})`;
     const [{ data: soon }, { data: pinned }] = await Promise.all([
       supabase
         .from("activities")
         .select("*")
-        .gte("event_date", today)
+        .or(stillOngoing)
         .order("event_date", { ascending: true })
         .limit(6),
       supabase
         .from("activities")
         .select("*")
-        .gte("event_date", today)
+        .or(stillOngoing)
         .eq("featured", true)
         .order("event_date", { ascending: true }),
     ]);
@@ -107,7 +103,7 @@ export default async function UpcomingActivities() {
         iso: a.event_date as string,
         title: a.title as string,
         categories: (a.categories as string[] | null) ?? [],
-        date: formatDate(a.event_date),
+        date: shortDateRange({ event_date: a.event_date as string, end_date: a.end_date as string | null }),
         place: a.place as string,
         desc: a.description as string,
         imageUrl: a.image_url as string | null,
