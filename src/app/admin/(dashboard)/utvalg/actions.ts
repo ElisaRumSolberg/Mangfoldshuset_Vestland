@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { formText, formUrls } from "@/lib/form-url";
+import { requireEditor, requireUtvalgAccess } from "@/lib/auth-guard";
 
 function slugify(s: string) {
   return s
@@ -42,6 +43,7 @@ function refresh(slug?: string) {
 }
 
 export async function addUtvalg(formData: FormData) {
+  await requireEditor();
   const supabase = await createClient();
   const f = fields(formData);
   const slug = slugify(f.title);
@@ -64,6 +66,7 @@ export async function addUtvalg(formData: FormData) {
 }
 
 export async function updateUtvalg(id: string, formData: FormData) {
+  await requireUtvalgAccess(id);
   const supabase = await createClient();
   const updates: Record<string, unknown> = fields(formData);
   if (formData.get("photos_present")) updates.photos = formUrls(formData, "photos");
@@ -89,6 +92,7 @@ export async function updateUtvalg(id: string, formData: FormData) {
 }
 
 export async function deleteUtvalg(id: string) {
+  await requireEditor();
   const supabase = await createClient();
   await supabase.from("utvalg").delete().eq("id", id);
   refresh();

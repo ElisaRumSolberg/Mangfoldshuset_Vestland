@@ -24,7 +24,7 @@ export default async function Home() {
         <UpcomingActivities />
         <AboutSnippet />
         <ContributeSection />
-        <SupportUs />
+        <SupportUs vippsLink={settings.vipps_link} />
         <ImpactCounters />
         <NewsAndMagazine />
       </main>
