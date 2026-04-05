@@ -4,14 +4,17 @@ import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ReportSection from "@/components/ReportSection";
+import ActivityMedia from "@/components/ActivityMedia";
+import HoneypotFields from "@/components/HoneypotFields";
 import { todayOslo } from "@/lib/recurring";
+import { isActivityPast, longDateRange } from "@/lib/activity-date";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
 import { signUpForActivity } from "./actions";
 
 type Props = {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ meldt?: string }>;
+  searchParams: Promise<{ meldt?: string; feil?: string }>;
 };
 
 async function getActivity(id: string) {
@@ -43,64 +46,63 @@ function longDate(iso: string) {
 
 export default async function ActivityPage({ params, searchParams }: Props) {
   const { id } = await params;
-  const { meldt } = await searchParams;
+  const { meldt, feil } = await searchParams;
   const a = await getActivity(id);
   if (!a) notFound();
 
   const isPast = a.event_date < todayOslo();
   const photos: string[] = a.photos ?? [];
+  const galleryImages = [...photos];
+  if (a.image_url && !galleryImages.includes(a.image_url)) galleryImages.unshift(a.image_url);
 
   return (
     <>
       <Navbar />
-      <main className="mx-auto w-full max-w-4xl px-6 py-16">
+      <main className="mx-auto w-full max-w-5xl px-6 py-16">
         <Link href="/aktiviteter" className="text-sm font-semibold text-green-dark">
           ← Alle aktiviteter
         </Link>
 
-        <div className="mt-6 flex flex-wrap items-center gap-2.5">
-          {a.featured && (
-            <span className="rounded-full bg-fig px-2.5 py-1 text-xs font-bold text-white">
-              ★ Fremhevet
-            </span>
-          )}
-          {(a.categories ?? []).map((c: string) => (
-            <span
-              key={c}
-              className="rounded-full bg-[#F7E9E9] px-2.5 py-1 text-xs font-bold text-fig"
-            >
-              {c}
-            </span>
-          ))}
-          {isPast && (
-            <span className="rounded-full bg-cream-2 px-2.5 py-1 text-xs font-bold text-ink-soft">
-              Gjennomført
-            </span>
-          )}
-        </div>
+        <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 md:items-start">
+          <div>
+            <div className="flex flex-wrap items-center gap-2.5">
+              {a.featured && (
+                <span className="rounded-full bg-fig px-2.5 py-1 text-xs font-bold text-white">
+                  ★ Fremhevet
+                </span>
+              )}
+              {(a.categories ?? []).map((c: string) => (
+                <span
+                  key={c}
+                  className="rounded-full bg-[#F7E9E9] px-2.5 py-1 text-xs font-bold text-fig"
+                >
+                  {c}
+                </span>
+              ))}
+              {isPast && (
+                <span className="rounded-full bg-cream-2 px-2.5 py-1 text-xs font-bold text-ink-soft">
+                  Gjennomført
+                </span>
+              )}
+            </div>
 
-        <h1 className="mt-3 font-serif text-4xl font-medium">{a.title}</h1>
-        <p className="mt-3 text-base capitalize text-ink-soft">{longDate(a.event_date)}</p>
-        <p className="text-base text-ink-soft">{a.place}</p>
+            <h1 className="mt-3 font-serif text-4xl font-medium">{a.title}</h1>
+            <p className="mt-3 text-base capitalize text-ink-soft">{longDate(a.event_date)}</p>
+            <p className="text-base text-ink-soft">{a.place}</p>
 
-        {(a.video_url || a.image_url) && (
-          <div className="mt-8 overflow-hidden rounded-[18px] border border-line bg-cream-2">
+            <p className="mt-6 whitespace-pre-line text-lg leading-relaxed text-ink-soft">
+              {a.description}
+            </p>
+          </div>
+
+          <div className="overflow-hidden rounded-[18px] border border-line bg-cream-2">
             {a.video_url ? (
-              <video src={a.video_url} controls className="w-full bg-black" />
+              <video src={a.video_url} controls className="aspect-[4/3] w-full bg-black" />
             ) : (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={a.image_url}
-                alt={a.title}
-                className="max-h-[80vh] w-full object-contain"
-              />
+              <ActivityMedia images={galleryImages} title={a.title} className="aspect-[4/3] w-full" />
             )}
           </div>
-        )}
-
-        <p className="mt-8 max-w-3xl whitespace-pre-line text-lg leading-relaxed text-ink-soft">
-          {a.description}
-        </p>
+        </div>
 
         {a.external_link && (
           <a
@@ -144,6 +146,12 @@ export default async function ActivityPage({ params, searchParams }: Props) {
                 action={signUpForActivity.bind(null, a.id)}
                 className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2"
               >
+                <HoneypotFields />
+                {feil === "1" && (
+                  <p className="rounded-lg bg-[#F7E9E9] px-4 py-2.5 text-sm font-semibold text-fig sm:col-span-2">
+                    Sjekk at navn og e-post er fylt ut riktig, og prøv igjen.
+                  </p>
+                )}
                 <input
                   name="name"
                   required
@@ -193,7 +201,7 @@ export default async function ActivityPage({ params, searchParams }: Props) {
           participantsLabel="deltakere"
           summary={a.summary ?? null}
           feedback={a.feedback ?? null}
-          photos={photos}
+          photos={[]}
           title={a.title}
         />
       </main>

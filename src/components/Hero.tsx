@@ -1,8 +1,15 @@
 import Link from "next/link";
 import OrganicPanel from "./OrganicPanel";
 import PhotoSlideshow from "./PhotoSlideshow";
+import ActivityShowcase, { type ShowcaseSlide } from "./ActivityShowcase";
 
-export default function Hero({ images = [] }: { images?: string[] }) {
+export default function Hero({
+  images = [],
+  slides = [],
+}: {
+  images?: string[];
+  slides?: ShowcaseSlide[];
+}) {
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-[#586B4F] to-[#48583F]">
       <div
@@ -44,7 +51,12 @@ export default function Hero({ images = [] }: { images?: string[] }) {
           </div>
         </div>
 
-        {images.length ? (
+        {slides.length ? (
+          <ActivityShowcase
+            slides={slides}
+            className="h-80 rounded-3xl border border-white/10 md:h-[420px]"
+          />
+        ) : images.length ? (
           <PhotoSlideshow
             images={images}
             className="h-80 rounded-3xl border border-white/10 md:h-[420px]"

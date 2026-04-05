@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import HoneypotFields from "@/components/HoneypotFields";
 import { submitApplication, submitMembership } from "./actions";
 
 export const metadata: Metadata = {
@@ -53,6 +54,14 @@ function Thanks({ text }: { text: string }) {
   );
 }
 
+function ErrorNotice() {
+  return (
+    <p className="mb-4 rounded-lg bg-[#F7E9E9] px-4 py-2.5 text-sm font-semibold text-fig">
+      Sjekk at feltene er fylt ut riktig, og prøv igjen.
+    </p>
+  );
+}
+
 function Section({
   id,
   title,
@@ -99,9 +108,9 @@ function Contact() {
 export default async function BliMedPage({
   searchParams,
 }: {
-  searchParams: Promise<{ sendt?: string }>;
+  searchParams: Promise<{ sendt?: string; feil?: string }>;
 }) {
-  const { sendt } = await searchParams;
+  const { sendt, feil } = await searchParams;
 
   return (
     <>
@@ -139,6 +148,8 @@ export default async function BliMedPage({
               <Thanks text="Takk for at du melder deg inn! Betal kontingenten med Vipps til #595791, så aktiverer vi medlemskapet ditt." />
             ) : (
               <form action={submitMembership} className="flex flex-col gap-5">
+                <HoneypotFields />
+                {feil === "medlem" && <ErrorNotice />}
                 <fieldset>
                   <legend className={label}>Medlemskap</legend>
                   <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:gap-6">
@@ -236,6 +247,8 @@ export default async function BliMedPage({
               <Thanks text="Vi har mottatt skjemaet ditt og tar kontakt." />
             ) : (
               <form action={submitApplication} className="flex flex-col gap-6">
+                <HoneypotFields />
+                {feil === "frivillig" && <ErrorNotice />}
                 <input type="hidden" name="type" value="frivillig" />
                 <Contact />
                 <fieldset>
@@ -293,6 +306,8 @@ export default async function BliMedPage({
               <Thanks text="Takk for at du delte ideen din!" />
             ) : (
               <form action={submitApplication} className="flex flex-col gap-5">
+                <HoneypotFields />
+                {feil === "ide" && <ErrorNotice />}
                 <input type="hidden" name="type" value="ide" />
                 <Contact />
                 <div>
@@ -332,6 +347,8 @@ export default async function BliMedPage({
               <Thanks text="Takk for henvendelsen! Vi tar kontakt." />
             ) : (
               <form action={submitApplication} className="flex flex-col gap-5">
+                <HoneypotFields />
+                {feil === "samarbeid" && <ErrorNotice />}
                 <input type="hidden" name="type" value="samarbeid" />
                 <div>
                   <label className={label}>Organisasjon / virksomhet</label>
