@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { LocationIcon, MailIcon, PhoneIcon } from "@/components/ContactIcons";
+import HoneypotFields from "@/components/HoneypotFields";
 import { sendContactMessage } from "./actions";
 
 export const metadata: Metadata = {
@@ -12,9 +13,9 @@ export const metadata: Metadata = {
 export default async function KontaktPage({
   searchParams,
 }: {
-  searchParams: Promise<{ sendt?: string }>;
+  searchParams: Promise<{ sendt?: string; feil?: string }>;
 }) {
-  const { sendt } = await searchParams;
+  const { sendt, feil } = await searchParams;
 
   return (
     <>
@@ -96,6 +97,12 @@ export default async function KontaktPage({
               </div>
             ) : (
               <form action={sendContactMessage} className="flex flex-col gap-4">
+                <HoneypotFields />
+                {feil === "1" && (
+                  <p className="rounded-lg bg-[#F7E9E9] px-4 py-2.5 text-sm font-semibold text-fig">
+                    Sjekk at navn, e-post, tema og melding er fylt ut riktig, og prøv igjen.
+                  </p>
+                )}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
                     <label className="mb-1 block text-sm font-medium text-ink">

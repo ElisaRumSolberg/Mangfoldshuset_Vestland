@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { formInt, formUrl, formUrls } from "@/lib/form-url";
+import { requireEditor } from "@/lib/auth-guard";
 
 function text(formData: FormData, key: string) {
   const v = formData.get(key);
@@ -45,6 +46,7 @@ function refresh() {
 }
 
 export async function addProgram(formData: FormData) {
+  await requireEditor();
   const supabase = await createClient();
   const { error } = await supabase.from("recurring_programs").insert({
     ...fields(formData),
@@ -55,6 +57,7 @@ export async function addProgram(formData: FormData) {
 }
 
 export async function updateProgram(id: string, formData: FormData) {
+  await requireEditor();
   const supabase = await createClient();
   const updates: Record<string, unknown> = {
     ...fields(formData),
@@ -65,6 +68,7 @@ export async function updateProgram(id: string, formData: FormData) {
   if (formData.get("photos_present")) updates.photos = formUrls(formData, "photos");
   const imageUrl = formUrl(formData, "image_url");
   if (imageUrl) updates.image_url = imageUrl;
+  else if (formData.get("remove_image") === "on") updates.image_url = null;
 
   const { error, data } = await supabase
     .from("recurring_programs")
@@ -84,6 +88,7 @@ export async function updateProgram(id: string, formData: FormData) {
 }
 
 export async function deleteProgram(id: string) {
+  await requireEditor();
   const supabase = await createClient();
   await supabase.from("recurring_programs").delete().eq("id", id);
   refresh();
