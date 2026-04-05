@@ -7,6 +7,8 @@ export type ShowcaseSlide = {
   title: string;
   image: string;
   href: string;
+  /** Afiser vises i sin helhet (object-contain); ekte foto fyller ruten (object-cover). */
+  isPoster?: boolean;
 };
 
 /** Bildekarusell med tittel og "Mer"-knapp per bilde, hentet fra ekte aktiviteter. */
@@ -37,9 +39,9 @@ export default function ActivityShowcase({
           key={slide.image + i}
           src={slide.image}
           alt={slide.title}
-          className={`warm-photo absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${
-            i === index ? "opacity-100" : "opacity-0"
-          }`}
+          className={`warm-photo absolute inset-0 h-full w-full transition-opacity duration-1000 ${
+            slide.isPoster ? "object-contain" : "object-cover"
+          } ${i === index ? "opacity-100" : "opacity-0"}`}
         />
       ))}
 

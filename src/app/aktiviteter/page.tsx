@@ -6,19 +6,12 @@ import FasteTilbud from "@/components/FasteTilbud";
 import { fetchPrograms, occurrenceCards, sortUpcoming } from "@/lib/recurring";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
+import { shortDateRange } from "@/lib/activity-date";
 
 export const metadata: Metadata = {
   title: "Aktiviteter – Mangfoldhuset Vestland",
   description: "Kommende og tidligere aktiviteter i Mangfoldhuset Vestland.",
 };
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("nb-NO", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-}
 
 type MappedActivity = ReturnType<typeof mapActivities>[number];
 
@@ -35,12 +28,12 @@ export default async function AktiviteterPage() {
       supabase
         .from("activities")
         .select("*")
-        .gte("event_date", today)
+        .or(`end_date.gte.${today},and(end_date.is.null,event_date.gte.${today})`)
         .order("event_date", { ascending: true }),
       supabase
         .from("activities")
         .select("*")
-        .lt("event_date", today)
+        .or(`end_date.lt.${today},and(end_date.is.null,event_date.lt.${today})`)
         .order("event_date", { ascending: false }),
     ]);
 
@@ -93,6 +86,7 @@ function mapActivities(
     title: string;
     categories: string[] | null;
     event_date: string;
+    end_date?: string | null;
     place: string;
     description: string;
     image_url: string | null;
@@ -110,7 +104,7 @@ function mapActivities(
     href: `/aktiviteter/${a.id}`,
     title: a.title,
     categories: a.categories ?? [],
-    date: formatDate(a.event_date),
+    date: shortDateRange(a),
     place: a.place,
     desc: a.description,
     imageUrl: a.image_url,
