@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
 import { getResendClient, isResendConfigured, NOTIFY_EMAIL } from "@/lib/resend";
+import { applicationSchema, membershipSchema } from "@/lib/validation";
+import { isRateLimited, looksLikeBot } from "@/lib/spam-guard";
 
 const TYPES = ["frivillig", "ide", "samarbeid"] as const;
 type ApplicationType = (typeof TYPES)[number];
@@ -15,11 +17,25 @@ const LABELS: Record<ApplicationType, string> = {
 };
 
 export async function submitMembership(formData: FormData) {
+  if (looksLikeBot(formData)) redirect("/bli-med?sendt=medlem#medlem");
+
+  const parsed = membershipSchema.safeParse({
+    first_name: formData.get("first_name"),
+    last_name: formData.get("last_name"),
+    email: formData.get("email"),
+    membership_type: formData.get("membership_type") === "familie" ? "familie" : "enkelt",
+    birth_date: formData.get("birth_date") ?? "",
+    address: formData.get("address") ?? "",
+    phone: formData.get("phone") ?? "",
+    guardian: formData.get("guardian") ?? "",
+    comment: formData.get("comment") ?? "",
+  });
+  if (!parsed.success) redirect("/bli-med?feil=medlem#medlem");
+
+  if (await isRateLimited("members", parsed.data.email)) redirect("/bli-med?sendt=medlem#medlem");
+
   const str = (k: string) => ((formData.get(k) as string) || "").trim() || null;
-  const first_name = str("first_name") ?? "";
-  const last_name = str("last_name") ?? "";
-  const email = str("email") ?? "";
-  const membership_type = formData.get("membership_type") === "familie" ? "familie" : "enkelt";
+  const { first_name, last_name, email, membership_type } = parsed.data;
 
   const family_members =
     membership_type === "familie"
@@ -61,10 +77,19 @@ export async function submitMembership(formData: FormData) {
 export async function submitApplication(formData: FormData) {
   const type = formData.get("type") as ApplicationType;
   if (!TYPES.includes(type)) redirect("/bli-med");
+  if (looksLikeBot(formData)) redirect(`/bli-med?sendt=${type}#${type}`);
 
-  const name = (formData.get("name") as string) ?? "";
-  const email = (formData.get("email") as string) ?? "";
+  const parsed = applicationSchema.safeParse({
+    type,
+    name: formData.get("name"),
+    email: formData.get("email"),
+    phone: formData.get("phone") ?? "",
+  });
+  if (!parsed.success) redirect(`/bli-med?feil=${type}#${type}`);
+  const { name, email } = parsed.data;
   const phone = ((formData.get("phone") as string) || null) as string | null;
+
+  if (await isRateLimited("applications", email)) redirect(`/bli-med?sendt=${type}#${type}`);
 
   const data: Record<string, string | string[]> = {};
   for (const key of new Set(formData.keys())) {
