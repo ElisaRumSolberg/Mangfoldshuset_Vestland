@@ -63,6 +63,7 @@ export async function updateActivity(id: string, formData: FormData) {
   // Bildelisten erstattes bare når galleri-feltet var med i skjemaet.
   if (formData.get("photos_present")) updates.photos = formUrls(formData, "photos");
   if (imageUrl) updates.image_url = imageUrl;
+  else if (formData.get("remove_image") === "on") updates.image_url = null;
   if (videoUrl) updates.video_url = videoUrl;
 
   const { error, data } = await supabase
