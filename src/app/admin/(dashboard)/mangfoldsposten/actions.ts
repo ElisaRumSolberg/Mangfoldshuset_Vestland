@@ -4,8 +4,10 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { formUrl } from "@/lib/form-url";
+import { requireEditor } from "@/lib/auth-guard";
 
 export async function addIssue(formData: FormData) {
+  await requireEditor();
   const supabase = await createClient();
   const coverUrl = formUrl(formData, "cover_url");
   const pdfUrl = formUrl(formData, "pdf_url");
@@ -25,6 +27,7 @@ export async function addIssue(formData: FormData) {
 }
 
 export async function updateIssue(id: string, formData: FormData) {
+  await requireEditor();
   const supabase = await createClient();
   const coverUrl = formUrl(formData, "cover_url");
   const pdfUrl = formUrl(formData, "pdf_url");
@@ -58,6 +61,7 @@ export async function updateIssue(id: string, formData: FormData) {
 }
 
 export async function deleteIssue(id: string) {
+  await requireEditor();
   const supabase = await createClient();
   await supabase.from("magazine_issues").delete().eq("id", id);
 

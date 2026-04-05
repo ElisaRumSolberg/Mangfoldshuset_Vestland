@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ReportSection from "@/components/ReportSection";
-import ActivityMedia from "@/components/ActivityMedia";
+import ActivityMedia, { type MediaImage } from "@/components/ActivityMedia";
 import HoneypotFields from "@/components/HoneypotFields";
 import { todayOslo } from "@/lib/recurring";
 import { isActivityPast, longDateRange } from "@/lib/activity-date";
@@ -42,8 +42,10 @@ export default async function ActivityPage({ params, searchParams }: Props) {
 
   const isPast = isActivityPast(a, todayOslo());
   const photos: string[] = a.photos ?? [];
-  const galleryImages = [...photos];
-  if (a.image_url && !galleryImages.includes(a.image_url)) galleryImages.unshift(a.image_url);
+  const galleryImages: MediaImage[] = photos.map((src) => ({ src, contain: false }));
+  if (a.image_url && !photos.includes(a.image_url)) {
+    galleryImages.unshift({ src: a.image_url, contain: true });
+  }
 
   return (
     <>
@@ -89,7 +91,7 @@ export default async function ActivityPage({ params, searchParams }: Props) {
             {a.video_url ? (
               <video src={a.video_url} controls className="aspect-[4/3] w-full bg-black" />
             ) : (
-              <ActivityMedia images={galleryImages} title={a.title} className="aspect-[4/3] w-full" />
+              <ActivityMedia images={galleryImages} title={a.title} className="aspect-[3/4] w-full" />
             )}
           </div>
         </div>
