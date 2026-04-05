@@ -4,8 +4,10 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { formUrl } from "@/lib/form-url";
+import { requireEditor } from "@/lib/auth-guard";
 
 export async function addNews(formData: FormData) {
+  await requireEditor();
   const supabase = await createClient();
   const imageUrl = formUrl(formData, "image_url");
   const videoUrl = formUrl(formData, "video_url");
@@ -24,6 +26,7 @@ export async function addNews(formData: FormData) {
 }
 
 export async function updateNews(id: string, formData: FormData) {
+  await requireEditor();
   const supabase = await createClient();
   const imageUrl = formUrl(formData, "image_url");
   const videoUrl = formUrl(formData, "video_url");
@@ -58,6 +61,7 @@ export async function updateNews(id: string, formData: FormData) {
 }
 
 export async function deleteNews(id: string) {
+  await requireEditor();
   const supabase = await createClient();
   await supabase.from("news").delete().eq("id", id);
 
