@@ -41,6 +41,19 @@ export default async function AdminInnholdPage() {
           <PhotosField initial={settings.om_oss_images} folder="innhold" name="om_oss_images" />
         </div>
 
+        <div className="sm:col-span-2">
+          <label className="mb-1 block text-sm font-medium text-ink">
+            Lenke til Vipps innsamling (valgfritt – erstatter Vipps-nummeret med en «Gi med Vipps»-knapp)
+          </label>
+          <input
+            name="vipps_link"
+            type="url"
+            defaultValue={settings.vipps_link ?? ""}
+            placeholder="https://vipps.no/i/..."
+            className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+          />
+        </div>
+
         <button
           type="submit"
           className="rounded-full bg-fig px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark sm:col-span-2 sm:w-fit"

@@ -10,6 +10,7 @@ import PhotoSlideshow from "@/components/PhotoSlideshow";
 import { customColors, toUtvalg } from "@/lib/utvalg";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
+import { shortDateRange } from "@/lib/activity-date";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -42,14 +43,6 @@ function hexToRgba(hex: string, alpha: number) {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("nb-NO", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-}
-
 export default async function UtvalgPage({ params }: Props) {
   const { slug } = await params;
   const u = await getUtvalg(slug);
@@ -68,12 +61,12 @@ export default async function UtvalgPage({ params }: Props) {
       supabase
         .from("activities")
         .select("*")
-        .gte("event_date", today)
+        .or(`end_date.gte.${today},and(end_date.is.null,event_date.gte.${today})`)
         .order("event_date", { ascending: true }),
       supabase
         .from("activities")
         .select("*")
-        .lt("event_date", today)
+        .or(`end_date.lt.${today},and(end_date.is.null,event_date.lt.${today})`)
         .order("event_date", { ascending: false }),
     ]);
     upcoming = mapActivities((upcomingData ?? []).filter(matches));
@@ -281,6 +274,7 @@ function mapActivities(
     title: string;
     categories: string[] | null;
     event_date: string;
+    end_date?: string | null;
     place: string;
     description: string;
     image_url: string | null;
@@ -297,7 +291,7 @@ function mapActivities(
     href: `/aktiviteter/${a.id}`,
     title: a.title,
     categories: a.categories ?? [],
-    date: formatDate(a.event_date),
+    date: shortDateRange(a),
     place: a.place,
     desc: a.description,
     imageUrl: a.image_url,
