@@ -34,23 +34,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-function longDate(iso: string) {
-  return new Date(iso).toLocaleDateString("nb-NO", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    timeZone: "UTC",
-  });
-}
-
 export default async function ActivityPage({ params, searchParams }: Props) {
   const { id } = await params;
   const { meldt, feil } = await searchParams;
   const a = await getActivity(id);
   if (!a) notFound();
 
-  const isPast = a.event_date < todayOslo();
+  const isPast = isActivityPast(a, todayOslo());
   const photos: string[] = a.photos ?? [];
   const galleryImages = [...photos];
   if (a.image_url && !galleryImages.includes(a.image_url)) galleryImages.unshift(a.image_url);
@@ -87,7 +77,7 @@ export default async function ActivityPage({ params, searchParams }: Props) {
             </div>
 
             <h1 className="mt-3 font-serif text-4xl font-medium">{a.title}</h1>
-            <p className="mt-3 text-base capitalize text-ink-soft">{longDate(a.event_date)}</p>
+            <p className="mt-3 text-base capitalize text-ink-soft">{longDateRange(a)}</p>
             <p className="text-base text-ink-soft">{a.place}</p>
 
             <p className="mt-6 whitespace-pre-line text-lg leading-relaxed text-ink-soft">
