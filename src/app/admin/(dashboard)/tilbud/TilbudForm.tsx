@@ -187,8 +187,14 @@ export default function TilbudForm({
             : "Plakat (valgfritt)"}
         </label>
         {program?.image_url && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={program.image_url} alt="" className="mb-2 h-24 rounded-lg object-cover" />
+          <div className="mb-2 flex items-center gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={program.image_url} alt="" className="h-24 rounded-lg object-cover" />
+            <label className="flex items-center gap-2 text-sm text-fig">
+              <input type="checkbox" name="remove_image" className="h-4 w-4 accent-fig" />
+              Fjern bildet
+            </label>
+          </div>
         )}
         <FileUpload name="image_url" folder="tilbud" accept="image/*" />
       </div>
