@@ -3,14 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { formUrl } from "@/lib/form-url";
+import { formInt, formText, formUrl, formUrls } from "@/lib/form-url";
 
 export async function addActivity(formData: FormData) {
   const supabase = await createClient();
   const imageUrl = formUrl(formData, "image_url");
   const videoUrl = formUrl(formData, "video_url");
 
-  await supabase.from("activities").insert({
+  const { error } = await supabase.from("activities").insert({
     title: formData.get("title") as string,
     category: formData.get("category") as string,
     event_date: formData.get("event_date") as string,
@@ -19,7 +19,9 @@ export async function addActivity(formData: FormData) {
     image_url: imageUrl,
     video_url: videoUrl,
     external_link: (formData.get("external_link") as string) || null,
+    featured: formData.get("featured") === "on",
   });
+  if (error) throw new Error(`Kunne ikke legge til aktivitet: ${error.message}`);
 
   revalidatePath("/admin/aktiviteter");
   revalidatePath("/aktiviteter");
@@ -38,7 +40,13 @@ export async function updateActivity(id: string, formData: FormData) {
     place: formData.get("place") as string,
     description: formData.get("description") as string,
     external_link: (formData.get("external_link") as string) || null,
+    featured: formData.get("featured") === "on",
+    participants: formInt(formData, "participants"),
+    summary: formText(formData, "summary"),
+    feedback: formText(formData, "feedback"),
   };
+  // Bildelisten erstattes bare når galleri-feltet var med i skjemaet.
+  if (formData.get("photos_present")) updates.photos = formUrls(formData, "photos");
   if (imageUrl) updates.image_url = imageUrl;
   if (videoUrl) updates.video_url = videoUrl;
 
