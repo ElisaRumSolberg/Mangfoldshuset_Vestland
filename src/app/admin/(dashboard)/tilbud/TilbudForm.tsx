@@ -1,4 +1,5 @@
 import FileUpload from "../FileUpload";
+import ReportFields from "../ReportFields";
 import { NTH_OPTIONS, WEEKDAY_OPTIONS, type Program } from "@/lib/recurring";
 
 const field =
@@ -175,6 +176,30 @@ export default function TilbudForm({
         )}
         <FileUpload name="image_url" folder="tilbud" accept="image/*" />
       </div>
+
+      {program && (
+        <ReportFields
+          heading="Bilder og tilbakemeldinger"
+          participantsLabel="Deltakere totalt så langt (samlet antall besøk)"
+          folder="tilbud"
+          defaults={{
+            participants: program.participants,
+            summary: program.summary,
+            feedback: program.feedback,
+            photos: program.photos,
+          }}
+        />
+      )}
+
+      <label className="flex items-center gap-2 text-sm text-ink sm:col-span-2">
+        <input
+          name="featured"
+          type="checkbox"
+          defaultChecked={program?.featured ?? false}
+          className="h-4 w-4 accent-fig"
+        />
+        Fremhevet – vis øverst (til du fjerner haken)
+      </label>
 
       <label className="flex items-center gap-2 text-sm text-ink sm:col-span-2">
         <input
