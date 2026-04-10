@@ -4,6 +4,13 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import OrganicPanel from "@/components/OrganicPanel";
 import ImpactCounters from "@/components/ImpactCounters";
+import { fetchUtvalg } from "@/lib/utvalg";
+
+const utvalgGrads = [
+  "from-[#C08A5C] to-[#9C3B44]",
+  "from-[#9CA86B] to-[#4B6B4A]",
+  "from-[#6E8B67] to-[#3F5A3E]",
+];
 
 export const metadata: Metadata = {
   title: "Om oss – Mangfoldhuset Vestland",
@@ -83,7 +90,9 @@ const formal = [
   "Styrke tilhørighet og livskvalitet",
 ];
 
-export default function OmOssPage() {
+export default async function OmOssPage() {
+  const utvalg = await fetchUtvalg();
+
   return (
     <>
       <Navbar />
@@ -232,10 +241,10 @@ export default function OmOssPage() {
           </div>
         </section>
 
-        {/* Våre grupper / utvalg */}
+        {/* Våre grupper (målgrupper) */}
         <section className="mx-auto max-w-6xl px-6 py-20">
           <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
-            Utvalg
+            Målgrupper
           </p>
           <h2 className="mt-2 font-serif text-3xl font-medium">
             Våre grupper
@@ -263,8 +272,48 @@ export default function OmOssPage() {
           </div>
         </section>
 
+        {/* Utvalg: egne grupper med egen leder/aktivitet innenfor foreningen */}
+        {utvalg.length > 0 && (
+          <section className="bg-cream-2 py-20">
+            <div className="mx-auto max-w-6xl px-6">
+              <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
+                Utvalg
+              </p>
+              <h2 className="mt-2 font-serif text-3xl font-medium">
+                Våre utvalg
+              </h2>
+              <p className="mt-3 max-w-xl text-sm text-ink-soft">
+                Utvalgene driver egne aktiviteter innenfor Mangfoldhuset
+                Vestland.
+              </p>
+              <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
+                {utvalg.map((u, i) => (
+                  <Link
+                    key={u.id}
+                    href={`/utvalg/${u.slug}`}
+                    className="group overflow-hidden rounded-[18px] border border-line bg-white transition-all hover:-translate-y-1 hover:shadow-lg"
+                  >
+                    <div
+                      className={`h-2 bg-gradient-to-r ${utvalgGrads[i % utvalgGrads.length]}`}
+                    />
+                    <div className="p-6">
+                      <h3 className="font-serif text-xl">{u.title}</h3>
+                      <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-ink-soft">
+                        {u.description}
+                      </p>
+                      <span className="mt-4 inline-block text-sm font-semibold text-green-dark">
+                        Les mer →
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Vår historie */}
-        <section className="bg-cream-2 py-20">
+        <section className="py-20">
           <div className="mx-auto max-w-6xl px-6">
             <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
               Historie
@@ -281,20 +330,22 @@ export default function OmOssPage() {
         </section>
 
         {/* Mangfoldshuset i Norge */}
-        <section className="mx-auto max-w-6xl px-6 py-20">
-          <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
-            Nettverk
-          </p>
-          <h2 className="mt-2 font-serif text-3xl font-medium">
-            Mangfoldhuset i Norge
-          </h2>
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-soft">
-            Mangfoldhuset er landsdekkende, med hovedsete i Oslo og
-            avdelinger i blant annet Drammen, Trondheim, Moss, Stavanger,
-            Kristiansand, Vestfold og Vestland. Hver avdeling er selvstendig
-            når det gjelder økonomi og styring, men deler samme formål og
-            demokratiske struktur.
-          </p>
+        <section className="bg-cream-2 py-20">
+          <div className="mx-auto max-w-6xl px-6">
+            <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
+              Nettverk
+            </p>
+            <h2 className="mt-2 font-serif text-3xl font-medium">
+              Mangfoldhuset i Norge
+            </h2>
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-soft">
+              Mangfoldhuset er landsdekkende, med hovedsete i Oslo og
+              avdelinger i blant annet Drammen, Trondheim, Moss, Stavanger,
+              Kristiansand, Vestfold og Vestland. Hver avdeling er selvstendig
+              når det gjelder økonomi og styring, men deler samme formål og
+              demokratiske struktur.
+            </p>
+          </div>
         </section>
 
         {/* Bli med oss */}
