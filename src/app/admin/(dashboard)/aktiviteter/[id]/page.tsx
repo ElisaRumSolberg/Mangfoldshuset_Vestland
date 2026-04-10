@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { updateActivity } from "../actions";
 import FileUpload from "../../FileUpload";
+import ReportFields from "../../ReportFields";
 
 export default async function EditActivityPage({
   params,
@@ -105,6 +106,28 @@ export default async function EditActivityPage({
             className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
           />
         </div>
+
+        <ReportFields
+          heading="Slik gikk det (fylles ut etter arrangementet)"
+          participantsLabel="Antall deltakere"
+          folder="aktiviteter"
+          defaults={{
+            participants: activity.participants ?? null,
+            summary: activity.summary ?? null,
+            feedback: activity.feedback ?? null,
+            photos: activity.photos ?? [],
+          }}
+        />
+
+        <label className="flex items-center gap-2 text-sm text-ink sm:col-span-2">
+          <input
+            name="featured"
+            type="checkbox"
+            defaultChecked={activity.featured ?? false}
+            className="h-4 w-4 accent-fig"
+          />
+          Fremhevet – vis øverst i «Kommende aktiviteter»
+        </label>
 
         <button
           type="submit"
