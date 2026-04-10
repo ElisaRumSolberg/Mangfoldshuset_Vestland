@@ -72,6 +72,16 @@ export default async function AdminAktiviteterPage() {
             className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
           />
         </div>
+        <label className="flex items-center gap-2 text-sm text-ink sm:col-span-2">
+          <input
+            name="featured"
+            type="checkbox"
+            defaultChecked={false}
+            className="h-4 w-4 accent-fig"
+          />
+          Fremhevet – vis øverst i «Kommende aktiviteter»
+        </label>
+
         <button
           type="submit"
           className="rounded-full bg-fig px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark sm:col-span-2 sm:w-fit"
