@@ -1,9 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
 import { updateStats } from "./actions";
+import { autoParticipants } from "@/lib/stats";
 
 export default async function AdminStatistikkPage() {
   const supabase = await createClient();
   const { data: stats } = await supabase.from("impact_stats").select("*");
+
+  const auto = await autoParticipants(supabase);
 
   const get = (key: string) =>
     stats?.find((s) => s.key === key)?.value ?? 0;
@@ -32,7 +35,7 @@ export default async function AdminStatistikkPage() {
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium text-ink">
-            Deltakere
+            Deltakere før nettsiden / utenfor rapportene
           </label>
           <input
             name="participants"
@@ -40,6 +43,10 @@ export default async function AdminStatistikkPage() {
             defaultValue={get("participants")}
             className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
           />
+          <p className="mt-1.5 text-xs text-ink-soft">
+            I tillegg summeres deltakere fra aktiviteter og faste tilbud automatisk ({auto}).
+            Forsiden viser totalt <strong>{get("participants") + auto}</strong>.
+          </p>
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium text-ink">
