@@ -106,7 +106,8 @@ const sections: { title: string; body: React.ReactNode }[] = [
       <p>
         Vi publiserer bare bilder og video av personer, særlig barn, med
         samtykke. Ønsker du at et bilde fjernes, kontakt oss, så fjerner vi det
-        raskt.
+        raskt. Deltakertall og tilbakemeldinger fra arrangementer publiseres
+        uten navn.
       </p>
     ),
   },
