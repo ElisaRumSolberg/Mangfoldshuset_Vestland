@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { nextOccurrences, shortDate, timeText, todayOslo, whenText, type Program } from "@/lib/recurring";
+import { nextOccurrences, shortDate, timeText, todayOslo, toProgram, whenText } from "@/lib/recurring";
 import { addProgram, deleteProgram } from "./actions";
 import TilbudForm from "./TilbudForm";
 
@@ -10,10 +10,7 @@ export default async function AdminTilbudPage() {
     .from("recurring_programs")
     .select("*")
     .order("sort_order", { ascending: true });
-  const programs = (data ?? []).map((r) => ({
-    ...r,
-    skipped_dates: r.skipped_dates ?? [],
-  })) as Program[];
+  const programs = (data ?? []).map(toProgram);
   const today = todayOslo();
 
   return (
