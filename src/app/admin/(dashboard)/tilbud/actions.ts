@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { formUrl } from "@/lib/form-url";
+import { formInt, formUrl, formUrls } from "@/lib/form-url";
 
 function text(formData: FormData, key: string) {
   const v = formData.get(key);
@@ -32,6 +32,7 @@ function fields(formData: FormData) {
     external_link: text(formData, "external_link"),
     skipped_dates: skipped,
     active: formData.get("active") === "on",
+    featured: formData.get("featured") === "on",
   };
 }
 
@@ -53,7 +54,13 @@ export async function addProgram(formData: FormData) {
 
 export async function updateProgram(id: string, formData: FormData) {
   const supabase = await createClient();
-  const updates: Record<string, unknown> = fields(formData);
+  const updates: Record<string, unknown> = {
+    ...fields(formData),
+    participants: formInt(formData, "participants"),
+    summary: text(formData, "summary"),
+    feedback: text(formData, "feedback"),
+  };
+  if (formData.get("photos_present")) updates.photos = formUrls(formData, "photos");
   const imageUrl = formUrl(formData, "image_url");
   if (imageUrl) updates.image_url = imageUrl;
 
