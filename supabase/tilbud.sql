@@ -19,10 +19,23 @@ create table if not exists recurring_programs (
   image_url text,                                        -- plakat
   skipped_dates date[] not null default '{}',            -- avlyste datoer
   active boolean not null default true,
+  featured boolean not null default false,             -- fremhevet: vises øverst
+  participants int check (participants is null or participants >= 0), -- deltakere totalt så langt
+  summary text,                                        -- kort oppsummering
+  feedback text,                                       -- tilbakemeldinger, ett utsagn per linje (uten navn)
+  photos text[] not null default '{}',                 -- bildeadresser
   sort_order int not null default 0,
   created_at timestamptz not null default now(),
   constraint monthly_needs_nth check (frequency <> 'monthly' or nth is not null)
 );
+
+-- For de som allerede kjørte filen før «featured» kom til:
+alter table recurring_programs add column if not exists featured boolean not null default false;
+alter table recurring_programs add column if not exists participants int
+  check (participants is null or participants >= 0);
+alter table recurring_programs add column if not exists summary text;
+alter table recurring_programs add column if not exists feedback text;
+alter table recurring_programs add column if not exists photos text[] not null default '{}';
 
 alter table recurring_programs enable row level security;
 
