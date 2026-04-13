@@ -1,6 +1,7 @@
 import AnimatedNumber from "./AnimatedNumber";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
+import { autoParticipants } from "@/lib/stats";
 
 const fallback = [
   { key: "activities", target: 48, suffix: "", label: "Aktiviteter i år", color: "#9C3B44" },
@@ -19,6 +20,14 @@ export default async function ImpactCounters() {
         const row = data.find((d) => d.key === f.key);
         return row ? { ...f, target: row.value, label: row.label } : f;
       });
+    }
+
+    // Deltakere registrert på aktiviteter og faste tilbud legges til automatisk.
+    const extra = await autoParticipants(supabase);
+    if (extra > 0) {
+      counters = counters.map((c) =>
+        c.key === "participants" ? { ...c, target: c.target + extra } : c
+      );
     }
   }
 
@@ -46,7 +55,7 @@ export default async function ImpactCounters() {
           ))}
         </div>
         <p className="mt-8 text-center text-xs italic text-ink-soft/70">
-          *Tallene oppdateres manuelt av administrator
+          *Deltakere summeres fra aktiviteter og faste tilbud. Øvrige tall oppdateres av administrator
         </p>
       </div>
     </div>
