@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import type { Program } from "@/lib/recurring";
+import { toProgram } from "@/lib/recurring";
 import { updateProgram } from "../actions";
 import TilbudForm from "../TilbudForm";
 
@@ -19,7 +19,7 @@ export default async function EditProgramPage({
     .single();
 
   if (!data) notFound();
-  const program = { ...data, skipped_dates: data.skipped_dates ?? [] } as Program;
+  const program = toProgram(data);
 
   return (
     <div>
