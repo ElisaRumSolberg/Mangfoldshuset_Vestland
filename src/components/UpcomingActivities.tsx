@@ -2,7 +2,7 @@ import Link from "next/link";
 import ActivityCard from "./ActivityCard";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
-import { fetchPrograms, occurrenceCards } from "@/lib/recurring";
+import { fetchPrograms, occurrenceCards, sortUpcoming } from "@/lib/recurring";
 
 const grads = [
   "from-[#6E8B67] to-[#3F5A3E]",
@@ -10,7 +10,24 @@ const grads = [
   "from-[#9CA86B] to-[#4B6B4A]",
 ];
 
-const fallback = [
+type Ev = {
+  iso: string;
+  title: string;
+  category: string;
+  date: string;
+  place: string;
+  desc: string;
+  imageUrl: string | null;
+  videoUrl: string | null;
+  externalLink: string | null;
+  banner?: string;
+  imageHref?: string | null;
+  featured?: boolean;
+  recurring?: boolean;
+  href?: string;
+};
+
+const fallback: Ev[] = [
   {
     iso: "",
     title: "Kulturkveld i Bergen",
@@ -18,9 +35,9 @@ const fallback = [
     date: "4. okt",
     place: "Møtestedet, Bergen",
     desc: "En kveld med mat, musikk og møter på tvers av kulturer.",
-    imageUrl: null as string | null,
-    videoUrl: null as string | null,
-    externalLink: null as string | null,
+    imageUrl: null,
+    videoUrl: null,
+    externalLink: null,
   },
   {
     iso: "",
@@ -29,9 +46,9 @@ const fallback = [
     date: "11. okt",
     place: "Bibliotek, Bergen",
     desc: "Praktisér norsk i en avslappet og hyggelig atmosfære.",
-    imageUrl: null as string | null,
-    videoUrl: null as string | null,
-    externalLink: null as string | null,
+    imageUrl: null,
+    videoUrl: null,
+    externalLink: null,
   },
   {
     iso: "",
@@ -40,9 +57,9 @@ const fallback = [
     date: "18. okt",
     place: "Nygårdsparken",
     desc: "Aktiviteter og lek for hele familien, uansett bakgrunn.",
-    imageUrl: null as string | null,
-    videoUrl: null as string | null,
-    externalLink: null as string | null,
+    imageUrl: null,
+    videoUrl: null,
+    externalLink: null,
   },
 ];
 
@@ -54,21 +71,36 @@ function formatDate(iso: string) {
 }
 
 export default async function UpcomingActivities() {
-  let events: (typeof fallback)[number][] = [];
+  let events: Ev[] = [];
 
   if (isSupabaseConfigured()) {
     const supabase = await createClient();
-    const { data } = await supabase
-      .from("activities")
-      .select("*")
-      .gte("event_date", new Date().toISOString().slice(0, 10))
-      .order("event_date", { ascending: true })
-      .limit(6);
+    const today = new Date().toISOString().slice(0, 10);
 
-    // Neste dato for hvert faste tilbud blandes inn, sortert etter dato.
+    // De 6 nærmeste + alle fremhevede (også de som ligger lenger frem i tid).
+    const [{ data: soon }, { data: pinned }] = await Promise.all([
+      supabase
+        .from("activities")
+        .select("*")
+        .gte("event_date", today)
+        .order("event_date", { ascending: true })
+        .limit(6),
+      supabase
+        .from("activities")
+        .select("*")
+        .gte("event_date", today)
+        .eq("featured", true)
+        .order("event_date", { ascending: true }),
+    ]);
+    const rows = [
+      ...(pinned ?? []),
+      ...(soon ?? []).filter((a) => !(pinned ?? []).some((p) => p.id === a.id)),
+    ];
+
+    // Neste dato for hvert faste tilbud blandes inn.
     const programs = await fetchPrograms();
-    events = [
-      ...(data ?? []).map((a) => ({
+    events = sortUpcoming<Ev>([
+      ...rows.map((a) => ({
         iso: a.event_date as string,
         title: a.title as string,
         category: a.category as string,
@@ -78,11 +110,12 @@ export default async function UpcomingActivities() {
         imageUrl: a.image_url as string | null,
         videoUrl: a.video_url as string | null,
         externalLink: a.external_link as string | null,
+        featured: !!a.featured,
+        recurring: false,
+        href: `/aktiviteter/${a.id}`,
       })),
       ...occurrenceCards(programs, 1),
-    ]
-      .sort((a, b) => a.iso.localeCompare(b.iso))
-      .slice(0, 6);
+    ]).slice(0, 6);
   }
 
   if (!events.length) events = fallback;
