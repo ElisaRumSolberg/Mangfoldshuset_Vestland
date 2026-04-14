@@ -19,6 +19,11 @@ export type Program = {
   image_url: string | null;
   skipped_dates: string[];
   active: boolean;
+  featured: boolean;
+  participants: number | null; // totalt så langt
+  summary: string | null;
+  feedback: string | null; // ett utsagn per linje
+  photos: string[];
   sort_order: number;
 };
 
@@ -115,6 +120,19 @@ export function weekdayAbbr(p: Program): string {
   return DAYS[p.weekday].slice(0, 3).toUpperCase();
 }
 
+/** Gjør en rad fra databasen om til et Program (fyller inn felt som kan mangle). */
+export function toProgram(r: Record<string, unknown>): Program {
+  return {
+    ...(r as unknown as Program),
+    skipped_dates: (r.skipped_dates as string[] | null) ?? [],
+    featured: (r.featured as boolean | null) ?? false,
+    participants: (r.participants as number | null) ?? null,
+    summary: (r.summary as string | null) ?? null,
+    feedback: (r.feedback as string | null) ?? null,
+    photos: (r.photos as string[] | null) ?? [],
+  };
+}
+
 /** Henter aktive faste tilbud. Tomt hvis tabellen mangler eller Supabase ikke er satt opp. */
 export async function fetchPrograms(): Promise<Program[]> {
   if (!isSupabaseConfigured()) return [];
@@ -125,7 +143,7 @@ export async function fetchPrograms(): Promise<Program[]> {
     .eq("active", true)
     .order("sort_order", { ascending: true });
   if (error || !data) return [];
-  return data.map((r) => ({ ...r, skipped_dates: r.skipped_dates ?? [] })) as Program[];
+  return data.map(toProgram);
 }
 
 export type OccurrenceCard = {
@@ -135,10 +153,14 @@ export type OccurrenceCard = {
   date: string;
   place: string;
   desc: string;
-  imageUrl: null;
+  imageUrl: string | null;
   videoUrl: null;
   externalLink: string | null;
   banner: string;
+  imageHref: string | null;
+  featured: boolean;
+  recurring: true;
+  href: string;
 };
 
 /** Kommende forekomster som kort som kan blandes inn i aktivitetslisten. */
@@ -158,11 +180,26 @@ export function occurrenceCards(
         date: whenText(p),
         place: time ? `${time} · ${p.place}` : p.place,
         desc: p.description,
-        imageUrl: null,
+        imageUrl: p.image_url,
         videoUrl: null,
         externalLink: p.external_link,
         banner: shortDate(iso),
+        imageHref: p.image_url,
+        featured: p.featured,
+        recurring: true as const,
+        href: `/tilbud/${p.id}`,
       };
     })
   );
+}
+
+/**
+ * Rekkefølge i «Kommende»: fremhevede først, så enkeltarrangementer, så faste tilbud.
+ * Innenfor hver gruppe sorteres det etter dato.
+ */
+export function sortUpcoming<T extends { iso: string; featured?: boolean; recurring?: boolean }>(
+  items: T[]
+): T[] {
+  const rank = (x: T) => (x.featured ? 0 : x.recurring ? 2 : 1);
+  return [...items].sort((a, b) => rank(a) - rank(b) || a.iso.localeCompare(b.iso));
 }
