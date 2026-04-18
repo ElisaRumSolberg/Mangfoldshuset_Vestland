@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ActivityCard from "@/components/ActivityCard";
 import FasteTilbud from "@/components/FasteTilbud";
-import { fetchPrograms, occurrenceCards } from "@/lib/recurring";
+import { fetchPrograms, occurrenceCards, sortUpcoming } from "@/lib/recurring";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
 
@@ -54,10 +54,8 @@ export default async function AktiviteterPage() {
     past = mapActivities(pastData ?? []);
   }
 
-  // Faste tilbud (hver uke/måned) blandes inn i "Kommende", sortert etter dato.
-  const merged = [...upcoming, ...occurrenceCards(programs, 2)].sort((a, b) =>
-    a.iso.localeCompare(b.iso)
-  );
+  // Fremhevede først, så enkeltarrangementer, så faste tilbud (hver uke/måned).
+  const merged = sortUpcoming([...upcoming, ...occurrenceCards(programs, 1)]);
 
   return (
     <>
@@ -119,6 +117,7 @@ export default async function AktiviteterPage() {
 
 function mapActivities(
   data: {
+    id: string;
     title: string;
     category: string;
     event_date: string;
@@ -127,10 +126,13 @@ function mapActivities(
     image_url: string | null;
     video_url: string | null;
     external_link: string | null;
+    featured?: boolean | null;
   }[]
 ) {
   return data.map((a) => ({
+    id: a.id,
     iso: a.event_date,
+    href: `/aktiviteter/${a.id}`,
     title: a.title,
     category: a.category,
     date: formatDate(a.event_date),
@@ -139,5 +141,7 @@ function mapActivities(
     imageUrl: a.image_url,
     videoUrl: a.video_url,
     externalLink: a.external_link,
+    featured: !!a.featured,
+    recurring: false,
   }));
 }
