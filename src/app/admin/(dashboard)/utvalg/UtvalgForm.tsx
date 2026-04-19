@@ -86,6 +86,51 @@ export default function UtvalgForm({
         />
       </div>
 
+      <fieldset className="grid grid-cols-1 gap-4 rounded-xl border border-line bg-white/60 p-4 sm:col-span-2 sm:grid-cols-3">
+        <legend className="px-2 text-sm font-medium text-ink">
+          Egen fargeprofil (valgfritt)
+        </legend>
+        <label className="flex items-center gap-2 text-sm text-ink sm:col-span-3">
+          <input
+            type="checkbox"
+            name="use_custom_colors"
+            defaultChecked={!!(utvalg?.color_from && utvalg?.color_to && utvalg?.accent)}
+            className="h-4 w-4 accent-fig"
+          />
+          Bruk egne farger for denne siden (f.eks. hentet fra en logo)
+        </label>
+        <p className="text-xs text-ink-soft sm:col-span-3">
+          Uavhukt bruker siden standardfargene (grønn/rød).
+        </p>
+        <div>
+          <label className={label}>Bakgrunn, fra</label>
+          <input
+            name="color_from"
+            type="color"
+            defaultValue={utvalg?.color_from ?? "#586B4F"}
+            className="h-10 w-full rounded border border-line bg-white"
+          />
+        </div>
+        <div>
+          <label className={label}>Bakgrunn, til</label>
+          <input
+            name="color_to"
+            type="color"
+            defaultValue={utvalg?.color_to ?? "#48583F"}
+            className="h-10 w-full rounded border border-line bg-white"
+          />
+        </div>
+        <div>
+          <label className={label}>Knapper/glød</label>
+          <input
+            name="accent"
+            type="color"
+            defaultValue={utvalg?.accent ?? "#9C3B44"}
+            className="h-10 w-full rounded border border-line bg-white"
+          />
+        </div>
+      </fieldset>
+
       <div className="sm:col-span-2">
         <label className={label}>Bilder</label>
         <PhotosField initial={utvalg?.photos ?? []} folder="utvalg" />
