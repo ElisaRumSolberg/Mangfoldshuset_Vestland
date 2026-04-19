@@ -18,6 +18,7 @@ function slugify(s: string) {
 }
 
 function fields(formData: FormData) {
+  const useCustomColors = formData.get("use_custom_colors") === "on";
   return {
     title: formText(formData, "title") ?? "",
     description: formText(formData, "description") ?? "",
@@ -25,6 +26,10 @@ function fields(formData: FormData) {
     external_link: formText(formData, "external_link"),
     contact: formText(formData, "contact"),
     active: formData.get("active") === "on",
+    // Fargevelgeren har alltid en verdi; vi lagrer den bare når kutucuken er huket av.
+    color_from: useCustomColors ? formText(formData, "color_from") : null,
+    color_to: useCustomColors ? formText(formData, "color_to") : null,
+    accent: useCustomColors ? formText(formData, "accent") : null,
   };
 }
 
