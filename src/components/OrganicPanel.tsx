@@ -1,6 +1,8 @@
 type OrganicPanelProps = {
   className?: string;
   variant?: "green" | "fig";
+  /** Overstyrer variant med en egen fargeprofil (hex-hex), f.eks. et utvalgs merkefarger. */
+  colors?: { from: string; to: string };
 };
 
 /**
@@ -11,6 +13,7 @@ type OrganicPanelProps = {
 export default function OrganicPanel({
   className = "",
   variant = "green",
+  colors,
 }: OrganicPanelProps) {
   const base =
     variant === "green"
@@ -19,7 +22,8 @@ export default function OrganicPanel({
 
   return (
     <div
-      className={`relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br ${base} ${className}`}
+      className={`relative overflow-hidden rounded-3xl border border-white/10 ${colors ? "" : `bg-gradient-to-br ${base}`} ${className}`}
+      style={colors ? { backgroundImage: `linear-gradient(to bottom right, ${colors.from}, ${colors.to})` } : undefined}
     >
       <svg
         className="absolute inset-0 h-full w-full opacity-90"

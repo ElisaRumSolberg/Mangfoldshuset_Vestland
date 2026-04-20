@@ -12,8 +12,16 @@ create table if not exists utvalg (
   contact text,                        -- e-post (valgfritt)
   photos text[] not null default '{}',
   active boolean not null default true,
+  color_from text,                     -- valgfri egen fargeprofil (hex), f.eks. "#1E1E36"
+  color_to text,                       -- gradientens andre farge (hex)
+  accent text,                         -- knapper/glød-farge (hex)
   created_at timestamptz not null default now()
 );
+
+-- For de som allerede kjørte filen før fargefeltene kom til:
+alter table utvalg add column if not exists color_from text;
+alter table utvalg add column if not exists color_to text;
+alter table utvalg add column if not exists accent text;
 
 alter table utvalg enable row level security;
 
@@ -45,3 +53,14 @@ select * from (values
   )
 ) as v(slug, title, description, activity_match, external_link)
 where not exists (select 1 from utvalg);
+
+-- Fargeprofil for Mangfoldhuset Ungdom, hentet fra deres egen logo (blå/gull).
+-- Denne kjøres alltid og setter fargen direkte (ikke bare når den mangler),
+-- slik at en oppdatering av standardfargen her slår igjennom. Har du endret
+-- fargen selv i admin, kjør ikke denne delen på nytt (eller juster verdiene).
+update utvalg
+set
+  color_from = '#2F3B66',
+  color_to = '#4C5FA0',
+  accent = '#F2C847'
+where slug = 'ungdom';

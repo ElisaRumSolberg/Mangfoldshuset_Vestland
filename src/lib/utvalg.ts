@@ -11,6 +11,10 @@ export type Utvalg = {
   contact: string | null;
   photos: string[];
   active: boolean;
+  /** Egen fargeprofil (valgfritt). Alle tre må være satt for at den skal brukes. */
+  color_from: string | null;
+  color_to: string | null;
+  accent: string | null;
 };
 
 export function toUtvalg(r: Record<string, unknown>): Utvalg {
@@ -24,7 +28,19 @@ export function toUtvalg(r: Record<string, unknown>): Utvalg {
     contact: (r.contact as string | null) ?? null,
     photos: (r.photos as string[] | null) ?? [],
     active: (r.active as boolean | null) ?? true,
+    color_from: (r.color_from as string | null) ?? null,
+    color_to: (r.color_to as string | null) ?? null,
+    accent: (r.accent as string | null) ?? null,
   };
+}
+
+/** De tre fargene når alle er satt, ellers null (bruk standardfargene). */
+export function customColors(
+  u: Pick<Utvalg, "color_from" | "color_to" | "accent">
+): { from: string; to: string; accent: string } | null {
+  return u.color_from && u.color_to && u.accent
+    ? { from: u.color_from, to: u.color_to, accent: u.accent }
+    : null;
 }
 
 /** Aktive utvalg, sortert alfabetisk. Tomt hvis tabellen mangler eller Supabase ikke er satt opp. */
