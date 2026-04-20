@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 const links = [
   { href: "/", label: "Hjem" },
   { href: "/om-oss", label: "Om oss" },
+  { href: "/utvalg", label: "Utvalg" },
   { href: "/aktiviteter", label: "Aktiviteter" },
   { href: "/nyheter", label: "Nyheter" },
   { href: "/bli-med", label: "Bli med" },
@@ -34,7 +35,9 @@ export default function Navbar() {
 
       <nav className="hidden items-center justify-center gap-2 text-sm font-medium text-ink-soft md:flex">
         {links.map((l) => {
-          const isActive = pathname === l.href;
+          const isActive =
+            pathname === l.href ||
+            (l.href !== "/" && pathname.startsWith(`${l.href}/`));
           return (
             <Link
               key={l.href}
@@ -51,7 +54,21 @@ export default function Navbar() {
         })}
       </nav>
 
-      <div className="flex items-center px-6">
+      <div className="flex items-center gap-5 px-6">
+        <Link
+          href="/utvalg/ungdom"
+          aria-label="Mangfoldhuset Ungdom"
+          title="Mangfoldhuset Ungdom"
+          className="hidden shrink-0 border-r border-line pr-5 transition-transform hover:-translate-y-0.5 lg:block"
+        >
+          <Image
+            src="/utvalg/mangfoldhuset-ungdom-logo.png"
+            alt="Mangfoldhuset Ungdom"
+            width={157}
+            height={63}
+            className="h-20 w-auto"
+          />
+        </Link>
         <Link
           href="/bli-med"
           className="rounded-full bg-fig px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
