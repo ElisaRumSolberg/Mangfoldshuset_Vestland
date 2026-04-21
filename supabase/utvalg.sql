@@ -54,13 +54,13 @@ select * from (values
 ) as v(slug, title, description, activity_match, external_link)
 where not exists (select 1 from utvalg);
 
--- Fargeprofil for Mangfoldhuset Ungdom, hentet fra deres egen logo (blå/gull).
+-- Fargeprofil for Mangfoldhuset Ungdom: turkis (ungdommelig) + gull fra logoen.
 -- Denne kjøres alltid og setter fargen direkte (ikke bare når den mangler),
 -- slik at en oppdatering av standardfargen her slår igjennom. Har du endret
 -- fargen selv i admin, kjør ikke denne delen på nytt (eller juster verdiene).
 update utvalg
 set
-  color_from = '#2F3B66',
-  color_to = '#4C5FA0',
+  color_from = '#0E7C86',
+  color_to = '#22C3B6',
   accent = '#F2C847'
 where slug = 'ungdom';
