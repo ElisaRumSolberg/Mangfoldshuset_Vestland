@@ -132,11 +132,13 @@ export default async function UtvalgPage({ params }: Props) {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`rounded-full px-6 py-3 text-sm font-semibold transition-all hover:-translate-y-0.5 ${
-                      custom
-                        ? "text-[#1E1E36] hover:brightness-95"
-                        : "bg-fig text-white hover:bg-fig-dark"
+                      custom ? "hover:brightness-95" : "bg-fig text-white hover:bg-fig-dark"
                     }`}
-                    style={custom ? { backgroundColor: custom.accent } : undefined}
+                    style={
+                      custom
+                        ? { backgroundColor: custom.accent, color: custom.from }
+                        : undefined
+                    }
                   >
                     Følg oss på Facebook →
                   </a>
