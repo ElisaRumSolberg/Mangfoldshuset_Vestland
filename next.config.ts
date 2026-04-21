@@ -8,6 +8,16 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "50mb",
     },
   },
+  async redirects() {
+    return [
+      {
+        // Mangfoldsposten flyttet ut av Nyheter til sin egen adresse.
+        source: "/nyheter/mangfoldsposten",
+        destination: "/mangfoldsposten",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
