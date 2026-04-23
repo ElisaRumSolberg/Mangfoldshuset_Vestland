@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { addActivity, deleteActivity } from "./actions";
 import FileUpload from "../FileUpload";
+import CategoryPicker from "../CategoryPicker";
 
 export default async function AdminAktiviteterPage() {
   const supabase = await createClient();
@@ -24,12 +25,12 @@ export default async function AdminAktiviteterPage() {
           placeholder="Tittel"
           className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
         />
-        <input
-          name="category"
-          required
-          placeholder="Kategori (f.eks. Kultur)"
-          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-        />
+        <div className="sm:col-span-2">
+          <label className="mb-1 block text-sm font-medium text-ink">
+            Kategori (velg én eller flere)
+          </label>
+          <CategoryPicker />
+        </div>
         <input
           name="event_date"
           type="date"
@@ -112,7 +113,7 @@ export default async function AdminAktiviteterPage() {
                     {a.video_url ? " (video)" : ""}
                   </p>
                   <p className="text-sm text-ink-soft">
-                    {a.event_date} · {a.place} · {a.category}
+                    {a.event_date} · {a.place} · {(a.categories ?? []).join(", ")}
                   </p>
                 </div>
               </div>
