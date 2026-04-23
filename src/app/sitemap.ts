@@ -9,7 +9,7 @@ const paths = [
   "/utvalg",
   "/aktiviteter",
   "/nyheter",
-  "/nyheter/mangfoldsposten",
+  "/mangfoldsposten",
   "/bli-med",
   "/kontakt",
   "/personvern",
