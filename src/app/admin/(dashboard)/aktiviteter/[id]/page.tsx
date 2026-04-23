@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { updateActivity } from "../actions";
 import FileUpload from "../../FileUpload";
 import ReportFields from "../../ReportFields";
+import CategoryPicker from "../../CategoryPicker";
 
 export default async function EditActivityPage({
   params,
@@ -42,13 +43,12 @@ export default async function EditActivityPage({
           placeholder="Tittel"
           className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
         />
-        <input
-          name="category"
-          required
-          defaultValue={activity.category}
-          placeholder="Kategori (f.eks. Kultur)"
-          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-        />
+        <div className="sm:col-span-2">
+          <label className="mb-1 block text-sm font-medium text-ink">
+            Kategori (velg én eller flere)
+          </label>
+          <CategoryPicker initial={activity.categories ?? []} />
+        </div>
         <input
           name="event_date"
           type="date"
