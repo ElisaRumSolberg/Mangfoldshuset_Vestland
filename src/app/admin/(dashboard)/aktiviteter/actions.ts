@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { formInt, formText, formUrl, formUrls } from "@/lib/form-url";
+import { formInt, formList, formText, formUrl, formUrls } from "@/lib/form-url";
 
 export async function addActivity(formData: FormData) {
   const supabase = await createClient();
@@ -12,7 +12,7 @@ export async function addActivity(formData: FormData) {
 
   const { error } = await supabase.from("activities").insert({
     title: formData.get("title") as string,
-    category: formData.get("category") as string,
+    categories: formList(formData, "categories"),
     event_date: formData.get("event_date") as string,
     place: formData.get("place") as string,
     description: formData.get("description") as string,
@@ -35,7 +35,7 @@ export async function updateActivity(id: string, formData: FormData) {
 
   const updates: Record<string, unknown> = {
     title: formData.get("title") as string,
-    category: formData.get("category") as string,
+    categories: formList(formData, "categories"),
     event_date: formData.get("event_date") as string,
     place: formData.get("place") as string,
     description: formData.get("description") as string,
