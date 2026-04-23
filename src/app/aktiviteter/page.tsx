@@ -119,7 +119,7 @@ function mapActivities(
   data: {
     id: string;
     title: string;
-    category: string;
+    categories: string[] | null;
     event_date: string;
     place: string;
     description: string;
@@ -134,7 +134,7 @@ function mapActivities(
     iso: a.event_date,
     href: `/aktiviteter/${a.id}`,
     title: a.title,
-    category: a.category,
+    categories: a.categories ?? [],
     date: formatDate(a.event_date),
     place: a.place,
     desc: a.description,
