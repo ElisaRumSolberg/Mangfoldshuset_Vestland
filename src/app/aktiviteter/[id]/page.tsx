@@ -59,9 +59,14 @@ export default async function ActivityPage({ params }: Props) {
               ★ Fremhevet
             </span>
           )}
-          <span className="rounded-full bg-[#F7E9E9] px-2.5 py-1 text-xs font-bold text-fig">
-            {a.category}
-          </span>
+          {(a.categories ?? []).map((c: string) => (
+            <span
+              key={c}
+              className="rounded-full bg-[#F7E9E9] px-2.5 py-1 text-xs font-bold text-fig"
+            >
+              {c}
+            </span>
+          ))}
           {isPast && (
             <span className="rounded-full bg-cream-2 px-2.5 py-1 text-xs font-bold text-ink-soft">
               Gjennomført
