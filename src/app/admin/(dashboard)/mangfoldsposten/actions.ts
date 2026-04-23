@@ -20,7 +20,7 @@ export async function addIssue(formData: FormData) {
   });
 
   revalidatePath("/admin/mangfoldsposten");
-  revalidatePath("/nyheter/mangfoldsposten");
+  revalidatePath("/mangfoldsposten");
   revalidatePath("/");
 }
 
@@ -52,7 +52,7 @@ export async function updateIssue(id: string, formData: FormData) {
   }
 
   revalidatePath("/admin/mangfoldsposten");
-  revalidatePath("/nyheter/mangfoldsposten");
+  revalidatePath("/mangfoldsposten");
   revalidatePath("/");
   redirect("/admin/mangfoldsposten");
 }
@@ -62,6 +62,6 @@ export async function deleteIssue(id: string) {
   await supabase.from("magazine_issues").delete().eq("id", id);
 
   revalidatePath("/admin/mangfoldsposten");
-  revalidatePath("/nyheter/mangfoldsposten");
+  revalidatePath("/mangfoldsposten");
   revalidatePath("/");
 }
