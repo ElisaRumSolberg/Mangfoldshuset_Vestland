@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function ActivityCard({
   title,
-  category,
+  categories,
   date,
   place,
   desc,
@@ -16,7 +16,7 @@ export default function ActivityCard({
   grad,
 }: {
   title: string;
-  category: string;
+  categories: string[];
   date: string;
   place: string;
   desc: string;
@@ -88,9 +88,14 @@ export default function ActivityCard({
               ★ Fremhevet
             </span>
           )}
-          <span className="rounded-full bg-[#F7E9E9] px-2.5 py-1 text-xs font-bold text-fig">
-            {category}
-          </span>
+          {categories.map((c) => (
+            <span
+              key={c}
+              className="rounded-full bg-[#F7E9E9] px-2.5 py-1 text-xs font-bold text-fig"
+            >
+              {c}
+            </span>
+          ))}
           <span className="text-sm text-ink-soft">{date}</span>
         </div>
         <h3 className="font-serif text-lg">
