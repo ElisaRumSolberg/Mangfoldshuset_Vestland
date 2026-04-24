@@ -95,7 +95,7 @@ export default async function NewsAndMagazine() {
             </h3>
           </div>
           <Link
-            href="/nyheter/mangfoldsposten"
+            href="/mangfoldsposten"
             className="mt-6 inline-block self-start rounded-full border border-white/50 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:bg-white/20"
           >
             Les magasinet
