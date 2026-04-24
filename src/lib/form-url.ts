@@ -17,6 +17,15 @@ export function formText(formData: FormData, key: string): string | null {
   return typeof v === "string" && v.trim() ? v.trim() : null;
 }
 
+/** Alle ikke-tomme tekstverdier for et felt som finnes flere ganger (f.eks. kategorier). */
+export function formList(formData: FormData, key: string): string[] {
+  const seen = new Set<string>();
+  for (const v of formData.getAll(key)) {
+    if (typeof v === "string" && v.trim()) seen.add(v.trim());
+  }
+  return [...seen];
+}
+
 /** Heltall ≥ 0, eller null hvis tomt/ugyldig. */
 export function formInt(formData: FormData, key: string): number | null {
   const v = formText(formData, key);
