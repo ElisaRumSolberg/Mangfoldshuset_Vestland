@@ -59,23 +59,24 @@ export default async function UtvalgPage({ params }: Props) {
   if (u.activity_match && isSupabaseConfigured()) {
     const supabase = await createClient();
     const today = new Date().toISOString().slice(0, 10);
+    const match = u.activity_match.toLowerCase();
+    const matches = (a: { categories: string[] | null }) =>
+      (a.categories ?? []).some((c) => c.toLowerCase().includes(match));
+
     const [{ data: upcomingData }, { data: doneData }] = await Promise.all([
       supabase
         .from("activities")
         .select("*")
         .gte("event_date", today)
-        .ilike("category", `%${u.activity_match}%`)
         .order("event_date", { ascending: true }),
       supabase
         .from("activities")
         .select("*")
         .lt("event_date", today)
-        .ilike("category", `%${u.activity_match}%`)
-        .order("event_date", { ascending: false })
-        .limit(6),
+        .order("event_date", { ascending: false }),
     ]);
-    upcoming = mapActivities(upcomingData ?? []);
-    done = mapActivities(doneData ?? []);
+    upcoming = mapActivities((upcomingData ?? []).filter(matches));
+    done = mapActivities((doneData ?? []).filter(matches)).slice(0, 6);
   }
 
   // Egen fargeprofil (satt av admin), ellers stabilt valg ut fra navnet slik at
@@ -252,7 +253,7 @@ function mapActivities(
   data: {
     id: string;
     title: string;
-    category: string;
+    categories: string[] | null;
     event_date: string;
     place: string;
     description: string;
@@ -266,7 +267,7 @@ function mapActivities(
     iso: a.event_date,
     href: `/aktiviteter/${a.id}`,
     title: a.title,
-    category: a.category,
+    categories: a.categories ?? [],
     date: formatDate(a.event_date),
     place: a.place,
     desc: a.description,
