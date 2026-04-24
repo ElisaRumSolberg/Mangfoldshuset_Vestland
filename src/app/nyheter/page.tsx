@@ -48,7 +48,7 @@ export default async function NyheterPage() {
         </p>
 
         <Link
-          href="/nyheter/mangfoldsposten"
+          href="/mangfoldsposten"
           className="mt-8 flex items-center justify-between gap-4 rounded-[18px] bg-[#F7E9E9] px-6 py-5 transition-opacity hover:opacity-90"
         >
           <span>
