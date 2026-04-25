@@ -13,7 +13,7 @@ const grads = [
 type Ev = {
   iso: string;
   title: string;
-  category: string;
+  categories: string[];
   date: string;
   place: string;
   desc: string;
@@ -31,7 +31,7 @@ const fallback: Ev[] = [
   {
     iso: "",
     title: "Kulturkveld i Bergen",
-    category: "Kultur",
+    categories: ["Kultur"],
     date: "4. okt",
     place: "Møtestedet, Bergen",
     desc: "En kveld med mat, musikk og møter på tvers av kulturer.",
@@ -42,7 +42,7 @@ const fallback: Ev[] = [
   {
     iso: "",
     title: "Språkkafé",
-    category: "Språk",
+    categories: ["Språk"],
     date: "11. okt",
     place: "Bibliotek, Bergen",
     desc: "Praktisér norsk i en avslappet og hyggelig atmosfære.",
@@ -53,7 +53,7 @@ const fallback: Ev[] = [
   {
     iso: "",
     title: "Familiedag i parken",
-    category: "Barn & familie",
+    categories: ["Barn", "Familie"],
     date: "18. okt",
     place: "Nygårdsparken",
     desc: "Aktiviteter og lek for hele familien, uansett bakgrunn.",
@@ -103,7 +103,7 @@ export default async function UpcomingActivities() {
       ...rows.map((a) => ({
         iso: a.event_date as string,
         title: a.title as string,
-        category: a.category as string,
+        categories: (a.categories as string[] | null) ?? [],
         date: formatDate(a.event_date),
         place: a.place as string,
         desc: a.description as string,
