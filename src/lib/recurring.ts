@@ -149,7 +149,7 @@ export async function fetchPrograms(): Promise<Program[]> {
 export type OccurrenceCard = {
   iso: string;
   title: string;
-  category: string;
+  categories: string[];
   date: string;
   place: string;
   desc: string;
@@ -176,7 +176,7 @@ export function occurrenceCards(
       return {
         iso,
         title: p.title,
-        category: "Fast tilbud",
+        categories: ["Fast tilbud"],
         date: whenText(p),
         place: time ? `${time} · ${p.place}` : p.place,
         desc: p.description,
