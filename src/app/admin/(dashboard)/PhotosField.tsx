@@ -32,7 +32,16 @@ async function shrink(file: File): Promise<File | Blob> {
 
 // Flere bilder lastes opp rett fra nettleseren til Supabase. Skjemaet sender bare adressene
 // (ett skjult felt «photos» per bilde), så Vercel sin størrelsesgrense rammer ikke.
-export default function PhotosField({ initial, folder }: { initial: string[]; folder: string }) {
+export default function PhotosField({
+  initial,
+  folder,
+  name = "photos",
+}: {
+  initial: string[];
+  folder: string;
+  /** Navnet på skjemafeltet (og feltet_present). Standard "photos" for bildegalleri. */
+  name?: string;
+}) {
   const [photos, setPhotos] = useState(initial);
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
@@ -79,9 +88,9 @@ export default function PhotosField({ initial, folder }: { initial: string[]; fo
 
   return (
     <div>
-      <input type="hidden" name="photos_present" value="1" />
+      <input type="hidden" name={`${name}_present`} value="1" />
       {photos.map((url) => (
-        <input key={url} type="hidden" name="photos" value={url} />
+        <input key={url} type="hidden" name={name} value={url} />
       ))}
 
       {photos.length > 0 && (
