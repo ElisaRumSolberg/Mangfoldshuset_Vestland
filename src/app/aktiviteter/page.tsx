@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import ActivityCard from "@/components/ActivityCard";
+import ActivityGrid from "@/components/ActivityGrid";
 import FasteTilbud from "@/components/FasteTilbud";
 import { fetchPrograms, occurrenceCards, sortUpcoming } from "@/lib/recurring";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
@@ -11,12 +11,6 @@ export const metadata: Metadata = {
   title: "Aktiviteter – Mangfoldhuset Vestland",
   description: "Kommende og tidligere aktiviteter i Mangfoldhuset Vestland.",
 };
-
-const grads = [
-  "from-[#6E8B67] to-[#3F5A3E]",
-  "from-[#C08A5C] to-[#9C3B44]",
-  "from-[#9CA86B] to-[#4B6B4A]",
-];
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("nb-NO", {
@@ -72,42 +66,20 @@ export default async function AktiviteterPage() {
           <h2 className="font-serif text-2xl font-medium">
             Kommende aktiviteter
           </h2>
-          {merged.length ? (
-            <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
-              {merged.map((ev, i) => (
-                <ActivityCard
-                  key={ev.title + ev.iso}
-                  {...ev}
-                  grad={grads[i % grads.length]}
-                />
-              ))}
-            </div>
-          ) : (
-            <p className="mt-4 text-sm text-ink-soft">
-              Ingen kommende aktiviteter er lagt til ennå.
-            </p>
-          )}
+          <ActivityGrid
+            items={merged}
+            emptyText="Ingen kommende aktiviteter er lagt til ennå."
+          />
         </section>
 
         <section className="mt-16 border-t border-line pt-12">
           <h2 className="font-serif text-2xl font-medium">
             Tidligere aktiviteter
           </h2>
-          {past.length ? (
-            <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
-              {past.map((ev, i) => (
-                <ActivityCard
-                  key={ev.title + ev.date}
-                  {...ev}
-                  grad={grads[i % grads.length]}
-                />
-              ))}
-            </div>
-          ) : (
-            <p className="mt-4 text-sm text-ink-soft">
-              Ingen tidligere aktiviteter er lagt til ennå.
-            </p>
-          )}
+          <ActivityGrid
+            items={past}
+            emptyText="Ingen tidligere aktiviteter er lagt til ennå."
+          />
         </section>
       </main>
       <Footer />
