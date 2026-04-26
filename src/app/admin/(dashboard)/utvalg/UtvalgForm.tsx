@@ -51,6 +51,14 @@ export default function UtvalgForm({
         />
       </div>
 
+      <div className="sm:col-span-2">
+        <label className={label}>
+          Forsidebilder (valgfritt – vises ved siden av tittelen øverst på
+          siden; flere bilder glir automatisk over i hverandre)
+        </label>
+        <PhotosField initial={utvalg?.cover_images ?? []} folder="utvalg" name="cover_images" />
+      </div>
+
       <div>
         <label className={label}>
           Vis deres aktiviteter (valgfritt – ord fra aktivitetens kategori)
@@ -75,13 +83,23 @@ export default function UtvalgForm({
         />
       </div>
 
-      <div className="sm:col-span-2">
-        <label className={label}>Lenke til Facebook/Instagram (valgfritt)</label>
+      <div>
+        <label className={label}>Lenke til Facebook (valgfritt)</label>
         <input
           name="external_link"
           type="url"
           defaultValue={utvalg?.external_link ?? ""}
           placeholder="https://facebook.com/..."
+          className={field}
+        />
+      </div>
+      <div>
+        <label className={label}>Lenke til Instagram (valgfritt)</label>
+        <input
+          name="instagram_link"
+          type="url"
+          defaultValue={utvalg?.instagram_link ?? ""}
+          placeholder="https://instagram.com/..."
           className={field}
         />
       </div>
