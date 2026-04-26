@@ -13,6 +13,7 @@ const paths = [
   "/bli-med",
   "/kontakt",
   "/personvern",
+  "/medlemsvilkar",
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
