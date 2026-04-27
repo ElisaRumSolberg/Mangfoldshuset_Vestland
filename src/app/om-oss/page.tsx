@@ -3,7 +3,9 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import OrganicPanel from "@/components/OrganicPanel";
+import PhotoSlideshow from "@/components/PhotoSlideshow";
 import ImpactCounters from "@/components/ImpactCounters";
+import { fetchSiteSettings } from "@/lib/site-settings";
 
 export const metadata: Metadata = {
   title: "Om oss – Mangfoldhuset Vestland",
@@ -61,6 +63,21 @@ const grupper = [
   },
 ];
 
+const nettverkTints = [
+  { bg: "#F7E9E9", text: "#9C3B44" },
+  { bg: "#EAF0E9", text: "#3A5439" },
+  { bg: "#EFE7D6", text: "#7A6A3F" },
+];
+
+const nettverk = [
+  { name: "Oslo", href: "https://mangfoldhuset.no/" },
+  { name: "Østfold", href: "https://www.ostfoldmh.no/" },
+  { name: "Trøndelag", href: "https://trondelag.mangfoldhuset.no/" },
+  { name: "Rogaland", href: "https://www.facebook.com/mangfoldshusetrogaland/?_rdr" },
+  { name: "Agder", href: "https://www.facebook.com/mangfoldshuset.agder" },
+  { name: "Vestfold", href: "https://www.facebook.com/MangfoldhusetVestfold" },
+];
+
 const tints = [
   { bg: "#F7E9E9", text: "#9C3B44" },
   { bg: "#EAF0E9", text: "#3A5439" },
@@ -83,7 +100,9 @@ const formal = [
   "Styrke tilhørighet og livskvalitet",
 ];
 
-export default function OmOssPage() {
+export default async function OmOssPage() {
+  const settings = await fetchSiteSettings();
+
   return (
     <>
       <Navbar />
@@ -113,7 +132,14 @@ export default function OmOssPage() {
                 etnisk organisasjon.
               </p>
             </div>
-            <OrganicPanel variant="green" className="h-72 md:h-96" />
+            {settings.om_oss_images.length ? (
+              <PhotoSlideshow
+                images={settings.om_oss_images}
+                className="h-72 rounded-3xl border border-white/10 md:h-96"
+              />
+            ) : (
+              <OrganicPanel variant="green" className="h-72 md:h-96" />
+            )}
           </div>
         </section>
 
@@ -295,6 +321,23 @@ export default function OmOssPage() {
             når det gjelder økonomi og styring, men deler samme formål og
             demokratiske struktur.
           </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            {nettverk.map((n, i) => {
+              const tint = nettverkTints[i % nettverkTints.length];
+              return (
+                <a
+                  key={n.name}
+                  href={n.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ backgroundColor: tint.bg, color: tint.text }}
+                  className="rounded-full px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-80"
+                >
+                  {n.name} →
+                </a>
+              );
+            })}
+          </div>
         </section>
 
         {/* Bli med oss */}
