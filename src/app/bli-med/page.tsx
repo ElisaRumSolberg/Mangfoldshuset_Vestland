@@ -201,8 +201,15 @@ export default async function BliMedPage({
                 </div>
                 <label className="flex items-start gap-2 text-sm text-ink-soft">
                   <input type="checkbox" name="terms" required className="mt-1 accent-[#9C3B44]" />
-                  Jeg godtar medlemsvilkårene og at opplysningene lagres i
-                  medlemsregisteret (se personvern).
+                  Jeg godtar{" "}
+                  <a href="/medlemsvilkar" target="_blank" rel="noopener noreferrer" className="underline">
+                    medlemsvilkårene
+                  </a>{" "}
+                  og at opplysningene lagres i medlemsregisteret (se{" "}
+                  <a href="/personvern" target="_blank" rel="noopener noreferrer" className="underline">
+                    personvern
+                  </a>
+                  ).
                 </label>
                 <p className="text-sm text-ink-soft">
                   Medlemskontingent (enkelt 100 kr, familie 150 kr per år)
