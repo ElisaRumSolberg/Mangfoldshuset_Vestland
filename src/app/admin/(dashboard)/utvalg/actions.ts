@@ -24,6 +24,7 @@ function fields(formData: FormData) {
     description: formText(formData, "description") ?? "",
     activity_match: formText(formData, "activity_match"),
     external_link: formText(formData, "external_link"),
+    instagram_link: formText(formData, "instagram_link"),
     contact: formText(formData, "contact"),
     active: formData.get("active") === "on",
     // Fargevelgeren har alltid en verdi; vi lagrer den bare når kutucuken er huket av.
@@ -49,6 +50,7 @@ export async function addUtvalg(formData: FormData) {
   const { error } = await supabase.from("utvalg").insert({
     ...f,
     slug,
+    cover_images: formUrls(formData, "cover_images"),
     photos: formUrls(formData, "photos"),
   });
   if (error) {
@@ -65,6 +67,9 @@ export async function updateUtvalg(id: string, formData: FormData) {
   const supabase = await createClient();
   const updates: Record<string, unknown> = fields(formData);
   if (formData.get("photos_present")) updates.photos = formUrls(formData, "photos");
+  if (formData.get("cover_images_present")) {
+    updates.cover_images = formUrls(formData, "cover_images");
+  }
 
   const { error, data } = await supabase
     .from("utvalg")
