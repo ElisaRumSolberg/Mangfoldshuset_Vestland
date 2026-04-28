@@ -85,9 +85,9 @@ export default async function NewsAndMagazine() {
           </div>
         </div>
 
-        <div className="flex flex-col justify-between rounded-[20px] bg-ink p-8 text-white">
+        <div className="flex flex-col justify-between rounded-[20px] bg-gradient-to-br from-[#C08A5C] to-[#9C3B44] p-8 text-white">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-[#C9C2B0]">
+            <p className="text-xs font-bold uppercase tracking-widest text-white/70">
               Mangfoldsposten
             </p>
             <h3 className="mt-3 font-serif text-2xl text-white">
