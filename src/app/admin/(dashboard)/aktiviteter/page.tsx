@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { addActivity, deleteActivity } from "./actions";
 import FileUpload from "../FileUpload";
 import CategoryPicker from "../CategoryPicker";
+import AdminActivityList from "./AdminActivityList";
 
 export default async function AdminAktiviteterPage() {
   const supabase = await createClient();
@@ -91,53 +91,8 @@ export default async function AdminAktiviteterPage() {
         </button>
       </form>
 
-      <div className="mt-8 flex flex-col gap-3">
-        {activities?.length ? (
-          activities.map((a) => (
-            <div
-              key={a.id}
-              className="flex items-center justify-between rounded-xl border border-line bg-cream px-5 py-4"
-            >
-              <div className="flex items-center gap-4">
-                {a.image_url && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={a.image_url}
-                    alt=""
-                    className="h-12 w-12 rounded-lg object-cover"
-                  />
-                )}
-                <div>
-                  <p className="font-serif text-base font-semibold text-ink">
-                    {a.title}
-                    {a.video_url ? " (video)" : ""}
-                  </p>
-                  <p className="text-sm text-ink-soft">
-                    {a.event_date} · {a.place} · {(a.categories ?? []).join(", ")}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Link
-                  href={`/admin/aktiviteter/${a.id}`}
-                  className="rounded-full border border-line px-4 py-2 text-sm text-ink-soft transition-colors hover:border-ink hover:text-ink"
-                >
-                  Rediger
-                </Link>
-                <form action={deleteActivity.bind(null, a.id)}>
-                  <button
-                    type="submit"
-                    className="rounded-full border border-line px-4 py-2 text-sm text-ink-soft transition-colors hover:border-fig hover:text-fig"
-                  >
-                    Slett
-                  </button>
-                </form>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p className="text-sm text-ink-soft">Ingen aktiviteter ennå.</p>
-        )}
+      <div className="mt-8">
+        <AdminActivityList items={activities ?? []} deleteAction={deleteActivity} />
       </div>
     </div>
   );
