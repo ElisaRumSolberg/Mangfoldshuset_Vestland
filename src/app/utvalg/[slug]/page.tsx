@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import ActivityCard from "@/components/ActivityCard";
 import PhotoGallery from "@/components/PhotoGallery";
 import OrganicPanel from "@/components/OrganicPanel";
+import PhotoSlideshow from "@/components/PhotoSlideshow";
 import { customColors, toUtvalg } from "@/lib/utvalg";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
@@ -132,7 +133,7 @@ export default async function UtvalgPage({ params }: Props) {
                     href={u.external_link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`rounded-full px-6 py-3 text-sm font-semibold transition-all hover:-translate-y-0.5 ${
+                    className={`flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-all hover:-translate-y-0.5 ${
                       custom ? "hover:brightness-95" : "bg-fig text-white hover:bg-fig-dark"
                     }`}
                     style={
@@ -141,7 +142,25 @@ export default async function UtvalgPage({ params }: Props) {
                         : undefined
                     }
                   >
-                    Følg oss på Facebook →
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M14 9h3V5h-3c-2.2 0-4 1.8-4 4v2H7v4h3v7h4v-7h3l1-4h-4V9c0-.6.4-1 1-1Z" />
+                    </svg>
+                    Følg oss på Facebook
+                  </a>
+                )}
+                {u.instagram_link && (
+                  <a
+                    href={u.instagram_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 rounded-full border border-white/50 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:bg-white/20"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <rect x="3.5" y="3.5" width="17" height="17" rx="5" stroke="currentColor" strokeWidth="1.7" />
+                      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.7" />
+                      <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" />
+                    </svg>
+                    Følg oss på Instagram
                   </a>
                 )}
                 <Link
@@ -160,11 +179,18 @@ export default async function UtvalgPage({ params }: Props) {
                 )}
               </div>
             </div>
-            <OrganicPanel
-              variant={panelVariant}
-              colors={custom ? { from: custom.accent, to: custom.from } : undefined}
-              className="h-48 md:h-64"
-            />
+            {u.cover_images.length ? (
+              <PhotoSlideshow
+                images={u.cover_images}
+                className="h-48 rounded-3xl border border-white/10 md:h-64"
+              />
+            ) : (
+              <OrganicPanel
+                variant={panelVariant}
+                colors={custom ? { from: custom.accent, to: custom.from } : undefined}
+                className="h-48 md:h-64"
+              />
+            )}
           </div>
         </section>
 
