@@ -23,6 +23,13 @@ alter table utvalg add column if not exists color_from text;
 alter table utvalg add column if not exists color_to text;
 alter table utvalg add column if not exists accent text;
 
+-- Instagram som eget felt (external_link brukes til Facebook).
+alter table utvalg add column if not exists instagram_link text;
+
+-- Forsidebilder (erstatter fargeplakaten ved siden av tittelen når de er satt).
+-- Flere bilder glir automatisk over i hverandre som en slideshow.
+alter table utvalg add column if not exists cover_images text[] not null default '{}';
+
 alter table utvalg enable row level security;
 
 drop policy if exists "Alle kan lese utvalg" on utvalg;
@@ -63,4 +70,9 @@ set
   color_from = '#5B21B6',
   color_to = '#9333EA',
   accent = '#F2C847'
+where slug = 'ungdom';
+
+-- Ungdom sin Instagram-side, som eget felt ved siden av Facebook (external_link).
+update utvalg
+set instagram_link = 'https://www.instagram.com/mangfoldhusetungdom'
 where slug = 'ungdom';
