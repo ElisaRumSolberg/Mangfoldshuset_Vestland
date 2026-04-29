@@ -8,7 +8,9 @@ export type Utvalg = {
   description: string;
   activity_match: string | null;
   external_link: string | null;
+  instagram_link: string | null;
   contact: string | null;
+  cover_images: string[];
   photos: string[];
   active: boolean;
   /** Egen fargeprofil (valgfritt). Alle tre må være satt for at den skal brukes. */
@@ -25,7 +27,9 @@ export function toUtvalg(r: Record<string, unknown>): Utvalg {
     description: (r.description as string) ?? "",
     activity_match: (r.activity_match as string | null) ?? null,
     external_link: (r.external_link as string | null) ?? null,
+    instagram_link: (r.instagram_link as string | null) ?? null,
     contact: (r.contact as string | null) ?? null,
+    cover_images: (r.cover_images as string[] | null) ?? [],
     photos: (r.photos as string[] | null) ?? [],
     active: (r.active as boolean | null) ?? true,
     color_from: (r.color_from as string | null) ?? null,
