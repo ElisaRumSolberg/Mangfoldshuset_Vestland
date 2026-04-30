@@ -1,7 +1,8 @@
 import Link from "next/link";
 import OrganicPanel from "./OrganicPanel";
+import PhotoSlideshow from "./PhotoSlideshow";
 
-export default function Hero() {
+export default function Hero({ images = [] }: { images?: string[] }) {
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-[#586B4F] to-[#48583F]">
       <div
@@ -43,8 +44,14 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Bytt ut med next/image (ekte foto) + className="warm-photo" fra globals.css når bildet er klart */}
-        <OrganicPanel variant="fig" className="h-80 md:h-[420px]" />
+        {images.length ? (
+          <PhotoSlideshow
+            images={images}
+            className="h-80 rounded-3xl border border-white/10 md:h-[420px]"
+          />
+        ) : (
+          <OrganicPanel variant="fig" className="h-80 md:h-[420px]" />
+        )}
       </div>
     </section>
   );
