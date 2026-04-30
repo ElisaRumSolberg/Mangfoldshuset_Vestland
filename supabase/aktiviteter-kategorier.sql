@@ -10,5 +10,7 @@ update activities
 set categories = array[category]
 where categories = '{}' and coalesce(category, '') <> '';
 
--- Den gamle kolonnen "category" beholdes ubrukt i tilfelle noe fortsatt leser
--- den, men admin og nettsiden bruker heretter "categories".
+-- Den gamle kolonnen "category" var "not null", men admin skriver ikke lenger
+-- til den (kun "categories"), så nye rader feilet på denne kravet. Fjerner
+-- kravet slik at innlegging fungerer igjen.
+alter table activities alter column category drop not null;
