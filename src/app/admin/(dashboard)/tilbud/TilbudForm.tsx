@@ -131,14 +131,30 @@ export default function TilbudForm({
           className={field}
         />
       </div>
-      <div>
-        <label className={label}>Kontakt-e-post (valgfritt)</label>
-        <input
-          name="contact"
-          type="email"
-          defaultValue={program?.contact ?? ""}
-          className={field}
-        />
+      <div className="sm:col-span-2">
+        <label className={label}>Ansvarlig (valgfritt – vises nederst på kortet)</label>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <input
+            name="responsible_name"
+            defaultValue={program?.responsible_name ?? ""}
+            placeholder="Navn"
+            className={field}
+          />
+          <input
+            name="responsible_phone"
+            type="tel"
+            defaultValue={program?.responsible_phone ?? ""}
+            placeholder="Telefon"
+            className={field}
+          />
+          <input
+            name="contact"
+            type="email"
+            defaultValue={program?.contact ?? ""}
+            placeholder="E-post"
+            className={field}
+          />
+        </div>
       </div>
 
       <div className="sm:col-span-2">
