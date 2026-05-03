@@ -9,6 +9,9 @@ export default function ActivityCard({
   imageUrl,
   videoUrl,
   externalLink,
+  responsibleName,
+  responsiblePhone,
+  responsibleEmail,
   banner,
   imageHref,
   featured,
@@ -23,6 +26,10 @@ export default function ActivityCard({
   imageUrl?: string | null;
   videoUrl?: string | null;
   externalLink?: string | null;
+  /** Ansvarlig person for aktiviteten. */
+  responsibleName?: string | null;
+  responsiblePhone?: string | null;
+  responsibleEmail?: string | null;
   /** Vises som kort bånd i stedet for foto-plassholder (faste tilbud uten bilde). */
   banner?: string;
   /** Gjør bildet klikkbart (åpner plakaten i full størrelse). */
@@ -117,6 +124,21 @@ export default function ActivityCard({
             </a>
           )}
         </div>
+        {(responsibleName || responsiblePhone || responsibleEmail) && (
+          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-soft">
+            <span>Ansvarlig{responsibleName ? `: ${responsibleName}` : ""}</span>
+            {responsiblePhone && (
+              <a href={`tel:${responsiblePhone.replace(/\s/g, "")}`} className="font-semibold text-green-dark">
+                {responsiblePhone}
+              </a>
+            )}
+            {responsibleEmail && (
+              <a href={`mailto:${responsibleEmail}`} className="font-semibold text-green-dark">
+                {responsibleEmail}
+              </a>
+            )}
+          </div>
+        )}
       </div>
     </article>
   );
