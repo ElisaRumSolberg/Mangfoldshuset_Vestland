@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     siteName: "Mangfoldhuset Vestland",
     title: "Mangfoldhuset Vestland",
     description,
-    images: [{ url: "/logo.jpg", width: 428, height: 429, alt: "Mangfoldhuset Vestland" }],
+    images: [{ url: "/logo.jpg", width: 488, height: 429, alt: "Mangfoldhuset Vestland" }],
   },
 };
 
