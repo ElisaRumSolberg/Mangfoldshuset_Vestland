@@ -104,6 +104,22 @@ export default async function ActivityPage({ params }: Props) {
           </a>
         )}
 
+        {(a.responsible_name || a.responsible_phone || a.responsible_email) && (
+          <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-ink-soft">
+            <span>Ansvarlig{a.responsible_name ? `: ${a.responsible_name}` : ""}</span>
+            {a.responsible_phone && (
+              <a href={`tel:${a.responsible_phone.replace(/\s/g, "")}`} className="font-semibold text-green-dark">
+                {a.responsible_phone}
+              </a>
+            )}
+            {a.responsible_email && (
+              <a href={`mailto:${a.responsible_email}`} className="font-semibold text-green-dark">
+                {a.responsible_email}
+              </a>
+            )}
+          </div>
+        )}
+
         <ReportSection
           heading="Slik gikk det"
           participants={a.participants ?? null}
