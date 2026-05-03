@@ -72,6 +72,7 @@ const nettverkTints = [
 const nettverk = [
   { name: "Oslo", href: "https://mangfoldhuset.no/" },
   { name: "Østfold", href: "https://www.ostfoldmh.no/" },
+  { name: "Drammen", href: "https://www.buskerud.mangfoldhuset.no/" },
   { name: "Trøndelag", href: "https://trondelag.mangfoldhuset.no/" },
   { name: "Rogaland", href: "https://www.facebook.com/mangfoldshusetrogaland/?_rdr" },
   { name: "Agder", href: "https://www.facebook.com/mangfoldshuset.agder" },
