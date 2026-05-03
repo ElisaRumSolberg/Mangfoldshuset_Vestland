@@ -217,6 +217,8 @@ export default async function BliMedPage({
                   <span className="font-semibold text-ink">#595791</span> eller
                   bankkonto{" "}
                   <span className="font-semibold text-ink">3207 31 01688</span>.
+                  Vi jobber med å tilby automatisk fornyelse via Vipps – kommer
+                  senere.
                 </p>
                 <button type="submit" className={button}>
                   Meld meg inn
