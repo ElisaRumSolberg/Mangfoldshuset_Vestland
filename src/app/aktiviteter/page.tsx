@@ -98,6 +98,9 @@ function mapActivities(
     image_url: string | null;
     video_url: string | null;
     external_link: string | null;
+    responsible_name?: string | null;
+    responsible_phone?: string | null;
+    responsible_email?: string | null;
     featured?: boolean | null;
   }[]
 ) {
@@ -113,6 +116,9 @@ function mapActivities(
     imageUrl: a.image_url,
     videoUrl: a.video_url,
     externalLink: a.external_link,
+    responsibleName: a.responsible_name,
+    responsiblePhone: a.responsible_phone,
+    responsibleEmail: a.responsible_email,
     featured: !!a.featured,
     recurring: false,
   }));
