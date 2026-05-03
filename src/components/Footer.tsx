@@ -10,7 +10,7 @@ export default function Footer() {
           <Image
             src="/logo-white.png"
             alt="Mangfoldhuset Vestland"
-            width={368}
+            width={413}
             height={190}
             className="h-28 w-auto self-start sm:self-center"
           />
