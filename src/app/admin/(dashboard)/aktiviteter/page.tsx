@@ -73,6 +73,30 @@ export default async function AdminAktiviteterPage() {
             className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
           />
         </div>
+        <div className="sm:col-span-2">
+          <label className="mb-1 block text-sm font-medium text-ink">
+            Ansvarlig (valgfritt – vises nederst på aktiviteten)
+          </label>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <input
+              name="responsible_name"
+              placeholder="Navn"
+              className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+            />
+            <input
+              name="responsible_phone"
+              type="tel"
+              placeholder="Telefon"
+              className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+            />
+            <input
+              name="responsible_email"
+              type="email"
+              placeholder="E-post"
+              className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+            />
+          </div>
+        </div>
         <label className="flex items-center gap-2 text-sm text-ink sm:col-span-2">
           <input
             name="featured"
