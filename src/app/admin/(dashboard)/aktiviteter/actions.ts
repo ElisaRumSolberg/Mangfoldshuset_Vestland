@@ -19,6 +19,9 @@ export async function addActivity(formData: FormData) {
     image_url: imageUrl,
     video_url: videoUrl,
     external_link: (formData.get("external_link") as string) || null,
+    responsible_name: formText(formData, "responsible_name"),
+    responsible_phone: formText(formData, "responsible_phone"),
+    responsible_email: formText(formData, "responsible_email"),
     featured: formData.get("featured") === "on",
   });
   if (error) throw new Error(`Kunne ikke legge til aktivitet: ${error.message}`);
@@ -40,6 +43,9 @@ export async function updateActivity(id: string, formData: FormData) {
     place: formData.get("place") as string,
     description: formData.get("description") as string,
     external_link: (formData.get("external_link") as string) || null,
+    responsible_name: formText(formData, "responsible_name"),
+    responsible_phone: formText(formData, "responsible_phone"),
+    responsible_email: formText(formData, "responsible_email"),
     featured: formData.get("featured") === "on",
     participants: formInt(formData, "participants"),
     summary: formText(formData, "summary"),
