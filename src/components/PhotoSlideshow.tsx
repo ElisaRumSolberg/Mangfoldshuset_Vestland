@@ -15,10 +15,8 @@ export default function PhotoSlideshow({
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    console.log("[PhotoSlideshow] effect mounted, images.length =", images.length);
     if (images.length < 2) return;
     const id = setInterval(() => {
-      console.log("[PhotoSlideshow] tick");
       setIndex((i) => (i + 1) % images.length);
     }, 4500);
     return () => clearInterval(id);
