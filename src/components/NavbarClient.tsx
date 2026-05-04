@@ -117,7 +117,17 @@ export default function NavbarClient({
         { href: "/mangfoldsposten", label: "Mangfoldsposten" },
       ],
     },
-    { type: "link", href: "/bli-med", label: "Bli med" },
+    {
+      type: "dropdown",
+      href: "/bli-med",
+      label: "Bli med",
+      items: [
+        { href: "/bli-med#medlem", label: "Bli medlem" },
+        { href: "/bli-med#frivillig", label: "Bli frivillig" },
+        { href: "/bli-med#ide", label: "Har du en idé?" },
+        { href: "/bli-med#samarbeid", label: "Samarbeid med oss" },
+      ],
+    },
     { type: "link", href: "/kontakt", label: "Kontakt" },
   ];
 
@@ -130,7 +140,7 @@ export default function NavbarClient({
         <Image
           src="/logo.png"
           alt="Mangfoldhuset Vestland"
-          width={368}
+          width={413}
           height={190}
           className="h-16 w-auto sm:h-24"
           priority
@@ -171,7 +181,7 @@ export default function NavbarClient({
             alt="Mangfoldhuset Ungdom"
             width={157}
             height={63}
-            className="h-20 w-auto"
+            className="h-11 w-auto"
           />
         </Link>
         <Link
