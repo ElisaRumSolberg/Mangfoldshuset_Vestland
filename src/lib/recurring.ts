@@ -27,6 +27,9 @@ export type Program = {
   feedback: string | null; // ett utsagn per linje
   photos: string[];
   sort_order: number;
+  show_on_homepage: boolean;
+  homepage_image_urls: string[];
+  highlights: string | null;
 };
 
 const DAYS = ["søndag", "mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag"];
@@ -132,6 +135,9 @@ export function toProgram(r: Record<string, unknown>): Program {
     summary: (r.summary as string | null) ?? null,
     feedback: (r.feedback as string | null) ?? null,
     photos: (r.photos as string[] | null) ?? [],
+    show_on_homepage: (r.show_on_homepage as boolean | null) ?? false,
+    homepage_image_urls: (r.homepage_image_urls as string[] | null) ?? [],
+    highlights: (r.highlights as string | null) ?? null,
   };
 }
 
