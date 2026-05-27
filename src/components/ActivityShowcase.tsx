@@ -31,8 +31,12 @@ export default function ActivityShowcase({
 
   if (!slides.length) return null;
 
+  const count = slides.length;
+  const arrow =
+    "absolute top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-lg text-ink shadow-md transition-colors hover:bg-white";
+
   return (
-    <div className={`relative overflow-hidden bg-ink ${className}`}>
+    <div className={`group relative overflow-hidden bg-ink ${className}`}>
       {slides.map((slide, i) => (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -66,20 +70,38 @@ export default function ActivityShowcase({
         </div>
       ))}
 
-      {slides.length > 1 && (
-        <div className="absolute right-4 top-4 z-10 flex gap-1.5">
-          {slides.map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              aria-label={`Vis bilde ${i + 1}`}
-              onClick={() => setIndex(i)}
-              className={`h-1.5 w-1.5 rounded-full transition-all ${
-                i === index ? "w-4 bg-white" : "bg-white/50"
-              }`}
-            />
-          ))}
-        </div>
+      {count > 1 && (
+        <>
+          <button
+            type="button"
+            aria-label="Forrige bilde"
+            onClick={() => setIndex((i) => (i - 1 + count) % count)}
+            className={`${arrow} left-3 opacity-0 transition-opacity group-hover:opacity-100`}
+          >
+            ←
+          </button>
+          <button
+            type="button"
+            aria-label="Neste bilde"
+            onClick={() => setIndex((i) => (i + 1) % count)}
+            className={`${arrow} right-3 opacity-0 transition-opacity group-hover:opacity-100`}
+          >
+            →
+          </button>
+          <div className="absolute right-4 top-4 z-10 flex gap-1.5">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                aria-label={`Vis bilde ${i + 1}`}
+                onClick={() => setIndex(i)}
+                className={`h-1.5 w-1.5 rounded-full transition-all ${
+                  i === index ? "w-4 bg-white" : "bg-white/50"
+                }`}
+              />
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
