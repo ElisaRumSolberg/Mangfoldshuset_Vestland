@@ -33,10 +33,15 @@ export default function CategoryPicker({ initial = [] }: { initial?: string[] })
     setInput("");
   }
 
+  function removeOwn(tag: string) {
+    setOwnTags((t) => t.filter((x) => x !== tag));
+    setSelected((s) => s.filter((x) => x !== tag));
+  }
+
   return (
     <div>
       <div className="flex flex-wrap gap-2">
-        {[...CATEGORY_OPTIONS, ...ownTags].map((tag) => (
+        {CATEGORY_OPTIONS.map((tag) => (
           <button
             key={tag}
             type="button"
@@ -45,6 +50,25 @@ export default function CategoryPicker({ initial = [] }: { initial?: string[] })
           >
             {tag}
           </button>
+        ))}
+        {ownTags.map((tag) => (
+          <span key={tag} className="inline-flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => toggle(tag)}
+              className={chip(selected.includes(tag))}
+            >
+              {tag}
+            </button>
+            <button
+              type="button"
+              onClick={() => removeOwn(tag)}
+              aria-label={`Fjern kategorien ${tag}`}
+              className="text-ink-soft transition-colors hover:text-fig"
+            >
+              ✕
+            </button>
+          </span>
         ))}
       </div>
 
