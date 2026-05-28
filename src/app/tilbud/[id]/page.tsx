@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ReportSection from "@/components/ReportSection";
+import ActivityMedia from "@/components/ActivityMedia";
+import { formatHighlightDate, parseHighlights } from "@/lib/highlights";
 import {
   nextOccurrences,
   shortDate,
@@ -50,6 +52,7 @@ export default async function ProgramPage({ params }: Props) {
   const time = timeText(p);
   const skipped = p.skipped_dates.filter((d) => d >= today).sort();
   const startsLater = p.start_date && p.start_date > today;
+  const highlights = parseHighlights(p.highlights);
 
   return (
     <>
@@ -154,15 +157,46 @@ export default async function ProgramPage({ params }: Props) {
           )}
         </div>
 
+        {highlights.length > 0 && (
+          <section className="mt-14 border-t border-line pt-10">
+            <h2 className="font-serif text-2xl font-medium">Høydepunkter</h2>
+            <ul className="mt-6 flex flex-col gap-4">
+              {highlights.map((h, i) => (
+                <li key={i} className="rounded-xl border border-line bg-cream px-5 py-4">
+                  {h.date && (
+                    <p className="text-xs font-bold uppercase tracking-wide text-green-dark">
+                      {formatHighlightDate(h.date)}
+                    </p>
+                  )}
+                  <p className="mt-1 text-base text-ink-soft">{h.text}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
         <ReportSection
           heading="Hittil"
           participants={p.participants}
           participantsLabel="deltakere hittil"
           summary={p.summary}
           feedback={p.feedback}
-          photos={p.photos}
+          photos={[]}
           title={p.title}
         />
+
+        {p.photos.length > 0 && (
+          <div className="mt-12">
+            <h2 className="font-serif text-2xl font-medium">Bilder</h2>
+            <div className="mt-6 overflow-hidden rounded-[18px] border border-line">
+              <ActivityMedia
+                images={p.photos}
+                title={p.title}
+                className="aspect-square w-full sm:aspect-[4/3]"
+              />
+            </div>
+          </div>
+        )}
       </main>
       <Footer />
     </>
