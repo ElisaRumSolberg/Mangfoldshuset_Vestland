@@ -3,8 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import ActivityCard from "@/components/ActivityCard";
-import PhotoGallery from "@/components/PhotoGallery";
+import ActivityGrid from "@/components/ActivityGrid";
+import ActivityMedia from "@/components/ActivityMedia";
 import OrganicPanel from "@/components/OrganicPanel";
 import PhotoSlideshow from "@/components/PhotoSlideshow";
 import { customColors, toUtvalg } from "@/lib/utvalg";
@@ -211,21 +211,10 @@ export default async function UtvalgPage({ params }: Props) {
             <h2 className="font-serif text-2xl font-medium">
               Kommende aktiviteter
             </h2>
-            {upcoming.length > 0 ? (
-              <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
-                {upcoming.map((ev) => (
-                  <ActivityCard
-                    key={ev.iso + ev.title}
-                    {...ev}
-                    grad="from-[#9CA86B] to-[#4B6B4A]"
-                  />
-                ))}
-              </div>
-            ) : (
-              <p className="mt-4 text-sm text-ink-soft">
-                Ingen kommende aktiviteter er lagt til ennå.
-              </p>
-            )}
+            <ActivityGrid
+              items={upcoming}
+              emptyText="Ingen kommende aktiviteter er lagt til ennå."
+            />
           </div>
         </section>
 
@@ -234,21 +223,10 @@ export default async function UtvalgPage({ params }: Props) {
             <h2 className="font-serif text-2xl font-medium">
               Tidligere aktiviteter
             </h2>
-            {done.length > 0 ? (
-              <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
-                {done.map((ev) => (
-                  <ActivityCard
-                    key={ev.iso + ev.title}
-                    {...ev}
-                    grad="from-[#C08A5C] to-[#9C3B44]"
-                  />
-                ))}
-              </div>
-            ) : (
-              <p className="mt-4 text-sm text-ink-soft">
-                Ingen tidligere aktiviteter er lagt til ennå.
-              </p>
-            )}
+            <ActivityGrid
+              items={done}
+              emptyText="Ingen tidligere aktiviteter er lagt til ennå."
+            />
           </div>
         </section>
 
@@ -256,8 +234,12 @@ export default async function UtvalgPage({ params }: Props) {
           <section className={`px-6 py-16 ${photosBg}`}>
             <div className="mx-auto max-w-6xl">
               <h2 className="font-serif text-2xl font-medium">Flere bilder</h2>
-              <div className="mt-6">
-                <PhotoGallery photos={u.photos} title={u.title} />
+              <div className="mt-6 overflow-hidden rounded-[18px] border border-line">
+                <ActivityMedia
+                  images={u.photos}
+                  title={u.title}
+                  className="aspect-square w-full sm:aspect-[4/3]"
+                />
               </div>
             </div>
           </section>
