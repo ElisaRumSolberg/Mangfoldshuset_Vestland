@@ -213,6 +213,67 @@ export default function TilbudForm({
         />
       )}
 
+      {program && (
+        <div className="sm:col-span-2">
+          <label className={label}>
+            Høydepunkter (gjestebesøk, temadager osv. – ett per linje)
+          </label>
+          <p className="mb-1 text-xs text-ink-soft">
+            Format: DD.MM.ÅÅÅÅ: Tekst – f.eks. «17.06.2026: Besøk av Firat Bahcivan fra Mangfoldhuset Oslo».
+            Legg til en ny linje hver gang noe skjer, i stedet for å skrive om hele oppsummeringen.
+          </p>
+          <textarea
+            name="highlights"
+            rows={5}
+            defaultValue={program.highlights ?? ""}
+            placeholder={"17.06.2026: Besøk av Firat Bahcivan fra Mangfoldhuset Oslo.\n26.04.2026: Første klesbyttedag."}
+            className={field}
+          />
+        </div>
+      )}
+
+      <label className="flex items-center gap-2 text-sm text-ink sm:col-span-2">
+        <input
+          name="show_on_homepage"
+          type="checkbox"
+          defaultChecked={program?.show_on_homepage ?? false}
+          className="h-4 w-4 accent-fig"
+        />
+        Vis bilde i karusellen på forsiden
+      </label>
+
+      {program &&
+        (() => {
+          const choices = [
+            ...(program.image_url ? [{ url: program.image_url, label: "Plakat" }] : []),
+            ...program.photos.map((url, i) => ({ url, label: `Bilde ${i + 1}` })),
+          ];
+          if (choices.length === 0) return null;
+          const chosen = program.homepage_image_urls ?? [];
+          return (
+            <div className="sm:col-span-2">
+              <label className="mb-2 block text-sm font-medium text-ink">
+                Hvilke bilder skal vises i karusellen på forsiden? (velg én eller flere – ingen valgt = automatisk)
+              </label>
+              <div className="flex flex-wrap gap-3">
+                {choices.map((c) => (
+                  <label key={c.url} className="flex flex-col items-center gap-1 text-xs text-ink-soft">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={c.url} alt={c.label} className="h-16 w-16 rounded-lg border border-line object-cover" />
+                    <input
+                      type="checkbox"
+                      name="homepage_image_urls"
+                      value={c.url}
+                      defaultChecked={chosen.includes(c.url)}
+                      className="accent-fig"
+                    />
+                  </label>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
+
       <label className="flex items-center gap-2 text-sm text-ink sm:col-span-2">
         <input
           name="featured"
