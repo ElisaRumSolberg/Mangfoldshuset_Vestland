@@ -284,7 +284,7 @@ export default async function BliMedPage({
                   <div className="mt-2 flex flex-col gap-2">
                     {typer.map((t) => (
                       <label key={t} className="flex items-center gap-2 text-sm text-ink-soft">
-                        <input type="radio" name="type_bidrag" value={t} className="accent-[#9C3B44]" />
+                        <input type="checkbox" name="type_bidrag" value={t} className="accent-[#9C3B44]" />
                         {t}
                       </label>
                     ))}
