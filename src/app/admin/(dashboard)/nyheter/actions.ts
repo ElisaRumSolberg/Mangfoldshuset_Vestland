@@ -15,6 +15,7 @@ export async function addNews(formData: FormData) {
   await supabase.from("news").insert({
     title: formData.get("title") as string,
     summary: formData.get("summary") as string,
+    published_at: (formData.get("published_at") as string) || undefined,
     image_url: imageUrl,
     video_url: videoUrl,
     external_link: (formData.get("external_link") as string) || null,
@@ -36,6 +37,7 @@ export async function updateNews(id: string, formData: FormData) {
     summary: formData.get("summary") as string,
     external_link: (formData.get("external_link") as string) || null,
   };
+  if (formData.get("published_at")) updates.published_at = formData.get("published_at") as string;
   if (imageUrl) updates.image_url = imageUrl;
   if (videoUrl) updates.video_url = videoUrl;
 
