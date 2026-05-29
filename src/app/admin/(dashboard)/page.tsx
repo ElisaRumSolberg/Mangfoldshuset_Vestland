@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { autoParticipants } from "@/lib/stats";
 
 export default async function AdminDashboard() {
   const supabase = await createClient();
@@ -9,12 +10,12 @@ export default async function AdminDashboard() {
 
   const [
     { count: activityCount },
-    { count: newsCount },
+    participantCount,
     { count: memberCount },
     { data: followUp },
   ] = await Promise.all([
     supabase.from("activities").select("*", { count: "exact", head: true }),
-    supabase.from("news").select("*", { count: "exact", head: true }),
+    autoParticipants(supabase),
     supabase.from("members").select("*", { count: "exact", head: true }),
     supabase
       .from("members")
@@ -27,7 +28,7 @@ export default async function AdminDashboard() {
   const cards = [
     { href: "/admin/medlemmer", label: "Medlemmer", value: memberCount ?? 0 },
     { href: "/admin/aktiviteter", label: "Aktiviteter", value: activityCount ?? 0 },
-    { href: "/admin/nyheter", label: "Nyheter", value: newsCount ?? 0 },
+    { href: "/admin/statistikk", label: "Personer", value: participantCount },
   ];
 
   const rows = (followUp ?? []).map((m) => ({
