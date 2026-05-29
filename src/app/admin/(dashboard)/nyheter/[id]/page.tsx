@@ -49,6 +49,17 @@ export default async function EditNewsPage({
           rows={3}
           className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
         />
+        <div>
+          <label className="mb-1 block text-sm font-medium text-ink">
+            Publiseringsdato
+          </label>
+          <input
+            name="published_at"
+            type="date"
+            defaultValue={item.published_at}
+            className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig sm:w-fit"
+          />
+        </div>
 
         {item.image_url && (
           // eslint-disable-next-line @next/next/no-img-element
