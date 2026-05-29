@@ -56,6 +56,7 @@ export async function updateActivity(id: string, formData: FormData) {
     registration_open: formData.get("registration_open") === "on",
     featured: formData.get("featured") === "on",
     show_on_homepage: formData.get("show_on_homepage") === "on",
+    homepage_image_urls: formUrls(formData, "homepage_image_urls"),
     participants: formInt(formData, "participants"),
     summary: formText(formData, "summary"),
     feedback: formText(formData, "feedback"),
