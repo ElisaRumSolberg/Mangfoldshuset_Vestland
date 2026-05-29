@@ -249,7 +249,6 @@ function Book({ pdfUrl }: { pdfUrl: string }) {
         flip?.destroy();
       } catch {}
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, spread]);
 
   // page-flip måler bare på vindusendring; si fra når rammen (f.eks. fullskjerm) endrer størrelse.
