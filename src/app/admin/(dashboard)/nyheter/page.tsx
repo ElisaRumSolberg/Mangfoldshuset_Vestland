@@ -31,6 +31,16 @@ export default async function AdminNyheterPage() {
           rows={3}
           className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
         />
+        <div>
+          <label className="mb-1 block text-sm font-medium text-ink">
+            Publiseringsdato (valgfritt – for å legge inn en nyhet med en tidligere dato)
+          </label>
+          <input
+            name="published_at"
+            type="date"
+            className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig sm:w-fit"
+          />
+        </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label className="mb-1 block text-sm font-medium text-ink">
