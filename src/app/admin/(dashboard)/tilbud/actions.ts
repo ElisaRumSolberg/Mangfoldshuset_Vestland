@@ -36,6 +36,7 @@ function fields(formData: FormData) {
     skipped_dates: skipped,
     active: formData.get("active") === "on",
     featured: formData.get("featured") === "on",
+    show_on_homepage: formData.get("show_on_homepage") === "on",
   };
 }
 
@@ -64,6 +65,8 @@ export async function updateProgram(id: string, formData: FormData) {
     participants: formInt(formData, "participants"),
     summary: text(formData, "summary"),
     feedback: text(formData, "feedback"),
+    highlights: text(formData, "highlights"),
+    homepage_image_urls: formUrls(formData, "homepage_image_urls"),
   };
   if (formData.get("photos_present")) updates.photos = formUrls(formData, "photos");
   const imageUrl = formUrl(formData, "image_url");
