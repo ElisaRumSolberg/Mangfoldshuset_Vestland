@@ -200,8 +200,42 @@ export default async function EditActivityPage({
             defaultChecked={activity.show_on_homepage ?? false}
             className="h-4 w-4 accent-fig"
           />
-          Vis bilde i karusellen på forsiden (bruker bilde fra «Slik gikk det», ellers plakaten)
+          Vis bilde i karusellen på forsiden
         </label>
+
+        {(() => {
+          const choices = [
+            ...(activity.image_url ? [{ url: activity.image_url as string, label: "Plakat" }] : []),
+            ...((activity.photos as string[] | null) ?? []).map((url, i) => ({
+              url,
+              label: `Bilde ${i + 1}`,
+            })),
+          ];
+          if (choices.length === 0) return null;
+          const chosen: string[] = activity.homepage_image_urls ?? [];
+          return (
+            <div className="sm:col-span-2">
+              <label className="mb-2 block text-sm font-medium text-ink">
+                Hvilke bilder skal vises i karusellen på forsiden? (velg én eller flere – ingen valgt = automatisk)
+              </label>
+              <div className="flex flex-wrap gap-3">
+                {choices.map((c) => (
+                  <label key={c.url} className="flex flex-col items-center gap-1 text-xs text-ink-soft">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={c.url} alt={c.label} className="h-16 w-16 rounded-lg border border-line object-cover" />
+                    <input
+                      type="checkbox"
+                      name="homepage_image_urls"
+                      value={c.url}
+                      defaultChecked={chosen.includes(c.url)}
+                      className="accent-fig"
+                    />
+                  </label>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
 
         <button
           type="submit"
