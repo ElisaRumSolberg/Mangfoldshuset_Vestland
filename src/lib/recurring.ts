@@ -15,6 +15,8 @@ export type Program = {
   place: string;
   note: string | null;
   contact: string | null;
+  responsible_name: string | null;
+  responsible_phone: string | null;
   external_link: string | null;
   image_url: string | null;
   skipped_dates: string[];
