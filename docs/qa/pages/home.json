@@ -1,0 +1,72 @@
+{
+  "baseURL": "https://www.mangfoldshusetvestland.no",
+  "path": "/",
+  "layout": [
+    {
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "overflow": true
+    },
+    {
+      "width": 1440,
+      "overflow": false
+    }
+  ],
+  "violations": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "count": 2,
+      "targets": [
+        [
+          ".rounded-2xl.py-4.px-6:nth-child(1) > .text-white\\/80.tracking-wide.uppercase"
+        ],
+        [
+          ".mt-8"
+        ]
+      ]
+    }
+  ],
+  "metadata": {
+    "title": "Mangfoldshuset Vestland",
+    "description": true,
+    "canonical": null,
+    "brokenImages": [],
+    "internalLinks": [
+      "/",
+      "/om-oss",
+      "/aktiviteter",
+      "/kontakt",
+      "/utvalg/ungdom",
+      "/bli-med#frivillig",
+      "/bli-med",
+      "/aktiviteter/2e3641c8-3474-4020-a6dd-03420cd29ce6",
+      "/aktiviteter/2ee6bc99-47e7-4dd0-897e-72fd0a8acc28",
+      "/aktiviteter/cbb25dab-6c13-445a-ae7b-23527db25123",
+      "/aktiviteter/e8567a5e-c704-44e3-b49c-2df298b71e78",
+      "/aktiviteter/dc4d0858-0607-4c10-9270-b0be294fd42f",
+      "/aktiviteter/bac4b522-c0be-453c-a441-0ca4fbb31216",
+      "/tilbud/barseltreff.jpg",
+      "/tilbud/28f2a1b0-fdc2-4ddb-a73b-0c5ad105d419",
+      "/tilbud/sprakkafe.jpg",
+      "/tilbud/017817d8-1431-4ba7-9aa6-be0ad6784bb9",
+      "/tilbud/0ac83438-cdd6-4bda-b22b-dc91e9084a30",
+      "/bli-med#ide",
+      "/bli-med#samarbeid",
+      "/nyheter",
+      "/mangfoldsposten",
+      "/bli-med#medlem",
+      "/personvern"
+    ]
+  },
+  "pageErrors": 0,
+  "brokenResponses": [],
+  "blockedWrites": 0
+}

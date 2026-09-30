@@ -1,0 +1,43 @@
+{
+  "baseURL": "https://www.mangfoldshusetvestland.no",
+  "path": "/utvalg",
+  "layout": [
+    {
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "overflow": true
+    },
+    {
+      "width": 1440,
+      "overflow": false
+    }
+  ],
+  "violations": [],
+  "metadata": {
+    "title": "Utvalg – Mangfoldshuset Vestland",
+    "description": true,
+    "canonical": null,
+    "brokenImages": [],
+    "internalLinks": [
+      "/",
+      "/om-oss",
+      "/aktiviteter",
+      "/kontakt",
+      "/utvalg/ungdom",
+      "/bli-med#frivillig",
+      "/utvalg/kvinneutvalget",
+      "/bli-med#medlem",
+      "/personvern"
+    ]
+  },
+  "pageErrors": 0,
+  "brokenResponses": [],
+  "blockedWrites": 0
+}

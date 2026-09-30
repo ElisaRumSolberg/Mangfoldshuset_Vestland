@@ -1,0 +1,135 @@
+{
+  "baseURL": "https://www.mangfoldshusetvestland.no",
+  "path": "/bli-med",
+  "layout": [
+    {
+      "width": 360,
+      "overflow": true
+    },
+    {
+      "width": 390,
+      "overflow": true
+    },
+    {
+      "width": 768,
+      "overflow": true
+    },
+    {
+      "width": 1440,
+      "overflow": false
+    }
+  ],
+  "violations": [
+    {
+      "id": "label",
+      "impact": "critical",
+      "count": 24,
+      "targets": [
+        [
+          "input[name=\"first_name\"]"
+        ],
+        [
+          "input[name=\"last_name\"]"
+        ],
+        [
+          "input[name=\"birth_date\"]"
+        ],
+        [
+          "div:nth-child(4) > .w-full.px-3[name=\"phone\"]"
+        ],
+        [
+          "div:nth-child(5) > input[type=\"email\"][name=\"email\"][required=\"\"]"
+        ],
+        [
+          "input[name=\"address\"]"
+        ],
+        [
+          "input[name=\"guardian\"]"
+        ],
+        [
+          "textarea[name=\"comment\"]"
+        ],
+        [
+          ".gap-6 > .sm\\:grid-cols-3.gap-4.grid-cols-1 > div:nth-child(1) > .w-full[name=\"name\"][required=\"\"]"
+        ],
+        [
+          ".gap-6 > .sm\\:grid-cols-3.gap-4.grid-cols-1 > div:nth-child(2) > input[type=\"email\"][name=\"email\"][required=\"\"]"
+        ],
+        [
+          ".gap-6 > .sm\\:grid-cols-3.gap-4.grid-cols-1 > div:nth-child(3) > .w-full.px-3[name=\"phone\"]"
+        ],
+        [
+          "textarea[name=\"ferdigheter\"]"
+        ],
+        [
+          "#ide > .mt-8.rounded-\\[18px\\].bg-white > form > .sm\\:grid-cols-3.gap-4.grid-cols-1 > div:nth-child(1) > .w-full[name=\"name\"][required=\"\"]"
+        ],
+        [
+          "#ide > .mt-8.rounded-\\[18px\\].bg-white > form > .sm\\:grid-cols-3.gap-4.grid-cols-1 > div:nth-child(2) > input[type=\"email\"][name=\"email\"][required=\"\"]"
+        ],
+        [
+          "#ide > .mt-8.rounded-\\[18px\\].bg-white > form > .sm\\:grid-cols-3.gap-4.grid-cols-1 > div:nth-child(3) > .w-full.px-3[name=\"phone\"]"
+        ],
+        [
+          "textarea[name=\"ide\"]"
+        ],
+        [
+          "input[name=\"malgruppe\"]"
+        ],
+        [
+          "textarea[name=\"kommentar\"]"
+        ],
+        [
+          "input[name=\"organisasjon\"]"
+        ],
+        [
+          "#samarbeid > .mt-8.rounded-\\[18px\\].bg-white > form > .sm\\:grid-cols-3.gap-4.grid-cols-1 > div:nth-child(1) > .w-full[name=\"name\"][required=\"\"]"
+        ],
+        [
+          "#samarbeid > .mt-8.rounded-\\[18px\\].bg-white > form > .sm\\:grid-cols-3.gap-4.grid-cols-1 > div:nth-child(2) > input[type=\"email\"][name=\"email\"][required=\"\"]"
+        ],
+        [
+          "#samarbeid > .mt-8.rounded-\\[18px\\].bg-white > form > .sm\\:grid-cols-3.gap-4.grid-cols-1 > div:nth-child(3) > .w-full.px-3[name=\"phone\"]"
+        ],
+        [
+          "input[name=\"tema\"]"
+        ],
+        [
+          "textarea[name=\"melding\"]"
+        ]
+      ]
+    },
+    {
+      "id": "select-name",
+      "impact": "critical",
+      "count": 1,
+      "targets": [
+        [
+          "select"
+        ]
+      ]
+    }
+  ],
+  "metadata": {
+    "title": "Bli med – Mangfoldshuset Vestland",
+    "description": true,
+    "canonical": null,
+    "brokenImages": [],
+    "internalLinks": [
+      "/",
+      "/om-oss",
+      "/aktiviteter",
+      "/kontakt",
+      "/utvalg/ungdom",
+      "/bli-med#frivillig",
+      "/bli-med#medlem",
+      "/bli-med#ide",
+      "/bli-med#samarbeid",
+      "/medlemsvilkar",
+      "/personvern"
+    ]
+  },
+  "pageErrors": 0,
+  "brokenResponses": [],
+  "blockedWrites": 0
+}

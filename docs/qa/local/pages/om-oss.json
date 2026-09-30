@@ -1,0 +1,49 @@
+{
+  "baseURL": "http://localhost:3000",
+  "path": "/om-oss",
+  "layout": [
+    {
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "overflow": false
+    }
+  ],
+  "violations": [],
+  "metadata": {
+    "title": "Om oss – Mangfoldshuset Vestland",
+    "description": true,
+    "canonical": null,
+    "brokenImages": [],
+    "internalLinks": [
+      "/",
+      "/om-oss",
+      "/aktiviteter",
+      "/kontakt",
+      "/utvalg",
+      "/utvalg/kvinneutvalget",
+      "/utvalg/ungdom",
+      "/nyheter",
+      "/mangfoldsposten",
+      "/bli-med#medlem",
+      "/bli-med#frivillig",
+      "/bli-med#ide",
+      "/bli-med#samarbeid",
+      "/bli-med",
+      "/personvern"
+    ]
+  },
+  "pageErrors": 0,
+  "brokenResponses": [],
+  "blockedWrites": 0
+}

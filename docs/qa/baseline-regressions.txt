@@ -1,0 +1,267 @@
+
+> mangfoldshuset-vestlandet@0.1.0 test
+> vitest run src/lib/audit-regressions.test.ts
+
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.2 C:/Users/elisa/Desktop/dernek proje/mangfoldshuset-vestlandet
+
+ ❯ src/lib/audit-regressions.test.ts (19 tests | 16 failed) 41ms
+   ❯ QA-01 explicit authorization (3)
+     × rejects absent/unknown roles: null 6ms
+     × rejects absent/unknown roles: {"app_metadata":{}} 1ms
+     × rejects absent/unknown roles: {"app_metadata":{"role":"unexpected"}} 0ms
+   ❯ QA-02 persistence before success (16)
+     × contact: database error never claims success or sends mail 19ms
+     × contact: missing configuration never claims success 1ms
+     × contact: network failure is handled without exposing details 1ms
+     × contact: mail outage after persistence does not encourage duplicate submission 1ms
+     × membership: database error never claims success or sends mail 2ms
+     × membership: missing configuration never claims success 1ms
+     × membership: network failure is handled without exposing details 1ms
+     × membership: mail outage after persistence does not encourage duplicate submission 1ms
+     × application: database error never claims success or sends mail 2ms
+     × application: missing configuration never claims success 1ms
+     × application: network failure is handled without exposing details 1ms
+     × application: mail outage after persistence does not encourage duplicate submission 1ms
+     × membership: missing terms are rejected server-side 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 16 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/lib/audit-regressions.test.ts > QA-01 explicit authorization > rejects absent/unknown roles: null
+ FAIL  src/lib/audit-regressions.test.ts > QA-01 explicit authorization > rejects absent/unknown roles: {"app_metadata":{}}
+ FAIL  src/lib/audit-regressions.test.ts > QA-01 explicit authorization > rejects absent/unknown roles: {"app_metadata":{"role":"unexpected"}}
+AssertionError: expected 'owner' to be null
+
+- Expected:
+null
+
++ Received:
+"owner"
+
+ ❯ src/lib/audit-regressions.test.ts:35:32
+     33| describe("QA-01 explicit authorization", () => {
+     34|   it.each([null, { app_metadata: {} }, { app_metadata: { role: "unexpe…
+     35|     expect(roleFromUser(user)).toBeNull();
+       |                                ^
+     36|   });
+     37| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/16]⎯
+
+ FAIL  src/lib/audit-regressions.test.ts > QA-02 persistence before success > contact: database error never claims success or sends mail
+AssertionError: expected [Function] to throw error including 'REDIRECT:/kontakt?feil=1' but got 'REDIRECT:/kontakt?sendt=takk'
+
+Expected: "REDIRECT:/kontakt?feil=1"
+Received: "REDIRECT:/kontakt?sendt=takk"
+
+ ❯ src/lib/audit-regressions.test.ts:48:35
+     46|     it(`${label}: database error never claims success or sends mail`, …
+     47|       mocks.insert.mockResolvedValue({ error: { message: "synthetic da…
+     48|       await expect(action(data())).rejects.toThrow(`REDIRECT:${failure…
+       |                                   ^
+     49|       expect(mocks.send).not.toHaveBeenCalled();
+     50|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/16]⎯
+
+ FAIL  src/lib/audit-regressions.test.ts > QA-02 persistence before success > contact: missing configuration never claims success
+AssertionError: expected [Function] to throw error including 'REDIRECT:/kontakt?feil=1' but got 'REDIRECT:/kontakt?sendt=takk'
+
+Expected: "REDIRECT:/kontakt?feil=1"
+Received: "REDIRECT:/kontakt?sendt=takk"
+
+ ❯ src/lib/audit-regressions.test.ts:53:35
+     51|     it(`${label}: missing configuration never claims success`, async (…
+     52|       mocks.configured.mockReturnValue(false);
+     53|       await expect(action(data())).rejects.toThrow(`REDIRECT:${failure…
+       |                                   ^
+     54|       expect(mocks.insert).not.toHaveBeenCalled();
+     55|       expect(mocks.send).not.toHaveBeenCalled();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/16]⎯
+
+ FAIL  src/lib/audit-regressions.test.ts > QA-02 persistence before success > contact: network failure is handled without exposing details
+AssertionError: expected [Function] to throw error including 'REDIRECT:/kontakt?feil=1' but got 'private connection details'
+
+Expected: "REDIRECT:/kontakt?feil=1"
+Received: "private connection details"
+
+ ❯ src/lib/audit-regressions.test.ts:59:35
+     57|     it(`${label}: network failure is handled without exposing details`…
+     58|       mocks.insert.mockRejectedValue(new Error("private connection det…
+     59|       await expect(action(data())).rejects.toThrow(`REDIRECT:${failure…
+       |                                   ^
+     60|       expect(mocks.send).not.toHaveBeenCalled();
+     61|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/16]⎯
+
+ FAIL  src/lib/audit-regressions.test.ts > QA-02 persistence before success > contact: mail outage after persistence does not encourage duplicate submission
+AssertionError: expected [Function] to throw error including 'REDIRECT:/kontakt?sendt=takk' but got 'mail unavailable'
+
+Expected: "REDIRECT:/kontakt?sendt=takk"
+Received: "mail unavailable"
+
+ ❯ src/lib/audit-regressions.test.ts:69:35
+     67|     it(`${label}: mail outage after persistence does not encourage dup…
+     68|       mocks.send.mockRejectedValue(new Error("mail unavailable"));
+     69|       await expect(action(data())).rejects.toThrow(`REDIRECT:${success…
+       |                                   ^
+     70|       expect(mocks.insert).toHaveBeenCalledOnce();
+     71|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/16]⎯
+
+ FAIL  src/lib/audit-regressions.test.ts > QA-02 persistence before success > membership: database error never claims success or sends mail
+AssertionError: expected [Function] to throw error including 'REDIRECT:/bli-med?feil=medlem#medlem' but got 'REDIRECT:/bli-med?sendt=medlem#medlem'
+
+Expected: "REDIRECT:/bli-med?feil=medlem#medlem"
+Received: "REDIRECT:/bli-med?sendt=medlem#medlem"
+
+ ❯ src/lib/audit-regressions.test.ts:48:35
+     46|     it(`${label}: database error never claims success or sends mail`, …
+     47|       mocks.insert.mockResolvedValue({ error: { message: "synthetic da…
+     48|       await expect(action(data())).rejects.toThrow(`REDIRECT:${failure…
+       |                                   ^
+     49|       expect(mocks.send).not.toHaveBeenCalled();
+     50|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/16]⎯
+
+ FAIL  src/lib/audit-regressions.test.ts > QA-02 persistence before success > membership: missing configuration never claims success
+AssertionError: expected [Function] to throw error including 'REDIRECT:/bli-med?feil=medlem#medlem' but got 'REDIRECT:/bli-med?sendt=medlem#medlem'
+
+Expected: "REDIRECT:/bli-med?feil=medlem#medlem"
+Received: "REDIRECT:/bli-med?sendt=medlem#medlem"
+
+ ❯ src/lib/audit-regressions.test.ts:53:35
+     51|     it(`${label}: missing configuration never claims success`, async (…
+     52|       mocks.configured.mockReturnValue(false);
+     53|       await expect(action(data())).rejects.toThrow(`REDIRECT:${failure…
+       |                                   ^
+     54|       expect(mocks.insert).not.toHaveBeenCalled();
+     55|       expect(mocks.send).not.toHaveBeenCalled();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/16]⎯
+
+ FAIL  src/lib/audit-regressions.test.ts > QA-02 persistence before success > membership: network failure is handled without exposing details
+AssertionError: expected [Function] to throw error including 'REDIRECT:/bli-med?feil=medlem#medlem' but got 'private connection details'
+
+Expected: "REDIRECT:/bli-med?feil=medlem#medlem"
+Received: "private connection details"
+
+ ❯ src/lib/audit-regressions.test.ts:59:35
+     57|     it(`${label}: network failure is handled without exposing details`…
+     58|       mocks.insert.mockRejectedValue(new Error("private connection det…
+     59|       await expect(action(data())).rejects.toThrow(`REDIRECT:${failure…
+       |                                   ^
+     60|       expect(mocks.send).not.toHaveBeenCalled();
+     61|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/16]⎯
+
+ FAIL  src/lib/audit-regressions.test.ts > QA-02 persistence before success > membership: mail outage after persistence does not encourage duplicate submission
+AssertionError: expected [Function] to throw error including 'REDIRECT:/bli-med?sendt=medlem#medlem' but got 'mail unavailable'
+
+Expected: "REDIRECT:/bli-med?sendt=medlem#medlem"
+Received: "mail unavailable"
+
+ ❯ src/lib/audit-regressions.test.ts:69:35
+     67|     it(`${label}: mail outage after persistence does not encourage dup…
+     68|       mocks.send.mockRejectedValue(new Error("mail unavailable"));
+     69|       await expect(action(data())).rejects.toThrow(`REDIRECT:${success…
+       |                                   ^
+     70|       expect(mocks.insert).toHaveBeenCalledOnce();
+     71|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/16]⎯
+
+ FAIL  src/lib/audit-regressions.test.ts > QA-02 persistence before success > application: database error never claims success or sends mail
+AssertionError: expected [Function] to throw error including 'REDIRECT:/bli-med?feil=ide#ide' but got 'REDIRECT:/bli-med?sendt=ide#ide'
+
+Expected: "REDIRECT:/bli-med?feil=ide#ide"
+Received: "REDIRECT:/bli-med?sendt=ide#ide"
+
+ ❯ src/lib/audit-regressions.test.ts:48:35
+     46|     it(`${label}: database error never claims success or sends mail`, …
+     47|       mocks.insert.mockResolvedValue({ error: { message: "synthetic da…
+     48|       await expect(action(data())).rejects.toThrow(`REDIRECT:${failure…
+       |                                   ^
+     49|       expect(mocks.send).not.toHaveBeenCalled();
+     50|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/16]⎯
+
+ FAIL  src/lib/audit-regressions.test.ts > QA-02 persistence before success > application: missing configuration never claims success
+AssertionError: expected [Function] to throw error including 'REDIRECT:/bli-med?feil=ide#ide' but got 'REDIRECT:/bli-med?sendt=ide#ide'
+
+Expected: "REDIRECT:/bli-med?feil=ide#ide"
+Received: "REDIRECT:/bli-med?sendt=ide#ide"
+
+ ❯ src/lib/audit-regressions.test.ts:53:35
+     51|     it(`${label}: missing configuration never claims success`, async (…
+     52|       mocks.configured.mockReturnValue(false);
+     53|       await expect(action(data())).rejects.toThrow(`REDIRECT:${failure…
+       |                                   ^
+     54|       expect(mocks.insert).not.toHaveBeenCalled();
+     55|       expect(mocks.send).not.toHaveBeenCalled();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/16]⎯
+
+ FAIL  src/lib/audit-regressions.test.ts > QA-02 persistence before success > application: network failure is handled without exposing details
+AssertionError: expected [Function] to throw error including 'REDIRECT:/bli-med?feil=ide#ide' but got 'private connection details'
+
+Expected: "REDIRECT:/bli-med?feil=ide#ide"
+Received: "private connection details"
+
+ ❯ src/lib/audit-regressions.test.ts:59:35
+     57|     it(`${label}: network failure is handled without exposing details`…
+     58|       mocks.insert.mockRejectedValue(new Error("private connection det…
+     59|       await expect(action(data())).rejects.toThrow(`REDIRECT:${failure…
+       |                                   ^
+     60|       expect(mocks.send).not.toHaveBeenCalled();
+     61|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/16]⎯
+
+ FAIL  src/lib/audit-regressions.test.ts > QA-02 persistence before success > application: mail outage after persistence does not encourage duplicate submission
+AssertionError: expected [Function] to throw error including 'REDIRECT:/bli-med?sendt=ide#ide' but got 'mail unavailable'
+
+Expected: "REDIRECT:/bli-med?sendt=ide#ide"
+Received: "mail unavailable"
+
+ ❯ src/lib/audit-regressions.test.ts:69:35
+     67|     it(`${label}: mail outage after persistence does not encourage dup…
+     68|       mocks.send.mockRejectedValue(new Error("mail unavailable"));
+     69|       await expect(action(data())).rejects.toThrow(`REDIRECT:${success…
+       |                                   ^
+     70|       expect(mocks.insert).toHaveBeenCalledOnce();
+     71|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/16]⎯
+
+ FAIL  src/lib/audit-regressions.test.ts > QA-02 persistence before success > membership: missing terms are rejected server-side
+AssertionError: expected [Function] to throw error including 'REDIRECT:/bli-med?feil=medlem#medlem' but got 'REDIRECT:/bli-med?sendt=medlem#medlem'
+
+Expected: "REDIRECT:/bli-med?feil=medlem#medlem"
+Received: "REDIRECT:/bli-med?sendt=medlem#medlem"
+
+ ❯ src/lib/audit-regressions.test.ts:75:41
+     73|   it("membership: missing terms are rejected server-side", async () =>…
+     74|     const data = member(); data.delete("terms");
+     75|     await expect(submitMembership(data)).rejects.toThrow("REDIRECT:/bl…
+       |                                         ^
+     76|     expect(mocks.insert).not.toHaveBeenCalled();
+     77|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/16]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  16 failed | 3 passed (19)
+   Start at  16:38:25
+   Duration  463ms (transform 46%, import 39%, tests 14%, worker 2%)
+

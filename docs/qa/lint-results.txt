@@ -1,0 +1,10 @@
+
+> mangfoldshuset-vestlandet@0.1.0 lint
+> eslint
+
+
+C:\Users\elisa\Desktop\dernek proje\mangfoldshuset-vestlandet\src\components\SubmissionForm.test.ts
+  15:37  error  Do not pass children as props. Instead, pass them as additional arguments to React.createElement  react/no-children-prop
+
+✖ 1 problem (1 error, 0 warnings)
+

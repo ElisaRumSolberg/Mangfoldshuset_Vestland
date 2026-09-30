@@ -1,0 +1,85 @@
+
+Running 11 tests using 1 worker
+
+(node:32584) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x   1 tests\browser\public-audit.spec.ts:10:7 › public page / (6.7s)
+(node:44204) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  2 tests\browser\public-audit.spec.ts:10:7 › public page /om-oss (4.3s)
+  ok  3 tests\browser\public-audit.spec.ts:10:7 › public page /aktiviteter (3.8s)
+  ok  4 tests\browser\public-audit.spec.ts:10:7 › public page /utvalg (3.2s)
+  ok  5 tests\browser\public-audit.spec.ts:10:7 › public page /nyheter (3.0s)
+  ok  6 tests\browser\public-audit.spec.ts:10:7 › public page /mangfoldsposten (6.2s)
+  ok  7 tests\browser\public-audit.spec.ts:10:7 › public page /kontakt (3.6s)
+  ok  8 tests\browser\public-audit.spec.ts:10:7 › public page /bli-med (3.4s)
+  ok  9 tests\browser\public-audit.spec.ts:60:5 › anonymous admin redirects; metadata endpoints and 404 (1.5s)
+  ok 10 tests\browser\public-audit.spec.ts:72:5 › mobile navigation, desktop keyboard menu, volunteer anchor (3.1s)
+  x  11 tests\browser\public-audit.spec.ts:92:5 › one real detail route per content type (13.3s)
+
+
+  1) tests\browser\public-audit.spec.ts:10:7 › public page / ───────────────────────────────────────
+
+    Error: serious/critical axe violations
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 12
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "count": 1,
+    +     "id": "color-contrast",
+    +     "impact": "serious",
+    +     "targets": Array [
+    +       Array [
+    +         ".rounded-2xl.py-4.text-ink > .tracking-wide.text-ink.uppercase",
+    +       ],
+    +     ],
+    +   },
+    + ]
+
+      54 |     expect.soft(pageErrors, "uncaught browser errors").toBe(0);
+      55 |     expect.soft(metadata.brokenImages, "broken images").toEqual([]);
+    > 56 |     expect.soft(violations.filter(v => ["critical", "serious"].includes(v.impact ?? "")), "serious/critical axe violations").toEqual([]);
+         |                                                                                                                              ^
+      57 |   });
+      58 | }
+      59 |
+        at C:\Users\elisa\Desktop\dernek proje\mangfoldshuset-vestlandet\tests\browser\public-audit.spec.ts:56:126
+
+    Error Context: test-results\public-audit-public-page-\error-context.md
+
+  2) tests\browser\public-audit.spec.ts:92:5 › one real detail route per content type ──────────────
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('h1')
+    Expected: 1
+    Received: 0
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "soft toHaveCount" locator('h1') with timeout 5000ms
+      - waiting for locator('h1')
+        14 × locator resolved to 0 elements
+           - unexpected value "0"
+
+
+       97 |     const response = await page.goto(href);
+       98 |     expect.soft(response?.status(), href).toBe(200);
+    >  99 |     await expect.soft(page.locator("h1")).toHaveCount(1);
+          |                                           ^
+      100 |   }
+      101 | });
+      102 |
+        at C:\Users\elisa\Desktop\dernek proje\mangfoldshuset-vestlandet\tests\browser\public-audit.spec.ts:99:43
+
+    Error Context: test-results\public-audit-one-real-detail-route-per-content-type\error-context.md
+
+  2 failed
+    tests\browser\public-audit.spec.ts:10:7 › public page / ────────────────────────────────────────
+    tests\browser\public-audit.spec.ts:92:5 › one real detail route per content type ───────────────
+  9 passed (55.7s)

@@ -1,0 +1,63 @@
+{
+  "baseURL": "https://www.mangfoldshusetvestland.no",
+  "path": "/om-oss",
+  "layout": [
+    {
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "overflow": true
+    },
+    {
+      "width": 1440,
+      "overflow": false
+    }
+  ],
+  "violations": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "count": 4,
+      "targets": [
+        [
+          ".py-6.rounded-xl.text-lg:nth-child(3)"
+        ],
+        [
+          ".hover\\:opacity-80.transition-opacity[target=\"_blank\"]:nth-child(3)"
+        ],
+        [
+          ".hover\\:opacity-80.transition-opacity[target=\"_blank\"]:nth-child(6)"
+        ],
+        [
+          ".text-ink-soft\\/70"
+        ]
+      ]
+    }
+  ],
+  "metadata": {
+    "title": "Om oss – Mangfoldhuset Vestland",
+    "description": true,
+    "canonical": null,
+    "brokenImages": [],
+    "internalLinks": [
+      "/",
+      "/om-oss",
+      "/aktiviteter",
+      "/kontakt",
+      "/utvalg/ungdom",
+      "/bli-med#frivillig",
+      "/bli-med",
+      "/bli-med#medlem",
+      "/personvern"
+    ]
+  },
+  "pageErrors": 0,
+  "brokenResponses": [],
+  "blockedWrites": 0
+}

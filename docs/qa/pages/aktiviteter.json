@@ -1,0 +1,51 @@
+{
+  "baseURL": "https://www.mangfoldshusetvestland.no",
+  "path": "/aktiviteter",
+  "layout": [
+    {
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "overflow": true
+    },
+    {
+      "width": 1440,
+      "overflow": false
+    }
+  ],
+  "violations": [],
+  "metadata": {
+    "title": "Aktiviteter – Mangfoldshuset Vestland",
+    "description": true,
+    "canonical": null,
+    "brokenImages": [],
+    "internalLinks": [
+      "/",
+      "/om-oss",
+      "/aktiviteter",
+      "/kontakt",
+      "/utvalg/ungdom",
+      "/bli-med#frivillig",
+      "/tilbud/barseltreff.jpg",
+      "/tilbud/28f2a1b0-fdc2-4ddb-a73b-0c5ad105d419",
+      "/tilbud/sprakkafe.jpg",
+      "/tilbud/017817d8-1431-4ba7-9aa6-be0ad6784bb9",
+      "/tilbud/0ac83438-cdd6-4bda-b22b-dc91e9084a30",
+      "/aktiviteter/bac4b522-c0be-453c-a441-0ca4fbb31216",
+      "/aktiviteter/747ed99b-301f-41dc-abe2-3b7fe4da0846",
+      "/aktiviteter/2ea0a0b3-793f-4de6-8c11-56726656df84",
+      "/aktiviteter/6cf9fb55-3ef4-492c-955f-914b04ed28aa",
+      "/bli-med#medlem",
+      "/personvern"
+    ]
+  },
+  "pageErrors": 0,
+  "brokenResponses": [],
+  "blockedWrites": 0
+}

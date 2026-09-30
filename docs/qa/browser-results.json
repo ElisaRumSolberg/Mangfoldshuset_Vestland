@@ -1,0 +1,679 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\node_modules\\@playwright\\test\\cli.js",
+      "test"
+    ],
+    "configFile": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\playwright.config.ts",
+    "rootDir": "C:/Users/elisa/Desktop/dernek proje/mangfoldshuset-vestlandet/tests/browser",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/elisa/Desktop/dernek proje/mangfoldshuset-vestlandet/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "C:/Users/elisa/Desktop/dernek proje/mangfoldshuset-vestlandet/tests/browser",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/qa/browser-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "public-audit.spec.ts",
+      "file": "public-audit.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "public page /",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 12097,
+                  "error": {
+                    "message": "Error: /: horizontal overflow at 768\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m",
+                    "stack": "Error: /: horizontal overflow at 768\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts:35:73",
+                    "location": {
+                      "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                      "column": 73,
+                      "line": 35
+                    },
+                    "snippet": "  33 |       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);\n  34 |       layout.push({ width, overflow });\n> 35 |       expect.soft(overflow, `${path}: horizontal overflow at ${width}`).toBe(false);\n     |                                                                         ^\n  36 |       if (path === \"/\") {\n  37 |         await mkdir(\"docs/qa/screenshots\", { recursive: true });\n  38 |         await page.screenshot({ path: `docs/qa/screenshots/home-${width}.png` });"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                        "column": 73,
+                        "line": 35
+                      },
+                      "message": "Error: /: horizontal overflow at 768\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n\n  33 |       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);\n  34 |       layout.push({ width, overflow });\n> 35 |       expect.soft(overflow, `${path}: horizontal overflow at ${width}`).toBe(false);\n     |                                                                         ^\n  36 |       if (path === \"/\") {\n  37 |         await mkdir(\"docs/qa/screenshots\", { recursive: true });\n  38 |         await page.screenshot({ path: `docs/qa/screenshots/home-${width}.png` });\n    at C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts:35:73"
+                    },
+                    {
+                      "location": {
+                        "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                        "column": 126,
+                        "line": 55
+                      },
+                      "message": "Error: serious/critical axe violations\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 15\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"count\": 2,\u001b[39m\n\u001b[31m+     \"id\": \"color-contrast\",\u001b[39m\n\u001b[31m+     \"impact\": \"serious\",\u001b[39m\n\u001b[31m+     \"targets\": Array [\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \".rounded-2xl.py-4.px-6:nth-child(1) > .text-white\\\\/80.tracking-wide.uppercase\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \".mt-8\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+     ],\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  53 |     expect.soft(pageErrors, \"uncaught browser errors\").toBe(0);\n  54 |     expect.soft(metadata.brokenImages, \"broken images\").toEqual([]);\n> 55 |     expect.soft(violations.filter(v => [\"critical\", \"serious\"].includes(v.impact ?? \"\")), \"serious/critical axe violations\").toEqual([]);\n     |                                                                                                                              ^\n  56 |   });\n  57 | }\n  58 |\n    at C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts:55:126"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T14:41:29.768Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\test-results\\public-audit-public-page-\\error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                    "column": 73,
+                    "line": 35
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "696e2fda302d4b3fc75e-937852d04ee3979798d5",
+          "file": "public-audit.spec.ts",
+          "line": 9,
+          "column": 7
+        },
+        {
+          "title": "public page /om-oss",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 6393,
+                  "error": {
+                    "message": "Error: /om-oss: horizontal overflow at 768\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m",
+                    "stack": "Error: /om-oss: horizontal overflow at 768\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts:35:73",
+                    "location": {
+                      "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                      "column": 73,
+                      "line": 35
+                    },
+                    "snippet": "  33 |       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);\n  34 |       layout.push({ width, overflow });\n> 35 |       expect.soft(overflow, `${path}: horizontal overflow at ${width}`).toBe(false);\n     |                                                                         ^\n  36 |       if (path === \"/\") {\n  37 |         await mkdir(\"docs/qa/screenshots\", { recursive: true });\n  38 |         await page.screenshot({ path: `docs/qa/screenshots/home-${width}.png` });"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                        "column": 73,
+                        "line": 35
+                      },
+                      "message": "Error: /om-oss: horizontal overflow at 768\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n\n  33 |       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);\n  34 |       layout.push({ width, overflow });\n> 35 |       expect.soft(overflow, `${path}: horizontal overflow at ${width}`).toBe(false);\n     |                                                                         ^\n  36 |       if (path === \"/\") {\n  37 |         await mkdir(\"docs/qa/screenshots\", { recursive: true });\n  38 |         await page.screenshot({ path: `docs/qa/screenshots/home-${width}.png` });\n    at C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts:35:73"
+                    },
+                    {
+                      "location": {
+                        "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                        "column": 126,
+                        "line": 55
+                      },
+                      "message": "Error: serious/critical axe violations\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 21\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"count\": 4,\u001b[39m\n\u001b[31m+     \"id\": \"color-contrast\",\u001b[39m\n\u001b[31m+     \"impact\": \"serious\",\u001b[39m\n\u001b[31m+     \"targets\": Array [\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \".py-6.rounded-xl.text-lg:nth-child(3)\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \".hover\\\\:opacity-80.transition-opacity[target=\\\"_blank\\\"]:nth-child(3)\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \".hover\\\\:opacity-80.transition-opacity[target=\\\"_blank\\\"]:nth-child(6)\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \".text-ink-soft\\\\/70\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+     ],\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  53 |     expect.soft(pageErrors, \"uncaught browser errors\").toBe(0);\n  54 |     expect.soft(metadata.brokenImages, \"broken images\").toEqual([]);\n> 55 |     expect.soft(violations.filter(v => [\"critical\", \"serious\"].includes(v.impact ?? \"\")), \"serious/critical axe violations\").toEqual([]);\n     |                                                                                                                              ^\n  56 |   });\n  57 | }\n  58 |\n    at C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts:55:126"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T14:41:44.106Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\test-results\\public-audit-public-page-om-oss\\error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                    "column": 73,
+                    "line": 35
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "696e2fda302d4b3fc75e-2958a679752b3dc716ac",
+          "file": "public-audit.spec.ts",
+          "line": 9,
+          "column": 7
+        },
+        {
+          "title": "public page /aktiviteter",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 5860,
+                  "error": {
+                    "message": "Error: /aktiviteter: horizontal overflow at 768\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m",
+                    "stack": "Error: /aktiviteter: horizontal overflow at 768\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts:35:73",
+                    "location": {
+                      "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                      "column": 73,
+                      "line": 35
+                    },
+                    "snippet": "  33 |       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);\n  34 |       layout.push({ width, overflow });\n> 35 |       expect.soft(overflow, `${path}: horizontal overflow at ${width}`).toBe(false);\n     |                                                                         ^\n  36 |       if (path === \"/\") {\n  37 |         await mkdir(\"docs/qa/screenshots\", { recursive: true });\n  38 |         await page.screenshot({ path: `docs/qa/screenshots/home-${width}.png` });"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                        "column": 73,
+                        "line": 35
+                      },
+                      "message": "Error: /aktiviteter: horizontal overflow at 768\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n\n  33 |       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);\n  34 |       layout.push({ width, overflow });\n> 35 |       expect.soft(overflow, `${path}: horizontal overflow at ${width}`).toBe(false);\n     |                                                                         ^\n  36 |       if (path === \"/\") {\n  37 |         await mkdir(\"docs/qa/screenshots\", { recursive: true });\n  38 |         await page.screenshot({ path: `docs/qa/screenshots/home-${width}.png` });\n    at C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts:35:73"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T14:41:51.822Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\test-results\\public-audit-public-page-aktiviteter\\error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                    "column": 73,
+                    "line": 35
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "696e2fda302d4b3fc75e-83415c6c6dd770c109a3",
+          "file": "public-audit.spec.ts",
+          "line": 9,
+          "column": 7
+        },
+        {
+          "title": "public page /utvalg",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 7909,
+                  "error": {
+                    "message": "Error: /utvalg: horizontal overflow at 768\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m",
+                    "stack": "Error: /utvalg: horizontal overflow at 768\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts:35:73",
+                    "location": {
+                      "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                      "column": 73,
+                      "line": 35
+                    },
+                    "snippet": "  33 |       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);\n  34 |       layout.push({ width, overflow });\n> 35 |       expect.soft(overflow, `${path}: horizontal overflow at ${width}`).toBe(false);\n     |                                                                         ^\n  36 |       if (path === \"/\") {\n  37 |         await mkdir(\"docs/qa/screenshots\", { recursive: true });\n  38 |         await page.screenshot({ path: `docs/qa/screenshots/home-${width}.png` });"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                        "column": 73,
+                        "line": 35
+                      },
+                      "message": "Error: /utvalg: horizontal overflow at 768\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n\n  33 |       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);\n  34 |       layout.push({ width, overflow });\n> 35 |       expect.soft(overflow, `${path}: horizontal overflow at ${width}`).toBe(false);\n     |                                                                         ^\n  36 |       if (path === \"/\") {\n  37 |         await mkdir(\"docs/qa/screenshots\", { recursive: true });\n  38 |         await page.screenshot({ path: `docs/qa/screenshots/home-${width}.png` });\n    at C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts:35:73"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T14:41:59.007Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\test-results\\public-audit-public-page-utvalg\\error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                    "column": 73,
+                    "line": 35
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "696e2fda302d4b3fc75e-317bc701933e6abd8918",
+          "file": "public-audit.spec.ts",
+          "line": 9,
+          "column": 7
+        },
+        {
+          "title": "public page /nyheter",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 7144,
+                  "error": {
+                    "message": "Error: /nyheter: horizontal overflow at 768\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m",
+                    "stack": "Error: /nyheter: horizontal overflow at 768\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts:35:73",
+                    "location": {
+                      "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                      "column": 73,
+                      "line": 35
+                    },
+                    "snippet": "  33 |       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);\n  34 |       layout.push({ width, overflow });\n> 35 |       expect.soft(overflow, `${path}: horizontal overflow at ${width}`).toBe(false);\n     |                                                                         ^\n  36 |       if (path === \"/\") {\n  37 |         await mkdir(\"docs/qa/screenshots\", { recursive: true });\n  38 |         await page.screenshot({ path: `docs/qa/screenshots/home-${width}.png` });"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                        "column": 73,
+                        "line": 35
+                      },
+                      "message": "Error: /nyheter: horizontal overflow at 768\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n\n  33 |       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);\n  34 |       layout.push({ width, overflow });\n> 35 |       expect.soft(overflow, `${path}: horizontal overflow at ${width}`).toBe(false);\n     |                                                                         ^\n  36 |       if (path === \"/\") {\n  37 |         await mkdir(\"docs/qa/screenshots\", { recursive: true });\n  38 |         await page.screenshot({ path: `docs/qa/screenshots/home-${width}.png` });\n    at C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts:35:73"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T14:42:09.057Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\test-results\\public-audit-public-page-nyheter\\error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                    "column": 73,
+                    "line": 35
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "696e2fda302d4b3fc75e-38d6f3fc6b8bc6c21ae4",
+          "file": "public-audit.spec.ts",
+          "line": 9,
+          "column": 7
+        },
+        {
+          "title": "public page /mangfoldsposten",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 7410,
+                  "error": {
+                    "message": "Error: /mangfoldsposten: horizontal overflow at 768\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m",
+                    "stack": "Error: /mangfoldsposten: horizontal overflow at 768\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts:35:73",
+                    "location": {
+                      "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                      "column": 73,
+                      "line": 35
+                    },
+                    "snippet": "  33 |       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);\n  34 |       layout.push({ width, overflow });\n> 35 |       expect.soft(overflow, `${path}: horizontal overflow at ${width}`).toBe(false);\n     |                                                                         ^\n  36 |       if (path === \"/\") {\n  37 |         await mkdir(\"docs/qa/screenshots\", { recursive: true });\n  38 |         await page.screenshot({ path: `docs/qa/screenshots/home-${width}.png` });"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                        "column": 73,
+                        "line": 35
+                      },
+                      "message": "Error: /mangfoldsposten: horizontal overflow at 768\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n\n  33 |       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);\n  34 |       layout.push({ width, overflow });\n> 35 |       expect.soft(overflow, `${path}: horizontal overflow at ${width}`).toBe(false);\n     |                                                                         ^\n  36 |       if (path === \"/\") {\n  37 |         await mkdir(\"docs/qa/screenshots\", { recursive: true });\n  38 |         await page.screenshot({ path: `docs/qa/screenshots/home-${width}.png` });\n    at C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts:35:73"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T14:42:17.762Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\test-results\\public-audit-public-page-mangfoldsposten\\error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                    "column": 73,
+                    "line": 35
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "696e2fda302d4b3fc75e-dbeb023722023aa65b9a",
+          "file": "public-audit.spec.ts",
+          "line": 9,
+          "column": 7
+        },
+        {
+          "title": "public page /kontakt",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 6,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 4374,
+                  "error": {
+                    "message": "Error: /kontakt: horizontal overflow at 768\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m",
+                    "stack": "Error: /kontakt: horizontal overflow at 768\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts:35:73",
+                    "location": {
+                      "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                      "column": 73,
+                      "line": 35
+                    },
+                    "snippet": "  33 |       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);\n  34 |       layout.push({ width, overflow });\n> 35 |       expect.soft(overflow, `${path}: horizontal overflow at ${width}`).toBe(false);\n     |                                                                         ^\n  36 |       if (path === \"/\") {\n  37 |         await mkdir(\"docs/qa/screenshots\", { recursive: true });\n  38 |         await page.screenshot({ path: `docs/qa/screenshots/home-${width}.png` });"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                        "column": 73,
+                        "line": 35
+                      },
+                      "message": "Error: /kontakt: horizontal overflow at 768\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n\n  33 |       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);\n  34 |       layout.push({ width, overflow });\n> 35 |       expect.soft(overflow, `${path}: horizontal overflow at ${width}`).toBe(false);\n     |                                                                         ^\n  36 |       if (path === \"/\") {\n  37 |         await mkdir(\"docs/qa/screenshots\", { recursive: true });\n  38 |         await page.screenshot({ path: `docs/qa/screenshots/home-${width}.png` });\n    at C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts:35:73"
+                    },
+                    {
+                      "location": {
+                        "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                        "column": 126,
+                        "line": 55
+                      },
+                      "message": "Error: serious/critical axe violations\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 18\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"count\": 3,\u001b[39m\n\u001b[31m+     \"id\": \"label\",\u001b[39m\n\u001b[31m+     \"impact\": \"critical\",\u001b[39m\n\u001b[31m+     \"targets\": Array [\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"input[name=\\\"name\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"input[type=\\\"email\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"textarea\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+     ],\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  53 |     expect.soft(pageErrors, \"uncaught browser errors\").toBe(0);\n  54 |     expect.soft(metadata.brokenImages, \"broken images\").toEqual([]);\n> 55 |     expect.soft(violations.filter(v => [\"critical\", \"serious\"].includes(v.impact ?? \"\")), \"serious/critical axe violations\").toEqual([]);\n     |                                                                                                                              ^\n  56 |   });\n  57 | }\n  58 |\n    at C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts:55:126"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T14:42:26.731Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\test-results\\public-audit-public-page-kontakt\\error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                    "column": 73,
+                    "line": 35
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "696e2fda302d4b3fc75e-77e24cade385ff7de6cc",
+          "file": "public-audit.spec.ts",
+          "line": 9,
+          "column": 7
+        },
+        {
+          "title": "public page /bli-med",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 4220,
+                  "error": {
+                    "message": "Error: /bli-med: horizontal overflow at 360\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m",
+                    "stack": "Error: /bli-med: horizontal overflow at 360\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts:35:73",
+                    "location": {
+                      "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                      "column": 73,
+                      "line": 35
+                    },
+                    "snippet": "  33 |       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);\n  34 |       layout.push({ width, overflow });\n> 35 |       expect.soft(overflow, `${path}: horizontal overflow at ${width}`).toBe(false);\n     |                                                                         ^\n  36 |       if (path === \"/\") {\n  37 |         await mkdir(\"docs/qa/screenshots\", { recursive: true });\n  38 |         await page.screenshot({ path: `docs/qa/screenshots/home-${width}.png` });"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                        "column": 73,
+                        "line": 35
+                      },
+                      "message": "Error: /bli-med: horizontal overflow at 360\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n\n  33 |       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);\n  34 |       layout.push({ width, overflow });\n> 35 |       expect.soft(overflow, `${path}: horizontal overflow at ${width}`).toBe(false);\n     |                                                                         ^\n  36 |       if (path === \"/\") {\n  37 |         await mkdir(\"docs/qa/screenshots\", { recursive: true });\n  38 |         await page.screenshot({ path: `docs/qa/screenshots/home-${width}.png` });\n    at C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts:35:73"
+                    },
+                    {
+                      "location": {
+                        "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                        "column": 73,
+                        "line": 35
+                      },
+                      "message": "Error: /bli-med: horizontal overflow at 390\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n\n  33 |       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);\n  34 |       layout.push({ width, overflow });\n> 35 |       expect.soft(overflow, `${path}: horizontal overflow at ${width}`).toBe(false);\n     |                                                                         ^\n  36 |       if (path === \"/\") {\n  37 |         await mkdir(\"docs/qa/screenshots\", { recursive: true });\n  38 |         await page.screenshot({ path: `docs/qa/screenshots/home-${width}.png` });\n    at C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts:35:73"
+                    },
+                    {
+                      "location": {
+                        "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                        "column": 73,
+                        "line": 35
+                      },
+                      "message": "Error: /bli-med: horizontal overflow at 768\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n\n  33 |       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);\n  34 |       layout.push({ width, overflow });\n> 35 |       expect.soft(overflow, `${path}: horizontal overflow at ${width}`).toBe(false);\n     |                                                                         ^\n  36 |       if (path === \"/\") {\n  37 |         await mkdir(\"docs/qa/screenshots\", { recursive: true });\n  38 |         await page.screenshot({ path: `docs/qa/screenshots/home-${width}.png` });\n    at C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts:35:73"
+                    },
+                    {
+                      "location": {
+                        "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                        "column": 126,
+                        "line": 55
+                      },
+                      "message": "Error: serious/critical axe violations\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 91\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"count\": 24,\u001b[39m\n\u001b[31m+     \"id\": \"label\",\u001b[39m\n\u001b[31m+     \"impact\": \"critical\",\u001b[39m\n\u001b[31m+     \"targets\": Array [\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"input[name=\\\"first_name\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"input[name=\\\"last_name\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"input[name=\\\"birth_date\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"div:nth-child(4) > .w-full.px-3[name=\\\"phone\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"div:nth-child(5) > input[type=\\\"email\\\"][name=\\\"email\\\"][required=\\\"\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"input[name=\\\"address\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"input[name=\\\"guardian\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"textarea[name=\\\"comment\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \".gap-6 > .sm\\\\:grid-cols-3.gap-4.grid-cols-1 > div:nth-child(1) > .w-full[name=\\\"name\\\"][required=\\\"\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \".gap-6 > .sm\\\\:grid-cols-3.gap-4.grid-cols-1 > div:nth-child(2) > input[type=\\\"email\\\"][name=\\\"email\\\"][required=\\\"\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \".gap-6 > .sm\\\\:grid-cols-3.gap-4.grid-cols-1 > div:nth-child(3) > .w-full.px-3[name=\\\"phone\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"textarea[name=\\\"ferdigheter\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"#ide > .mt-8.rounded-\\\\[18px\\\\].bg-white > form > .sm\\\\:grid-cols-3.gap-4.grid-cols-1 > div:nth-child(1) > .w-full[name=\\\"name\\\"][required=\\\"\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"#ide > .mt-8.rounded-\\\\[18px\\\\].bg-white > form > .sm\\\\:grid-cols-3.gap-4.grid-cols-1 > div:nth-child(2) > input[type=\\\"email\\\"][name=\\\"email\\\"][required=\\\"\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"#ide > .mt-8.rounded-\\\\[18px\\\\].bg-white > form > .sm\\\\:grid-cols-3.gap-4.grid-cols-1 > div:nth-child(3) > .w-full.px-3[name=\\\"phone\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"textarea[name=\\\"ide\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"input[name=\\\"malgruppe\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"textarea[name=\\\"kommentar\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"input[name=\\\"organisasjon\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"#samarbeid > .mt-8.rounded-\\\\[18px\\\\].bg-white > form > .sm\\\\:grid-cols-3.gap-4.grid-cols-1 > div:nth-child(1) > .w-full[name=\\\"name\\\"][required=\\\"\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"#samarbeid > .mt-8.rounded-\\\\[18px\\\\].bg-white > form > .sm\\\\:grid-cols-3.gap-4.grid-cols-1 > div:nth-child(2) > input[type=\\\"email\\\"][name=\\\"email\\\"][required=\\\"\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"#samarbeid > .mt-8.rounded-\\\\[18px\\\\].bg-white > form > .sm\\\\:grid-cols-3.gap-4.grid-cols-1 > div:nth-child(3) > .w-full.px-3[name=\\\"phone\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"input[name=\\\"tema\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"textarea[name=\\\"melding\\\"]\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+     ],\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"count\": 1,\u001b[39m\n\u001b[31m+     \"id\": \"select-name\",\u001b[39m\n\u001b[31m+     \"impact\": \"critical\",\u001b[39m\n\u001b[31m+     \"targets\": Array [\u001b[39m\n\u001b[31m+       Array [\u001b[39m\n\u001b[31m+         \"select\",\u001b[39m\n\u001b[31m+       ],\u001b[39m\n\u001b[31m+     ],\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  53 |     expect.soft(pageErrors, \"uncaught browser errors\").toBe(0);\n  54 |     expect.soft(metadata.brokenImages, \"broken images\").toEqual([]);\n> 55 |     expect.soft(violations.filter(v => [\"critical\", \"serious\"].includes(v.impact ?? \"\")), \"serious/critical axe violations\").toEqual([]);\n     |                                                                                                                              ^\n  56 |   });\n  57 | }\n  58 |\n    at C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts:55:126"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T14:42:32.325Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\test-results\\public-audit-public-page-bli-med\\error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\elisa\\Desktop\\dernek proje\\mangfoldshuset-vestlandet\\tests\\browser\\public-audit.spec.ts",
+                    "column": 73,
+                    "line": 35
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "696e2fda302d4b3fc75e-2b5170e00d8e4f26c600",
+          "file": "public-audit.spec.ts",
+          "line": 9,
+          "column": 7
+        },
+        {
+          "title": "anonymous admin redirects; metadata endpoints and 404",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 8,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1704,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T14:42:37.658Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "696e2fda302d4b3fc75e-cbdb2ef72500fd0e9fae",
+          "file": "public-audit.spec.ts",
+          "line": 59,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-09-30T14:41:29.155Z",
+    "duration": 70265.177,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 8,
+    "flaky": 0
+  }
+}

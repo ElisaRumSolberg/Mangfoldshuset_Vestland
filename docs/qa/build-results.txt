@@ -1,0 +1,70 @@
+
+> mangfoldshuset-vestlandet@0.1.0 build
+> next build
+
+▲ Next.js 16.3.5 (Turbopack)
+- Environments: .env.local
+⚠ Warning: Next.js ignored package-lock.json in C:\Users\elisa because it is outside the current Git repository (C:\Users\elisa\Desktop\dernek proje\mangfoldshuset-vestlandet).
+ To use this directory, set `turbopack.root` in your Next.js config.
+
+✓ Running next.config.ts took 48ms
+- Experiments (use with caution):
+  · proxyClientMaxBodySize: "50mb"
+  · serverActions
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 8.4s
+  Running TypeScript ...
+  Finished TypeScript in 7.5s ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/29) ...
+  Generating static pages using 11 workers (7/29) 
+  Generating static pages using 11 workers (14/29) 
+  Generating static pages using 11 workers (21/29) 
+✓ Generating static pages using 11 workers (29/29) in 638ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /admin
+├ ƒ /admin/aktiviteter
+├ ƒ /admin/aktiviteter/[id]
+├ ƒ /admin/innhold
+├ ƒ /admin/logg-inn
+├ ƒ /admin/mangfoldsposten
+├ ƒ /admin/mangfoldsposten/[id]
+├ ƒ /admin/medlemmer
+├ ƒ /admin/meldinger
+├ ƒ /admin/nyheter
+├ ƒ /admin/nyheter/[id]
+├ ƒ /admin/skjema
+├ ƒ /admin/statistikk
+├ ƒ /admin/tilbud
+├ ƒ /admin/tilbud/[id]
+├ ƒ /admin/utvalg
+├ ƒ /admin/utvalg/[id]
+├ ƒ /aktiviteter
+├ ƒ /aktiviteter/[id]
+├ ƒ /api/cron/paminnelser
+├ ƒ /bli-med
+├ ○ /icon.png
+├ ƒ /kontakt
+├ ƒ /mangfoldsposten
+├ ƒ /medlem
+├ ƒ /medlemsvilkar
+├ ƒ /nyheter
+├ ƒ /om-oss
+├ ƒ /personvern
+├ ○ /robots.txt
+├ ƒ /sitemap.xml
+├ ƒ /tilbud/[id]
+├ ƒ /utvalg
+└ ƒ /utvalg/[slug]
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

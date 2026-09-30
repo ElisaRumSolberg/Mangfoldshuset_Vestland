@@ -1,0 +1,16 @@
+
+> mangfoldshuset-vestlandet@0.1.0 test
+> vitest run
+
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.2 C:/Users/elisa/Desktop/dernek proje/mangfoldshuset-vestlandet
+
+
+ Test Files  13 passed (13)
+      Tests  121 passed (121)
+   Start at  16:52:22
+   Duration  40.73s (environment 89%, import 5%, transform 4%, tests 2%)
+
