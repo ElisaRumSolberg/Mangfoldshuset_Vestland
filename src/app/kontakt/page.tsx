@@ -1,3 +1,4 @@
+import SubmissionForm from "@/components/SubmissionForm";
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -96,7 +97,7 @@ export default async function KontaktPage({
                 </p>
               </div>
             ) : (
-              <form action={sendContactMessage} className="flex flex-col gap-4">
+              <SubmissionForm action={sendContactMessage} className="flex flex-col gap-4">
                 <HoneypotFields />
                 {feil === "1" && (
                   <p className="rounded-lg bg-[#F7E9E9] px-4 py-2.5 text-sm font-semibold text-fig">
@@ -105,20 +106,20 @@ export default async function KontaktPage({
                 )}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
-                    <label className="mb-1 block text-sm font-medium text-ink">
+                    <label htmlFor="field-name" className="mb-1 block text-sm font-medium text-ink">
                       Navn
                     </label>
-                    <input
+                    <input id="field-name"
                       name="name"
                       required
                       className="w-full rounded-lg border border-line bg-cream px-3 py-2.5 text-sm outline-none focus:border-fig"
                     />
                   </div>
                   <div>
-                    <label className="mb-1 block text-sm font-medium text-ink">
+                    <label htmlFor="field-email" className="mb-1 block text-sm font-medium text-ink">
                       E-post
                     </label>
-                    <input
+                    <input id="field-email"
                       type="email"
                       name="email"
                       required
@@ -127,10 +128,10 @@ export default async function KontaktPage({
                   </div>
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-ink">
+                  <label htmlFor="field-subject" className="mb-1 block text-sm font-medium text-ink">
                     Tema
                   </label>
-                  <input
+                  <input id="field-subject"
                     name="subject"
                     required
                     placeholder="F.eks. Frivillig, Samarbeid, Generelt spørsmål"
@@ -138,10 +139,10 @@ export default async function KontaktPage({
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-ink">
+                  <label htmlFor="field-message" className="mb-1 block text-sm font-medium text-ink">
                     Melding
                   </label>
-                  <textarea
+                  <textarea id="field-message"
                     name="message"
                     required
                     rows={5}
@@ -154,7 +155,7 @@ export default async function KontaktPage({
                 >
                   Send melding
                 </button>
-              </form>
+              </SubmissionForm>
             )}
           </div>
         </div>

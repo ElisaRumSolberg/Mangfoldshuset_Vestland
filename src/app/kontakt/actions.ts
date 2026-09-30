@@ -1,8 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
-import { createClient } from "@/lib/supabase/server";
+import { savePublicSubmission, notifyAfterSave } from "@/lib/public-submission";
 import { getResendClient, isResendConfigured, NOTIFY_EMAIL } from "@/lib/resend";
 import { contactSchema } from "@/lib/validation";
 import { isRateLimited, looksLikeBot } from "@/lib/spam-guard";
@@ -16,25 +15,23 @@ export async function sendContactMessage(formData: FormData) {
     subject: formData.get("subject"),
     message: formData.get("message"),
   });
-  if (!parsed.success) redirect("/kontakt?feil=1");
+  if (!parsed.success) return { error: "Kunne ikke sende skjemaet. Sjekk feltene og prøv igjen." };
   const { name, email, subject, message } = parsed.data;
 
-  if (await isRateLimited("contact_messages", email)) redirect("/kontakt?sendt=takk");
+  if (await isRateLimited("contact_messages", email)) return { error: "For mange innsendinger. Vent litt og prøv igjen." };
 
-  if (isSupabaseConfigured()) {
-    const supabase = await createClient();
-    await supabase.from("contact_messages").insert({ name, email, subject, message });
-  }
+  const saved = await savePublicSubmission("contact_messages", { name, email, subject, message });
+  if (!saved) return { error: "Kunne ikke sende skjemaet. Sjekk feltene og prøv igjen." };
 
   if (isResendConfigured()) {
     const resend = getResendClient();
-    await resend.emails.send({
+    await notifyAfterSave(() => resend.emails.send({
       from: "Mangfoldshuset Vestland <onboarding@resend.dev>",
       to: NOTIFY_EMAIL,
       replyTo: email,
       subject: `Ny henvendelse: ${subject}`,
       text: `Fra: ${name} (${email})\n\n${message}`,
-    });
+    }));
   }
 
   redirect("/kontakt?sendt=takk");

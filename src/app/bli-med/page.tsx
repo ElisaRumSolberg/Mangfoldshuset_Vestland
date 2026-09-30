@@ -1,3 +1,4 @@
+import SubmissionForm from "@/components/SubmissionForm";
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -86,20 +87,20 @@ function Section({
   );
 }
 
-function Contact() {
+function Contact({ prefix }: { prefix: string }) {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
       <div>
-        <label className={label}>Navn</label>
-        <input name="name" required className={input} />
+        <label htmlFor={`${prefix}-name`} className={label}>Navn</label>
+        <input id={`${prefix}-name`} name="name" required className={input} />
       </div>
       <div>
-        <label className={label}>E-post</label>
-        <input type="email" name="email" required className={input} />
+        <label htmlFor={`${prefix}-email`} className={label}>E-post</label>
+        <input id={`${prefix}-email`} type="email" name="email" required className={input} />
       </div>
       <div>
-        <label className={label}>Telefon</label>
-        <input name="phone" className={input} />
+        <label htmlFor={`${prefix}-phone`} className={label}>Telefon</label>
+        <input id={`${prefix}-phone`} name="phone" className={input} />
       </div>
     </div>
   );
@@ -147,7 +148,7 @@ export default async function BliMedPage({
             {sendt === "medlem" ? (
               <Thanks text="Takk for at du melder deg inn! Betal kontingenten med Vipps til #595791, så aktiverer vi medlemskapet ditt." />
             ) : (
-              <form action={submitMembership} className="flex flex-col gap-5">
+              <SubmissionForm action={submitMembership} className="flex flex-col gap-5">
                 <HoneypotFields />
                 {feil === "medlem" && <ErrorNotice />}
                 <fieldset>
@@ -165,28 +166,28 @@ export default async function BliMedPage({
                 </fieldset>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
-                    <label className={label}>Fornavn</label>
-                    <input name="first_name" required className={input} />
+                    <label htmlFor="field-first_name" className={label}>Fornavn</label>
+                    <input id="field-first_name" name="first_name" required className={input} />
                   </div>
                   <div>
-                    <label className={label}>Etternavn</label>
-                    <input name="last_name" required className={input} />
+                    <label htmlFor="field-last_name" className={label}>Etternavn</label>
+                    <input id="field-last_name" name="last_name" required className={input} />
                   </div>
                   <div>
-                    <label className={label}>Fødselsdato</label>
-                    <input type="date" name="birth_date" className={input} />
+                    <label htmlFor="field-birth_date" className={label}>Fødselsdato</label>
+                    <input id="field-birth_date" type="date" name="birth_date" className={input} />
                   </div>
                   <div>
-                    <label className={label}>Telefon</label>
-                    <input name="phone" className={input} />
+                    <label htmlFor="field-phone" className={label}>Telefon</label>
+                    <input id="field-phone" name="phone" className={input} />
                   </div>
                   <div>
-                    <label className={label}>E-post</label>
-                    <input type="email" name="email" required className={input} />
+                    <label htmlFor="field-email" className={label}>E-post</label>
+                    <input id="field-email" type="email" name="email" required className={input} />
                   </div>
                   <div>
-                    <label className={label}>Adresse</label>
-                    <input name="address" className={input} />
+                    <label htmlFor="field-address" className={label}>Adresse</label>
+                    <input id="field-address" name="address" className={input} />
                   </div>
                 </div>
                 <details className="rounded-lg border border-line bg-cream px-4 py-3">
@@ -196,22 +197,22 @@ export default async function BliMedPage({
                   <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
                     {[2, 3, 4, 5, 6].map((n) => (
                       <div key={n} className="contents">
-                        <input name={`fam_name_${n}`} placeholder={`Person ${n}: navn og etternavn`} className={input} />
+                        <input aria-label={`Person ${n}: navn og etternavn`} name={`fam_name_${n}`} placeholder={`Person ${n}: navn og etternavn`} className={input} />
                         <input type="date" name={`fam_birth_${n}`} className={input} aria-label={`Person ${n}: fødselsdato`} />
                       </div>
                     ))}
                   </div>
                 </details>
                 <div>
-                  <label className={label}>Foresatt (hvis under 18 år)</label>
-                  <input name="guardian" className={input} />
+                  <label htmlFor="field-guardian" className={label}>Foresatt (hvis under 18 år)</label>
+                  <input id="field-guardian" name="guardian" className={input} />
                 </div>
                 <div>
-                  <label className={label}>Kommentar</label>
-                  <textarea name="comment" rows={2} className={input} />
+                  <label htmlFor="field-comment" className={label}>Kommentar</label>
+                  <textarea id="field-comment" name="comment" rows={2} className={input} />
                 </div>
-                <label className="flex items-start gap-2 text-sm text-ink-soft">
-                  <input type="checkbox" name="terms" required className="mt-1 accent-[#9C3B44]" />
+                <label className="block text-sm leading-relaxed text-ink-soft">
+                  <input type="checkbox" name="terms" required className="mr-2 accent-[#9C3B44]" />
                   Jeg godtar{" "}
                   <a href="/medlemsvilkar" target="_blank" rel="noopener noreferrer" className="underline">
                     medlemsvilkårene
@@ -234,7 +235,7 @@ export default async function BliMedPage({
                 <button type="submit" className={button}>
                   Meld meg inn
                 </button>
-              </form>
+              </SubmissionForm>
             )}
           </Section>
 
@@ -246,11 +247,11 @@ export default async function BliMedPage({
             {sendt === "frivillig" ? (
               <Thanks text="Vi har mottatt skjemaet ditt og tar kontakt." />
             ) : (
-              <form action={submitApplication} className="flex flex-col gap-6">
+              <SubmissionForm action={submitApplication} className="flex flex-col gap-6">
                 <HoneypotFields />
                 {feil === "frivillig" && <ErrorNotice />}
                 <input type="hidden" name="type" value="frivillig" />
-                <Contact />
+                <Contact prefix="frivillig" />
                 <fieldset>
                   <legend className={label}>Interesser</legend>
                   <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -263,10 +264,10 @@ export default async function BliMedPage({
                   </div>
                 </fieldset>
                 <div>
-                  <label className={label}>
+                  <label htmlFor="field-ferdigheter" className={label}>
                     Har du erfaring, et talent eller noe du gjerne vil lære bort?
                   </label>
-                  <textarea name="ferdigheter" rows={3} className={input} />
+                  <textarea id="field-ferdigheter" name="ferdigheter" rows={3} className={input} />
                 </div>
                 <fieldset>
                   <legend className={label}>Når kan du?</legend>
@@ -293,7 +294,7 @@ export default async function BliMedPage({
                 <button type="submit" className={button}>
                   Send inn
                 </button>
-              </form>
+              </SubmissionForm>
             )}
           </Section>
 
@@ -305,22 +306,22 @@ export default async function BliMedPage({
             {sendt === "ide" ? (
               <Thanks text="Takk for at du delte ideen din!" />
             ) : (
-              <form action={submitApplication} className="flex flex-col gap-5">
+              <SubmissionForm action={submitApplication} className="flex flex-col gap-5">
                 <HoneypotFields />
                 {feil === "ide" && <ErrorNotice />}
                 <input type="hidden" name="type" value="ide" />
-                <Contact />
+                <Contact prefix="ide" />
                 <div>
-                  <label className={label}>Idé / forslag</label>
-                  <textarea name="ide" required rows={4} className={input} />
+                  <label htmlFor="field-ide" className={label}>Idé / forslag</label>
+                  <textarea id="field-ide" name="ide" required rows={4} className={input} />
                 </div>
                 <div>
-                  <label className={label}>Hvem er aktiviteten for?</label>
-                  <input name="malgruppe" className={input} />
+                  <label htmlFor="field-malgruppe" className={label}>Hvem er aktiviteten for?</label>
+                  <input id="field-malgruppe" name="malgruppe" className={input} />
                 </div>
                 <div>
-                  <label className={label}>Trenger du hjelp til gjennomføring?</label>
-                  <select name="hjelp" className={input} defaultValue="">
+                  <label htmlFor="field-hjelp" className={label}>Trenger du hjelp til gjennomføring?</label>
+                  <select id="field-hjelp" name="hjelp" className={input} defaultValue="">
                     <option value="">Velg</option>
                     <option>Ja</option>
                     <option>Nei</option>
@@ -328,13 +329,13 @@ export default async function BliMedPage({
                   </select>
                 </div>
                 <div>
-                  <label className={label}>Kommentar</label>
-                  <textarea name="kommentar" rows={2} className={input} />
+                  <label htmlFor="field-kommentar" className={label}>Kommentar</label>
+                  <textarea id="field-kommentar" name="kommentar" rows={2} className={input} />
                 </div>
                 <button type="submit" className={button}>
                   Del ideen
                 </button>
-              </form>
+              </SubmissionForm>
             )}
           </Section>
 
@@ -346,27 +347,27 @@ export default async function BliMedPage({
             {sendt === "samarbeid" ? (
               <Thanks text="Takk for henvendelsen! Vi tar kontakt." />
             ) : (
-              <form action={submitApplication} className="flex flex-col gap-5">
+              <SubmissionForm action={submitApplication} className="flex flex-col gap-5">
                 <HoneypotFields />
                 {feil === "samarbeid" && <ErrorNotice />}
                 <input type="hidden" name="type" value="samarbeid" />
                 <div>
-                  <label className={label}>Organisasjon / virksomhet</label>
-                  <input name="organisasjon" required className={input} />
+                  <label htmlFor="field-organisasjon" className={label}>Organisasjon / virksomhet</label>
+                  <input id="field-organisasjon" name="organisasjon" required className={input} />
                 </div>
-                <Contact />
+                <Contact prefix="samarbeid" />
                 <div>
-                  <label className={label}>Hva ønsker dere å samarbeide om?</label>
-                  <input name="tema" className={input} />
+                  <label htmlFor="field-tema" className={label}>Hva ønsker dere å samarbeide om?</label>
+                  <input id="field-tema" name="tema" className={input} />
                 </div>
                 <div>
-                  <label className={label}>Melding</label>
-                  <textarea name="melding" rows={4} className={input} />
+                  <label htmlFor="field-melding" className={label}>Melding</label>
+                  <textarea id="field-melding" name="melding" rows={4} className={input} />
                 </div>
                 <button type="submit" className={button}>
                   Send henvendelse
                 </button>
-              </form>
+              </SubmissionForm>
             )}
           </Section>
         </div>

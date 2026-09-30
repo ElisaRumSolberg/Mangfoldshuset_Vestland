@@ -1,3 +1,4 @@
+import SubmissionForm from "@/components/SubmissionForm";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -134,7 +135,7 @@ export default async function ActivityPage({ params, searchParams }: Props) {
                 </p>
               </div>
             ) : (
-              <form
+              <SubmissionForm
                 action={signUpForActivity.bind(null, a.id)}
                 className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2"
               >
@@ -182,7 +183,7 @@ export default async function ActivityPage({ params, searchParams }: Props) {
                 >
                   Meld meg på
                 </button>
-              </form>
+              </SubmissionForm>
             )}
           </section>
         )}
