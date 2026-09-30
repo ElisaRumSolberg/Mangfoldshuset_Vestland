@@ -2,16 +2,16 @@ import { describe, expect, it } from "vitest";
 import { isOwnerOnlyPath, roleFromUser, utvalgIdFromUser } from "./roles";
 
 describe("roleFromUser", () => {
-  it("returns owner when app_metadata is missing", () => {
-    expect(roleFromUser(null)).toBe("owner");
+  it("denies access when app_metadata is missing", () => {
+    expect(roleFromUser(null)).toBeNull();
   });
 
-  it("returns owner when role is not set", () => {
-    expect(roleFromUser({ app_metadata: {} })).toBe("owner");
+  it("denies access when role is not set", () => {
+    expect(roleFromUser({ app_metadata: {} })).toBeNull();
   });
 
-  it("returns owner for an unrecognized role value", () => {
-    expect(roleFromUser({ app_metadata: { role: "superadmin" } })).toBe("owner");
+  it("denies access for an unrecognized role value", () => {
+    expect(roleFromUser({ app_metadata: { role: "superadmin" } })).toBeNull();
   });
 
   it("returns editor when role is editor", () => {

@@ -28,9 +28,9 @@ describe("requireOwner", () => {
     await expect(requireOwner()).resolves.toBeUndefined();
   });
 
-  it("resolves when no role is set (defaults to owner)", async () => {
+  it("rejects when no role is set", async () => {
     mockUser(undefined);
-    await expect(requireOwner()).resolves.toBeUndefined();
+    await expect(requireOwner()).rejects.toThrow();
   });
 
   it("throws for an editor", async () => {

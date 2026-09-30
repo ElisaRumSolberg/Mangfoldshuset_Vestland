@@ -12,7 +12,8 @@ async function currentAdmin(): Promise<{ role: AdminRole; utvalgId: string | nul
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return null;
-  return { role: roleFromUser(user), utvalgId: utvalgIdFromUser(user) };
+  const role = roleFromUser(user);
+  return role ? { role, utvalgId: utvalgIdFromUser(user) } : null;
 }
 
 export async function requireOwner() {

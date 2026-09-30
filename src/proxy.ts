@@ -39,7 +39,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (isLoginRoute && user) {
+  if (isLoginRoute && user && roleFromUser(user)) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin";
     return NextResponse.redirect(url);
@@ -48,6 +48,10 @@ export async function proxy(request: NextRequest) {
   if (isAdminRoute && !isLoginRoute && user) {
     const role = roleFromUser(user);
     const pathname = request.nextUrl.pathname;
+
+    if (!role) {
+      return NextResponse.redirect(new URL("/admin/logg-inn?feil=tilgang", request.url));
+    }
 
     if (role === "utvalg") {
       const utvalgId = utvalgIdFromUser(user);
