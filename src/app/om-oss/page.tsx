@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import OrganicPanel from "@/components/OrganicPanel";
 import PhotoSlideshow from "@/components/PhotoSlideshow";
 import ImpactCounters from "@/components/ImpactCounters";
 import { fetchSiteSettings } from "@/lib/site-settings";
@@ -147,7 +146,12 @@ export default async function OmOssPage() {
                 className="h-72 rounded-3xl border border-white/10 md:h-96"
               />
             ) : (
-              <OrganicPanel variant="green" className="h-72 md:h-96" />
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src="/om_oss_resim.png"
+                alt="Mangfoldhuset Vestland"
+                className="h-72 w-full rounded-3xl object-cover md:h-96"
+              />
             )}
           </div>
         </section>
