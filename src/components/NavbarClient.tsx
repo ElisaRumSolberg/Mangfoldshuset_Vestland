@@ -11,6 +11,14 @@ type NavEntry =
   | { type: "link"; href: string; label: string }
   | { type: "dropdown"; href: string; label: string; items: MenuItem[] };
 
+function flattenEntries(entries: NavEntry[]): MenuItem[] {
+  return entries.flatMap((entry) =>
+    entry.type === "dropdown"
+      ? entry.items
+      : [{ href: entry.href, label: entry.label }]
+  );
+}
+
 function isActivePath(pathname: string, href: string) {
   return pathname === href || (href !== "/" && pathname.startsWith(`${href}/`));
 }
@@ -97,6 +105,16 @@ export default function NavbarClient({
   utvalgItems: MenuItem[];
 }) {
   const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setMobileOpen(false);
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [mobileOpen]);
 
   const navEntries: NavEntry[] = [
     { type: "link", href: "/", label: "Hjem" },
@@ -186,11 +204,52 @@ export default function NavbarClient({
         </Link>
         <Link
           href="/bli-med#frivillig"
-          className="rounded-full bg-fig px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
+          className="hidden rounded-full bg-fig px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark sm:inline-block"
         >
           Bli frivillig
         </Link>
+        <button
+          type="button"
+          onClick={() => setMobileOpen((o) => !o)}
+          aria-expanded={mobileOpen}
+          aria-controls="mobilmeny"
+          aria-label={mobileOpen ? "Lukk meny" : "Åpne meny"}
+          className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-lg md:hidden"
+        >
+          <span
+            className={`h-0.5 w-6 rounded-full bg-ink transition-transform ${mobileOpen ? "translate-y-2 rotate-45" : ""}`}
+          />
+          <span
+            className={`h-0.5 w-6 rounded-full bg-ink transition-opacity ${mobileOpen ? "opacity-0" : ""}`}
+          />
+          <span
+            className={`h-0.5 w-6 rounded-full bg-ink transition-transform ${mobileOpen ? "-translate-y-2 -rotate-45" : ""}`}
+          />
+        </button>
       </div>
+
+      {mobileOpen && (
+        <nav
+          id="mobilmeny"
+          aria-label="Mobilmeny"
+          className="absolute inset-x-0 top-full z-40 flex flex-col gap-1 border-b border-line bg-cream p-4 shadow-lg md:hidden"
+        >
+          {flattenEntries(navEntries).map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setMobileOpen(false)}
+              className={`rounded-lg px-4 py-3 text-sm font-medium ${
+                isActivePath(pathname, item.href)
+                  ? "bg-fig/10 font-semibold text-fig"
+                  : "text-ink-soft hover:bg-ink/5 hover:text-ink"
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+      )}
     </header>
   );
 }
