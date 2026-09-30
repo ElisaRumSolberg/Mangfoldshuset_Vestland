@@ -26,7 +26,7 @@ export default function Hero({
             <span style={{ color: "#D9B26B" }}>Vestland</span>
           </p>
           <span className="mb-6 inline-block rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm font-semibold text-[#EFE7D6]">
-            En del av Mangfoldhuset-nettverket
+            En del av Mangfoldshuset-nettverket
           </span>
           <h1 className="max-w-xl font-serif text-4xl font-medium leading-[1.1] text-white md:text-5xl">
             Et varmt fellesskap i Vestland

@@ -7,9 +7,9 @@ import ImpactCounters from "@/components/ImpactCounters";
 import { fetchSiteSettings } from "@/lib/site-settings";
 
 export const metadata: Metadata = {
-  title: "Om oss – Mangfoldhuset Vestland",
+  title: "Om oss – Mangfoldshuset Vestland",
   description:
-    "Mangfoldhuset Vestland er en ideell frivillig organisasjon og en del av det landsdekkende Mangfoldhuset-nettverket.",
+    "Mangfoldshuset Vestland er en ideell frivillig organisasjon og en del av det landsdekkende Mangfoldshuset-nettverket.",
 };
 
 const verdier = [
@@ -126,8 +126,8 @@ export default async function OmOssPage() {
                 Hvem er vi?
               </h1>
               <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-soft">
-                Mangfoldhuset Vestland er en ideell frivillig organisasjon og
-                en del av det landsdekkende Mangfoldhuset-nettverket. Vi
+                Mangfoldshuset Vestland er en ideell frivillig organisasjon og
+                en del av det landsdekkende Mangfoldshuset-nettverket. Vi
                 skaper møteplasser der mennesker med ulike bakgrunner,
                 kulturer, alder og tro kan møtes, delta og bidra – med mål om
                 bedre livskvalitet og sterkere tilhørighet til lokalsamfunnet
@@ -135,7 +135,7 @@ export default async function OmOssPage() {
               </p>
               <p className="mt-4 max-w-xl text-base leading-relaxed text-ink-soft">
                 Vi er en åpen organisasjon for alle som ønsker å være med.
-                Mangfoldhuset flagger demokrati, menneskerettigheter,
+                Mangfoldshuset flagger demokrati, menneskerettigheter,
                 likestilling og ytringsfrihet, og er verken en religiøs eller
                 etnisk organisasjon.
               </p>
@@ -149,8 +149,8 @@ export default async function OmOssPage() {
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src="/om_oss_resim.png"
-                alt="Mangfoldhuset Vestland"
-                className="h-72 w-full rounded-3xl object-cover md:h-96"
+                alt="Mangfoldshuset Vestland"
+                className="h-72 w-full rounded-3xl bg-cream-2 object-contain p-6 md:h-96"
               />
             )}
           </div>
@@ -254,7 +254,7 @@ export default async function OmOssPage() {
               Hvem er aktivitetene for?
             </h2>
             <p className="mt-3 max-w-xl text-sm text-ink-soft">
-              Aktivitetene i Mangfoldhuset Vestland er åpne for alle
+              Aktivitetene i Mangfoldshuset Vestland er åpne for alle
               aldersgrupper.
             </p>
             <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
@@ -343,8 +343,8 @@ export default async function OmOssPage() {
               Vår historie
             </h2>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-soft">
-              Mangfoldhuset Vestland ble stiftet i 2020, som en del av det
-              landsdekkende Mangfoldhuset-nettverket. Siden starten har vi
+              Mangfoldshuset Vestland ble stiftet i 2020, som en del av det
+              landsdekkende Mangfoldshuset-nettverket. Siden starten har vi
               bygget opp et lokalt fellesskap i Bergen og Vestland, med
               aktiviteter og møteplasser for barn, ungdom, voksne og
               seniorer – drevet av frivillige som ønsker å skape et mer
@@ -359,10 +359,10 @@ export default async function OmOssPage() {
             Nettverk
           </p>
           <h2 className="mt-2 font-serif text-3xl font-medium">
-            Mangfoldhuset i Norge
+            Mangfoldshuset i Norge
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-soft">
-            Mangfoldhuset er landsdekkende, med hovedsete i Oslo og
+            Mangfoldshuset er landsdekkende, med hovedsete i Oslo og
             avdelinger i blant annet Drammen, Trondheim, Moss, Stavanger,
             Kristiansand, Vestfold og Vestland. Hver avdeling er selvstendig
             når det gjelder økonomi og styring, men deler samme formål og
@@ -395,7 +395,7 @@ export default async function OmOssPage() {
             </h2>
             <p className="mt-4 text-base leading-relaxed text-ink-soft">
               Er du interessert i å bidra til et mer inkluderende og
-              mangfoldig samfunn? Bli medlem eller frivillig i Mangfoldhuset
+              mangfoldig samfunn? Bli medlem eller frivillig i Mangfoldshuset
               Vestland!
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
