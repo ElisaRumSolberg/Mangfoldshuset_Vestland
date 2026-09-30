@@ -12,10 +12,11 @@ beforeEach(() => {
 });
 afterEach(async () => { await act(async () => root.unmount()); container.remove(); });
 async function mount(action: (data: FormData) => Promise<SubmissionResult>) {
-  await act(async () => root.render(createElement(SubmissionForm, { action },
+  // eslint-disable-next-line react/no-children-prop -- createElement's typed overload requires children in props here
+  await act(async () => root.render(createElement(SubmissionForm, { action, children: [
     createElement("input", { key: "input", name: "name", defaultValue: "Synthetic QA Ø" }),
     createElement("button", { key: "button", type: "submit" }, "Send"),
-  )));
+  ] })));
 }
 function submit() { container.querySelector("form")!.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true })); }
 it("keeps entered values after a validation/database error", async () => {
