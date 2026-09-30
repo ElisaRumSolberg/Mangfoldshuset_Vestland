@@ -185,7 +185,7 @@ export default function NavbarClient({
           />
         </Link>
         <Link
-          href="/bli-med"
+          href="/bli-med#frivillig"
           className="rounded-full bg-fig px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
         >
           Bli frivillig
