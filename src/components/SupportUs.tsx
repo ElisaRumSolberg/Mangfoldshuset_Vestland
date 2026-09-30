@@ -33,8 +33,8 @@ export default function SupportUs({ vippsLink }: { vippsLink?: string | null }) 
               </p>
             </a>
           ) : (
-            <div className="rounded-2xl px-6 py-4" style={{ backgroundColor: "#FF5B24" }}>
-              <p className="text-xs font-semibold uppercase tracking-wide text-white/80">
+            <div className="rounded-2xl px-6 py-4 text-ink" style={{ backgroundColor: "#FF5B24" }}>
+              <p className="text-xs font-semibold uppercase tracking-wide text-ink">
                 Vipps
               </p>
               <p className="mt-1 font-serif text-2xl font-medium text-white">

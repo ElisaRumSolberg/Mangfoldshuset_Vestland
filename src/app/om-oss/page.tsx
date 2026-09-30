@@ -73,7 +73,7 @@ const grupper = [
 const nettverkTints = [
   { bg: "#F7E9E9", text: "#9C3B44" },
   { bg: "#EAF0E9", text: "#3A5439" },
-  { bg: "#EFE7D6", text: "#7A6A3F" },
+  { bg: "#EFE7D6", text: "#5C4B29" },
 ];
 
 const nettverk = [
@@ -94,7 +94,7 @@ const tints = [
 const solidGrupper = [
   { bg: "#9C3B44" },
   { bg: "#4B6B4A" },
-  { bg: "#C08A5C" },
+  { bg: "#94613F" },
   { bg: "#3F5A3E" },
 ];
 

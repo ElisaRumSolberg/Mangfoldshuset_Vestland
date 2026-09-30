@@ -4,9 +4,9 @@ import { createClient } from "@/lib/supabase/server";
 import { autoParticipants } from "@/lib/stats";
 
 const fallback = [
-  { key: "activities", target: 48, suffix: "", label: "Aktiviteter i år", color: "#9C3B44" },
-  { key: "participants", target: 1350, suffix: "+", label: "Deltakere", color: "#4B6B4A" },
-  { key: "volunteer_hours", target: 1820, suffix: "", label: "Frivillige timer", color: "#9C3B44" },
+  { key: "activities", target: null as number | null, suffix: "", label: "Aktiviteter i år", color: "#9C3B44" },
+  { key: "participants", target: null as number | null, suffix: "+", label: "Deltakere", color: "#4B6B4A" },
+  { key: "volunteer_hours", target: null as number | null, suffix: "", label: "Frivillige timer", color: "#9C3B44" },
 ];
 
 export default async function ImpactCounters() {
@@ -26,7 +26,7 @@ export default async function ImpactCounters() {
     const extra = await autoParticipants(supabase);
     if (extra > 0) {
       counters = counters.map((c) =>
-        c.key === "participants" ? { ...c, target: c.target + extra } : c
+        c.key === "participants" ? { ...c, target: (c.target ?? 0) + extra } : c
       );
     }
   }
@@ -45,7 +45,7 @@ export default async function ImpactCounters() {
                 style={{ backgroundColor: c.color }}
               >
                 <span className="font-serif text-2xl font-bold text-white">
-                  <AnimatedNumber target={c.target} suffix={c.suffix} />
+                  {c.target === null ? <span aria-label="Tall ikke tilgjengelig">—</span> : <AnimatedNumber target={c.target} suffix={c.suffix} />}
                 </span>
               </div>
               <p className="mt-3 text-sm font-semibold text-ink-soft">
@@ -54,7 +54,7 @@ export default async function ImpactCounters() {
             </div>
           ))}
         </div>
-        <p className="mt-8 text-center text-xs italic text-ink-soft/70">
+        <p className="mt-8 text-center text-xs italic text-ink-soft">
           *Deltakere summeres fra aktiviteter og faste tilbud. Øvrige tall oppdateres av administrator
         </p>
       </div>

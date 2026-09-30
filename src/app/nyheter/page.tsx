@@ -67,6 +67,7 @@ export default async function NyheterPage() {
             {news.map((n, i) => (
               <article
                 key={n.id}
+                id={`nyhet-${n.id}`}
                 className="overflow-hidden rounded-[18px] border border-line bg-white"
               >
                 {n.video_url ? (

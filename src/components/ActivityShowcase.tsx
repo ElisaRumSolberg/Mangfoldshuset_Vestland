@@ -20,14 +20,15 @@ export default function ActivityShowcase({
   className?: string;
 }) {
   const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
-    if (slides.length < 2) return;
+    if (slides.length < 2 || paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const id = setInterval(() => {
       setIndex((i) => (i + 1) % slides.length);
     }, 5500);
     return () => clearInterval(id);
-  }, [slides.length]);
+  }, [slides.length, paused]);
 
   if (!slides.length) return null;
 
@@ -41,6 +42,7 @@ export default function ActivityShowcase({
         // eslint-disable-next-line @next/next/no-img-element
         <img
           key={slide.image + i}
+          aria-hidden={i !== index}
           src={slide.image}
           alt={slide.title}
           className={`warm-photo absolute inset-0 h-full w-full transition-opacity duration-1000 ${
@@ -54,6 +56,8 @@ export default function ActivityShowcase({
       {slides.map((slide, i) => (
         <div
           key={slide.href + i}
+          inert={i !== index}
+          aria-hidden={i !== index}
           className={`absolute inset-x-0 bottom-0 z-10 flex flex-col items-start gap-3 p-6 transition-opacity duration-1000 ${
             i === index ? "opacity-100" : "pointer-events-none opacity-0"
           }`}
@@ -72,11 +76,14 @@ export default function ActivityShowcase({
 
       {count > 1 && (
         <>
+          <button type="button" onClick={() => setPaused(p => !p)} aria-pressed={paused} className="absolute left-3 top-3 z-20 rounded-full bg-white px-3 py-3 text-xs text-ink">
+            {paused ? "Start bildevisning" : "Pause bildevisning"}
+          </button>
           <button
             type="button"
             aria-label="Forrige bilde"
             onClick={() => setIndex((i) => (i - 1 + count) % count)}
-            className={`${arrow} left-3 opacity-0 transition-opacity group-hover:opacity-100`}
+            className={`${arrow} left-3`}
           >
             ←
           </button>
@@ -84,7 +91,7 @@ export default function ActivityShowcase({
             type="button"
             aria-label="Neste bilde"
             onClick={() => setIndex((i) => (i + 1) % count)}
-            className={`${arrow} right-3 opacity-0 transition-opacity group-hover:opacity-100`}
+            className={`${arrow} right-3`}
           >
             →
           </button>

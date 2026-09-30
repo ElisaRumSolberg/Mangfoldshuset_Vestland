@@ -13,14 +13,15 @@ export default function PhotoSlideshow({
   className?: string;
 }) {
   const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
-    if (images.length < 2) return;
+    if (images.length < 2 || paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const id = setInterval(() => {
       setIndex((i) => (i + 1) % images.length);
     }, 4500);
     return () => clearInterval(id);
-  }, [images.length]);
+  }, [images.length, paused]);
 
   if (!images.length) return null;
 
@@ -30,6 +31,7 @@ export default function PhotoSlideshow({
         // eslint-disable-next-line @next/next/no-img-element
         <img
           key={src}
+          aria-hidden={i !== index}
           src={src}
           alt={alt}
           className={`warm-photo absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${
@@ -37,6 +39,7 @@ export default function PhotoSlideshow({
           }`}
         />
       ))}
+      {images.length > 1 && <button type="button" aria-pressed={paused} onClick={() => setPaused(p => !p)} className="absolute bottom-3 right-3 z-10 rounded-full bg-white px-3 py-3 text-xs text-ink">{paused ? "Start bildevisning" : "Pause bildevisning"}</button>}
     </div>
   );
 }

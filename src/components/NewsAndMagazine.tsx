@@ -8,11 +8,7 @@ const grads = [
   "from-[#9CA86B] to-[#4B6B4A]",
 ];
 
-const fallback = [
-  { title: "Nytt vårprogram er klart", date: "2. sep 2026", imageUrl: null as string | null },
-  { title: "Kulturkveld samlet familier i Bergen", date: "24. aug 2026", imageUrl: null as string | null },
-  { title: "Vi søker frivillige", date: "15. aug 2026", imageUrl: null as string | null },
-];
+const fallback: { id: string; title: string; date: string; imageUrl: string | null }[] = [];
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("nb-NO", {
@@ -35,6 +31,7 @@ export default async function NewsAndMagazine() {
 
     if (data?.length) {
       news = data.map((n) => ({
+        id: n.id,
         title: n.title,
         date: formatDate(n.published_at),
         imageUrl: n.image_url,
@@ -56,10 +53,11 @@ export default async function NewsAndMagazine() {
             </Link>
           </div>
           <div className="flex flex-col">
+            {!news.length && <p className="text-sm text-ink-soft">Ingen nyheter er publisert ennå.</p>}
             {news.map((n, i) => (
               <Link
-                key={n.title}
-                href="/nyheter"
+                key={n.id}
+                href={`/nyheter#nyhet-${n.id}`}
                 className="flex items-center gap-4.5 border-b border-line py-4.5"
               >
                 {n.imageUrl ? (

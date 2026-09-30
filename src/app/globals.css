@@ -36,6 +36,21 @@ body {
   color: var(--foreground);
 }
 
+:focus-visible {
+  outline: 3px solid #4b6b4a;
+  outline-offset: 3px;
+}
+
+[id] { scroll-margin-top: 9rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Samler ekte, ujevne telefonbilder til ett visuelt uttrykk: legg på et
    <img>/<Image> så snart et ekte bilde erstatter en OrganicPanel-plassholder. */
 .warm-photo {
