@@ -343,9 +343,12 @@ export default async function OmOssPage() {
               Vår historie
             </h2>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-soft">
-              [Her legges Mangfoldhuset Vestlands lokale historie inn –
-              stiftelsesår, hvordan avdelingen i Bergen/Vestland startet, og
-              viktige milepæler underveis.]
+              Mangfoldhuset Vestland ble stiftet i 2020, som en del av det
+              landsdekkende Mangfoldhuset-nettverket. Siden starten har vi
+              bygget opp et lokalt fellesskap i Bergen og Vestland, med
+              aktiviteter og møteplasser for barn, ungdom, voksne og
+              seniorer – drevet av frivillige som ønsker å skape et mer
+              inkluderende lokalsamfunn.
             </p>
           </div>
         </section>
