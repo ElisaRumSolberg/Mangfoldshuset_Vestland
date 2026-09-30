@@ -12,10 +12,10 @@ export default function AboutSnippet() {
             Om oss
           </p>
           <h2 className="mt-2 font-serif text-3xl font-medium leading-tight">
-            Mangfoldhuset Vestlandet
+            Mangfoldshuset Vestland
           </h2>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-ink-soft">
-            Mangfoldhuset Vestlandet er en ideell og frivillig organisasjon som
+            Mangfoldshuset Vestland er en ideell og frivillig organisasjon som
             skaper møteplasser på tvers av kultur, alder, tro og bakgrunn.
             Gjennom aktiviteter, dialog og frivillig engasjement ønsker vi å
             styrke tilhørighet, deltakelse og fellesskap.

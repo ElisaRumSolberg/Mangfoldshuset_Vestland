@@ -5,9 +5,9 @@ import Footer from "@/components/Footer";
 import { fetchUtvalg } from "@/lib/utvalg";
 
 export const metadata: Metadata = {
-  title: "Utvalg – Mangfoldhuset Vestland",
+  title: "Utvalg – Mangfoldshuset Vestland",
   description:
-    "Undergrupper i Mangfoldhuset Vestland, som Kvinneutvalget og Mangfoldhuset Ungdom.",
+    "Undergrupper i Mangfoldshuset Vestland, som Kvinneutvalget og Mangfoldhuset Ungdom.",
 };
 
 const grads = [
@@ -28,7 +28,7 @@ export default async function UtvalgOversiktPage() {
         </p>
         <h1 className="mt-2 font-serif text-4xl font-medium">Våre utvalg</h1>
         <p className="mt-5 max-w-2xl text-base leading-relaxed text-ink-soft">
-          Utvalgene er undergrupper i Mangfoldhuset Vestland som driver egne
+          Utvalgene er undergrupper i Mangfoldshuset Vestland som driver egne
           aktiviteter innenfor foreningens rammer.
         </p>
 

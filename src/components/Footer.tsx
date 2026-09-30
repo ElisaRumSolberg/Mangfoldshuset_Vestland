@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="flex flex-col gap-8 sm:flex-row sm:items-center sm:gap-12">
           <Image
             src="/logo-white.png"
-            alt="Mangfoldhuset Vestland"
+            alt="Mangfoldshuset Vestland"
             width={413}
             height={190}
             className="h-28 w-auto self-start sm:self-center"
@@ -83,7 +83,7 @@ export default function Footer() {
 
       <div className="border-t border-white/15">
         <div className="flex items-center justify-between px-8 py-5 text-xs text-[#B4B8A6]">
-          <span>© {new Date().getFullYear()} Mangfoldhuset Vestland</span>
+          <span>© {new Date().getFullYear()} Mangfoldshuset Vestland</span>
           <Link href="/personvern" className="hover:text-white">
             Personvern
           </Link>

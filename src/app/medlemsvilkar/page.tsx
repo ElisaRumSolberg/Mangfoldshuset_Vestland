@@ -4,8 +4,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Medlemsvilkår – Mangfoldhuset Vestland",
-  description: "Vilkår for medlemskap i Mangfoldhuset Vestland.",
+  title: "Medlemsvilkår – Mangfoldshuset Vestland",
+  description: "Vilkår for medlemskap i Mangfoldshuset Vestland.",
 };
 
 const sections: { title: string; body: React.ReactNode }[] = [
@@ -13,7 +13,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "1. Hvem kan bli medlem",
     body: (
       <p>
-        Medlemskap i Mangfoldhuset Vestland er åpent for alle, uavhengig av
+        Medlemskap i Mangfoldshuset Vestland er åpent for alle, uavhengig av
         alder, bakgrunn, tro eller bosted. Medlemmer under 18 år registreres
         med foresatt.
       </p>

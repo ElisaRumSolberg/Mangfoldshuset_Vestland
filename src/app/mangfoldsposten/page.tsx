@@ -6,7 +6,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "Mangfoldsposten – Mangfoldhuset Vestland",
+  title: "Mangfoldsposten – Mangfoldshuset Vestland",
   description: "Mangfoldshusets felles magasin – les siste utgave og eldre utgaver.",
 };
 

@@ -15,22 +15,22 @@ const lora = Lora({
 });
 
 const description =
-  "Mangfoldhuset Vestland skaper møteplasser der mennesker med ulike bakgrunner kan møtes, delta, lære og bidra.";
+  "Mangfoldshuset Vestland skaper møteplasser der mennesker med ulike bakgrunner kan møtes, delta, lære og bidra.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: {
-    default: "Mangfoldhuset Vestland",
+    default: "Mangfoldshuset Vestland",
     template: "%s",
   },
   description,
   openGraph: {
     type: "website",
     locale: "nb_NO",
-    siteName: "Mangfoldhuset Vestland",
-    title: "Mangfoldhuset Vestland",
+    siteName: "Mangfoldshuset Vestland",
+    title: "Mangfoldshuset Vestland",
     description,
-    images: [{ url: "/logo.jpg", width: 488, height: 429, alt: "Mangfoldhuset Vestland" }],
+    images: [{ url: "/logo.jpg", width: 488, height: 429, alt: "Mangfoldshuset Vestland" }],
   },
 };
 

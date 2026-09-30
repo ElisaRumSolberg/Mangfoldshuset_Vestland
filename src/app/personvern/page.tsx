@@ -3,8 +3,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Personvern – Mangfoldhuset Vestland",
-  description: "Slik behandler Mangfoldhuset Vestland personopplysninger.",
+  title: "Personvern – Mangfoldshuset Vestland",
+  description: "Slik behandler Mangfoldshuset Vestland personopplysninger.",
 };
 
 const sections: { title: string; body: React.ReactNode }[] = [
@@ -12,7 +12,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "Behandlingsansvarlig",
     body: (
       <p>
-        Mangfoldhuset Vestland, org.nr. 914 732 999, Arne Abrahamsens vei 1,
+        Mangfoldshuset Vestland, org.nr. 914 732 999, Arne Abrahamsens vei 1,
         Bergen. Kontakt oss på{" "}
         <a className="underline" href="mailto:ali.mangfoldhuset@gmail.com">
           ali.mangfoldhuset@gmail.com

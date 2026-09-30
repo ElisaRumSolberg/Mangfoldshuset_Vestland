@@ -139,7 +139,7 @@ export default function NavbarClient({
       >
         <Image
           src="/logo.png"
-          alt="Mangfoldhuset Vestland"
+          alt="Mangfoldshuset Vestland"
           width={413}
           height={190}
           className="h-16 w-auto sm:h-24"

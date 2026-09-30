@@ -35,9 +35,9 @@ async function getProgram(id: string): Promise<Program | null> {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const p = await getProgram(id);
-  if (!p) return { title: "Fast tilbud – Mangfoldhuset Vestland" };
+  if (!p) return { title: "Fast tilbud – Mangfoldshuset Vestland" };
   return {
-    title: `${p.title} – Mangfoldhuset Vestland`,
+    title: `${p.title} – Mangfoldshuset Vestland`,
     description: p.description.slice(0, 160),
   };
 }

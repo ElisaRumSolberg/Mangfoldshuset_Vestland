@@ -2,6 +2,7 @@ import Link from "next/link";
 import LogoutButton from "./LogoutButton";
 import { createClient } from "@/lib/supabase/server";
 import { roleFromUser } from "@/lib/roles";
+import { redirect } from "next/navigation";
 
 const links = [
   { href: "/admin", label: "Dashboard", ownerOnly: true },
@@ -23,6 +24,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     data: { user },
   } = await supabase.auth.getUser();
   const role = roleFromUser(user);
+  if (!user || !role) redirect("/admin/logg-inn?feil=tilgang");
   const visibleLinks =
     role === "utvalg" ? [] : links.filter((l) => !l.ownerOnly || role === "owner");
 
@@ -32,7 +34,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
           <div>
             <p className="font-serif text-lg font-semibold text-ink">
-              Mangfoldhuset Vestland
+              Mangfoldshuset Vestland
             </p>
             <p className="text-xs text-ink-soft">
               Admin

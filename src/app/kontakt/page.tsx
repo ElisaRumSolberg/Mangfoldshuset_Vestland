@@ -6,8 +6,8 @@ import HoneypotFields from "@/components/HoneypotFields";
 import { sendContactMessage } from "./actions";
 
 export const metadata: Metadata = {
-  title: "Kontakt – Mangfoldhuset Vestland",
-  description: "Ta kontakt med Mangfoldhuset Vestland.",
+  title: "Kontakt – Mangfoldshuset Vestland",
+  description: "Ta kontakt med Mangfoldshuset Vestland.",
 };
 
 export default async function KontaktPage({

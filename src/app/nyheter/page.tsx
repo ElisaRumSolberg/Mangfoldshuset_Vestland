@@ -6,8 +6,8 @@ import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "Nyheter – Mangfoldhuset Vestland",
-  description: "Siste nyheter og meldinger fra Mangfoldhuset Vestland.",
+  title: "Nyheter – Mangfoldshuset Vestland",
+  description: "Siste nyheter og meldinger fra Mangfoldshuset Vestland.",
 };
 
 const grads = [
@@ -44,7 +44,7 @@ export default async function NyheterPage() {
       <main className="mx-auto max-w-6xl px-6 py-20">
         <h1 className="font-serif text-4xl font-medium">Nyheter</h1>
         <p className="mt-3 max-w-xl text-base text-ink-soft">
-          Siste nyheter og meldinger fra Mangfoldhuset Vestland.
+          Siste nyheter og meldinger fra Mangfoldshuset Vestland.
         </p>
 
         <Link

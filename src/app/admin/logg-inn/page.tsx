@@ -39,7 +39,7 @@ export default function LoggInnPage() {
           Admin – Logg inn
         </h1>
         <p className="mt-1 text-sm text-ink-soft">
-          Mangfoldhuset Vestland
+          Mangfoldshuset Vestland
         </p>
 
         <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">

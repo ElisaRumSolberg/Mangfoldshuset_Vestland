@@ -29,7 +29,7 @@ export async function sendContactMessage(formData: FormData) {
   if (isResendConfigured()) {
     const resend = getResendClient();
     await resend.emails.send({
-      from: "Mangfoldhuset Vestland <onboarding@resend.dev>",
+      from: "Mangfoldshuset Vestland <onboarding@resend.dev>",
       to: NOTIFY_EMAIL,
       replyTo: email,
       subject: `Ny henvendelse: ${subject}`,

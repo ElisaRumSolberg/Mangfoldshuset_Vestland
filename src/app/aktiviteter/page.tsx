@@ -9,8 +9,8 @@ import { createClient } from "@/lib/supabase/server";
 import { shortDateRange } from "@/lib/activity-date";
 
 export const metadata: Metadata = {
-  title: "Aktiviteter – Mangfoldhuset Vestland",
-  description: "Kommende og tidligere aktiviteter i Mangfoldhuset Vestland.",
+  title: "Aktiviteter – Mangfoldshuset Vestland",
+  description: "Kommende og tidligere aktiviteter i Mangfoldshuset Vestland.",
 };
 
 type MappedActivity = ReturnType<typeof mapActivities>[number];

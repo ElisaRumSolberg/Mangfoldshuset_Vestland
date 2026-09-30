@@ -27,9 +27,9 @@ async function getActivity(id: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const a = await getActivity(id);
-  if (!a) return { title: "Aktivitet – Mangfoldhuset Vestland" };
+  if (!a) return { title: "Aktivitet – Mangfoldshuset Vestland" };
   return {
-    title: `${a.title} – Mangfoldhuset Vestland`,
+    title: `${a.title} – Mangfoldshuset Vestland`,
     description: String(a.description ?? "").slice(0, 160),
   };
 }

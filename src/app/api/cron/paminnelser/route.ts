@@ -10,13 +10,13 @@ function message(firstName: string, expires: string, offset: number) {
   if (offset > 0) {
     return {
       subject: `Medlemskapet ditt utløper om ${offset} ${offset === 1 ? "dag" : "dager"}`,
-      text: `Hei ${firstName}!\n\nMedlemskapet ditt i Mangfoldhuset Vestland gjelder til ${expires} (${offset} ${offset === 1 ? "dag" : "dager"} igjen). ${vipps}\n\nTakk for at du er med i fellesskapet!\nMangfoldhuset Vestland`,
+      text: `Hei ${firstName}!\n\nMedlemskapet ditt i Mangfoldshuset Vestland gjelder til ${expires} (${offset} ${offset === 1 ? "dag" : "dager"} igjen). ${vipps}\n\nTakk for at du er med i fellesskapet!\nMangfoldshuset Vestland`,
     };
   }
   const ago = -offset;
   return {
     subject: `Medlemskapet ditt utløp for ${ago} dager siden`,
-    text: `Hei ${firstName}!\n\nMedlemskapet ditt i Mangfoldhuset Vestland utløp ${expires} (${ago} dager siden). Vi vil gjerne ha deg med videre! ${vipps}\n\nMangfoldhuset Vestland`,
+    text: `Hei ${firstName}!\n\nMedlemskapet ditt i Mangfoldshuset Vestland utløp ${expires} (${ago} dager siden). Vi vil gjerne ha deg med videre! ${vipps}\n\nMangfoldshuset Vestland`,
   };
 }
 
@@ -31,7 +31,7 @@ export async function GET(request: Request) {
 
   const supabase = createAdminClient();
   const resend = getResendClient();
-  const from = process.env.RESEND_FROM ?? "Mangfoldhuset Vestland <onboarding@resend.dev>";
+  const from = process.env.RESEND_FROM ?? "Mangfoldshuset Vestland <onboarding@resend.dev>";
 
   const todayMs = new Date(new Date().toISOString().slice(0, 10)).getTime();
   const day = 86400000;

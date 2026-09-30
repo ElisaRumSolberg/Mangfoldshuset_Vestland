@@ -5,9 +5,9 @@ import HoneypotFields from "@/components/HoneypotFields";
 import { submitApplication, submitMembership } from "./actions";
 
 export const metadata: Metadata = {
-  title: "Bli med – Mangfoldhuset Vestland",
+  title: "Bli med – Mangfoldshuset Vestland",
   description:
-    "Bli medlem, frivillig eller samarbeidspartner i Mangfoldhuset Vestland – eller del en idé.",
+    "Bli medlem, frivillig eller samarbeidspartner i Mangfoldshuset Vestland – eller del en idé.",
 };
 
 const interesser = [
@@ -118,7 +118,7 @@ export default async function BliMedPage({
       <main className="mx-auto max-w-4xl px-6 pt-20 pb-10">
         <h1 className="font-serif text-4xl font-medium">Bli med</h1>
         <p className="mt-4 max-w-xl text-base leading-relaxed text-ink-soft">
-          Mangfoldhuset er åpent for alle. Du kan bli medlem, bidra som
+          Mangfoldshuset er åpent for alle. Du kan bli medlem, bidra som
           frivillig, dele en idé eller samarbeide med oss.
         </p>
         <div className="mt-6 flex flex-wrap gap-3 text-sm font-semibold">

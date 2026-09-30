@@ -29,9 +29,9 @@ async function getUtvalg(slug: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const u = await getUtvalg(slug);
-  if (!u) return { title: "Utvalg – Mangfoldhuset Vestland" };
+  if (!u) return { title: "Utvalg – Mangfoldshuset Vestland" };
   return {
-    title: `${u.title} – Mangfoldhuset Vestland`,
+    title: `${u.title} – Mangfoldshuset Vestland`,
     description: u.description.slice(0, 160),
   };
 }
