@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getResendClient, isResendConfigured, NOTIFY_EMAIL } from "@/lib/resend";
+import { todayOslo } from "@/lib/recurring";
 
 // Dager til utløp (positivt = før, negativt = etter utløp).
 const MILESTONES = [30, 21, 15, 10, 5, 3, 1, -3, -7, -15];
@@ -33,15 +34,16 @@ export async function GET(request: Request) {
   const resend = getResendClient();
   const from = process.env.RESEND_FROM ?? "Mangfoldshuset Vestland <onboarding@resend.dev>";
 
-  const todayMs = new Date(new Date().toISOString().slice(0, 10)).getTime();
+  const todayMs = new Date(`${todayOslo()}T00:00:00Z`).getTime();
   const day = 86400000;
   const iso = (ms: number) => new Date(ms).toISOString().slice(0, 10);
 
-  const { data: candidates } = await supabase
+  const { data: candidates, error: queryError } = await supabase
     .from("members")
     .select("*")
     .gte("expires_at", iso(todayMs - 15 * day))
     .lte("expires_at", iso(todayMs + 30 * day));
+  if (queryError) return NextResponse.json({ error: "Kunne ikke hente påminnelser" }, { status: 503 });
 
   const summary: string[] = [];
 
@@ -57,13 +59,14 @@ export async function GET(request: Request) {
       replyTo: NOTIFY_EMAIL,
       subject,
       text,
-    });
+    }, { idempotencyKey: `membership-${m.id}-${m.expires_at}-${offset}` });
     if (error) continue;
 
-    await supabase
+    const { error: updateError } = await supabase
       .from("members")
       .update({ last_reminder_for: m.expires_at, last_reminder_offset: offset })
       .eq("id", m.id);
+    if (updateError) return NextResponse.json({ error: "Kunne ikke lagre påminnelsesstatus" }, { status: 503 });
     summary.push(`${m.first_name} ${m.last_name} – ${offset > 0 ? `${offset} dager igjen` : `utløpt for ${-offset} dager siden`}`);
   }
 
