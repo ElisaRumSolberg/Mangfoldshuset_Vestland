@@ -1,15 +1,11 @@
 import Link from "next/link";
+import WarmHouseAnimation from "./WarmHouseAnimation";
 
 export default function AboutSnippet() {
   return (
     <section className="bg-cream-2 py-18">
       <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-14 px-6 py-12 md:grid-cols-[0.85fr_1.15fr]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/om_oss_resim.png"
-          alt="Mangfoldshuset Vestland"
-          className="h-80 w-full rounded-[20px] bg-cream object-contain p-6"
-        />
+        <WarmHouseAnimation className="h-80" />
         <div>
           <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
             Om oss

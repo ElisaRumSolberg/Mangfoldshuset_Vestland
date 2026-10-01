@@ -3,7 +3,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PhotoSlideshow from "@/components/PhotoSlideshow";
-import ImpactCounters from "@/components/ImpactCounters";
+import WarmHouseAnimation from "@/components/WarmHouseAnimation";
 import { fetchSiteSettings } from "@/lib/site-settings";
 
 export const metadata: Metadata = {
@@ -146,12 +146,7 @@ export default async function OmOssPage() {
                 className="h-72 rounded-3xl border border-white/10 md:h-96"
               />
             ) : (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src="/om_oss_resim.png"
-                alt="Mangfoldshuset Vestland"
-                className="h-72 w-full rounded-3xl bg-cream-2 object-contain p-6 md:h-96"
-              />
+              <WarmHouseAnimation className="h-72 md:h-96" />
             )}
           </div>
         </section>
@@ -414,8 +409,6 @@ export default async function OmOssPage() {
             </div>
           </div>
         </section>
-
-        <ImpactCounters />
       </main>
       <Footer />
     </>
