@@ -29,7 +29,11 @@ export default function CookieConsent() {
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-[60] border-t border-line bg-cream/97 backdrop-blur-sm">
+    <div
+      role="region"
+      aria-label="Informasjonskapsler"
+      className="fixed inset-x-0 bottom-0 z-[60] border-t border-line bg-cream/97 backdrop-blur-sm"
+    >
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
         <div className="max-w-2xl">
           <p className="font-serif text-base font-semibold text-ink">

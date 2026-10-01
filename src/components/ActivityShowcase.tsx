@@ -62,9 +62,9 @@ export default function ActivityShowcase({
             i === index ? "opacity-100" : "pointer-events-none opacity-0"
           }`}
         >
-          <h3 className="font-serif text-xl font-medium leading-tight text-white drop-shadow-sm">
+          <p className="font-serif text-xl font-medium leading-tight text-white drop-shadow-sm">
             {slide.title}
-          </h3>
+          </p>
           <Link
             href={slide.href}
             className="rounded-full bg-white/90 px-5 py-2 text-xs font-semibold uppercase tracking-wide text-ink transition-all hover:-translate-y-0.5 hover:bg-white"
