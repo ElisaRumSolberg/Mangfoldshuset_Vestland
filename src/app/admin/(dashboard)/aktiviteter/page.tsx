@@ -51,10 +51,20 @@ export default async function AdminAktiviteterPage() {
           />
         </div>
         <input
+          name="event_time"
+          placeholder="Klokkeslett (f.eks. 18.00–20.00)"
+          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+        />
+        <input
           name="place"
           required
           placeholder="Sted"
           className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+        />
+        <input
+          name="price"
+          placeholder="Pris (f.eks. Gratis, eller 100 kr)"
+          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig sm:col-span-2"
         />
         <textarea
           name="description"

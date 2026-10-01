@@ -80,11 +80,23 @@ export default async function EditActivityPage({
           />
         </div>
         <input
+          name="event_time"
+          defaultValue={activity.event_time ?? ""}
+          placeholder="Klokkeslett (f.eks. 18.00–20.00)"
+          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+        />
+        <input
           name="place"
           required
           defaultValue={activity.place}
           placeholder="Sted"
           className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+        />
+        <input
+          name="price"
+          defaultValue={activity.price ?? ""}
+          placeholder="Pris (f.eks. Gratis, eller 100 kr)"
+          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig sm:col-span-2"
         />
         <textarea
           name="description"

@@ -8,7 +8,7 @@ import ReportSection from "@/components/ReportSection";
 import ActivityMedia, { type MediaImage } from "@/components/ActivityMedia";
 import HoneypotFields from "@/components/HoneypotFields";
 import { todayOslo } from "@/lib/recurring";
-import { isActivityPast, longDateRange } from "@/lib/activity-date";
+import { googleCalendarUrl, isActivityPast, longDateRange } from "@/lib/activity-date";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
 import { signUpForActivity } from "./actions";
@@ -80,8 +80,58 @@ export default async function ActivityPage({ params, searchParams }: Props) {
             </div>
 
             <h1 className="mt-3 font-serif text-4xl font-medium">{a.title}</h1>
-            <p className="mt-3 text-base capitalize text-ink-soft">{longDateRange(a)}</p>
-            <p className="text-base text-ink-soft">{a.place}</p>
+
+            <dl className="mt-5 grid grid-cols-1 gap-x-6 gap-y-2.5 rounded-[14px] border border-line bg-cream-2 p-5 text-sm sm:grid-cols-2">
+              <div>
+                <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Dato</dt>
+                <dd className="mt-0.5 capitalize text-ink">{longDateRange(a)}</dd>
+              </div>
+              {a.event_time && (
+                <div>
+                  <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Klokkeslett</dt>
+                  <dd className="mt-0.5 text-ink">{a.event_time}</dd>
+                </div>
+              )}
+              <div>
+                <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Sted</dt>
+                <dd className="mt-0.5 text-ink">{a.place}</dd>
+              </div>
+              <div>
+                <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Pris</dt>
+                <dd className="mt-0.5 text-ink">{a.price || "Gratis"}</dd>
+              </div>
+              <div className="sm:col-span-2">
+                <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Påmelding</dt>
+                <dd className="mt-0.5 text-ink">
+                  {isPast
+                    ? "Aktiviteten er gjennomført"
+                    : a.registration_open
+                      ? "Påmelding kreves – se skjema nedenfor"
+                      : "Ingen påmelding nødvendig – bare møt opp!"}
+                </dd>
+              </div>
+            </dl>
+
+            {!isPast && (
+              <div className="mt-4 flex flex-wrap gap-3 text-sm font-semibold">
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(a.place)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full border border-line px-4 py-2 text-ink-soft transition-colors hover:border-fig hover:text-fig"
+                >
+                  📍 Veibeskrivelse
+                </a>
+                <a
+                  href={googleCalendarUrl(a)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full border border-line px-4 py-2 text-ink-soft transition-colors hover:border-fig hover:text-fig"
+                >
+                  📅 Legg til i kalender
+                </a>
+              </div>
+            )}
 
             <p className="mt-6 whitespace-pre-line text-lg leading-relaxed text-ink-soft">
               {a.description}

@@ -48,3 +48,23 @@ export function longDateRange(a: DatedActivity): string {
   });
   return `${startText} – ${endText}`;
 }
+
+/** Google Kalender-lenke for et heldags-arrangement (event_time vises kun i beskrivelsen, siden det er fritekst). */
+export function googleCalendarUrl(
+  a: DatedActivity & { title: string; place: string; event_time?: string | null }
+): string {
+  const start = a.event_date.replaceAll("-", "");
+  const endExclusive = utcDate(effectiveEndDate(a));
+  endExclusive.setUTCDate(endExclusive.getUTCDate() + 1);
+  const end = endExclusive.toISOString().slice(0, 10).replaceAll("-", "");
+  const details = a.event_time ? `Klokkeslett: ${a.event_time}` : "";
+
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: a.title,
+    dates: `${start}/${end}`,
+    location: a.place,
+    details,
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
