@@ -82,8 +82,9 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-white/15">
-        <div className="flex items-center justify-between px-8 py-5 text-xs text-[#B4B8A6]">
+        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 px-8 py-5 text-xs text-[#B4B8A6]">
           <span>© {new Date().getFullYear()} Mangfoldshuset Vestland</span>
+          <span>Nettside laget av Elisa Rumeysa Solberg</span>
           <Link href="/personvern" className="hover:text-white">
             Personvern
           </Link>
