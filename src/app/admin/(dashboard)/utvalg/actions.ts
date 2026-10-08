@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { formText, formUrls } from "@/lib/form-url";
+import { formText, formUrl, formUrls } from "@/lib/form-url";
 import { requireEditor, requireUtvalgAccess } from "@/lib/auth-guard";
 
 function slugify(s: string) {
@@ -24,7 +24,7 @@ function fields(formData: FormData) {
     title: formText(formData, "title") ?? "",
     description: formText(formData, "description") ?? "",
     activity_match: formText(formData, "activity_match"),
-    external_link: formText(formData, "external_link"),
+    external_link: formUrl(formData, "external_link"),
     instagram_link: formText(formData, "instagram_link"),
     contact: formText(formData, "contact"),
     active: formData.get("active") === "on",

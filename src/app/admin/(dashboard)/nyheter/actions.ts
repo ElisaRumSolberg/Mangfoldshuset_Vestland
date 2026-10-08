@@ -18,7 +18,7 @@ export async function addNews(formData: FormData) {
     published_at: (formData.get("published_at") as string) || undefined,
     image_url: imageUrl,
     video_url: videoUrl,
-    external_link: (formData.get("external_link") as string) || null,
+    external_link: formUrl(formData, "external_link"),
   });
 
   revalidatePath("/admin/nyheter");
@@ -35,7 +35,7 @@ export async function updateNews(id: string, formData: FormData) {
   const updates: Record<string, unknown> = {
     title: formData.get("title") as string,
     summary: formData.get("summary") as string,
-    external_link: (formData.get("external_link") as string) || null,
+    external_link: formUrl(formData, "external_link"),
   };
   if (formData.get("published_at")) updates.published_at = formData.get("published_at") as string;
   if (imageUrl) updates.image_url = imageUrl;

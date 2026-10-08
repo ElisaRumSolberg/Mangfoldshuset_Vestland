@@ -32,7 +32,7 @@ function fields(formData: FormData) {
     contact: text(formData, "contact"),
     responsible_name: text(formData, "responsible_name"),
     responsible_phone: text(formData, "responsible_phone"),
-    external_link: text(formData, "external_link"),
+    external_link: formUrl(formData, "external_link"),
     skipped_dates: skipped,
     active: formData.get("active") === "on",
     featured: formData.get("featured") === "on",
