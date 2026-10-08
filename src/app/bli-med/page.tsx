@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HoneypotFields from "@/components/HoneypotFields";
+import { fetchSiteSettings } from "@/lib/site-settings";
 import { submitApplication, submitMembership } from "./actions";
 
 export const metadata: Metadata = {
@@ -46,11 +47,30 @@ const label = "mb-1 block text-sm font-medium text-ink";
 const button =
   "w-fit rounded-full bg-fig px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-fig-dark";
 
-function Thanks({ text }: { text: string }) {
+function VippsButton({ href }: { href: string }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex min-h-11 w-fit items-center rounded-full px-6 text-sm font-semibold text-[#1A1512] transition-transform hover:-translate-y-0.5"
+      style={{ backgroundColor: "#FF5B24" }}
+    >
+      Betal med Vipps
+    </a>
+  );
+}
+
+function Thanks({ text, vippsLink }: { text: string; vippsLink?: string | null }) {
   return (
     <div className="rounded-xl bg-[#EAF0E9] px-6 py-8 text-center">
       <p className="font-serif text-xl text-green-dark">Takk!</p>
       <p className="mt-1 text-sm text-ink-soft">{text}</p>
+      {vippsLink && (
+        <div className="mt-5 flex justify-center">
+          <VippsButton href={vippsLink} />
+        </div>
+      )}
     </div>
   );
 }
@@ -112,6 +132,8 @@ export default async function BliMedPage({
   searchParams: Promise<{ sendt?: string; feil?: string }>;
 }) {
   const { sendt, feil } = await searchParams;
+  const settings = await fetchSiteSettings();
+  const vippsLink = settings.vipps_link;
 
   return (
     <>
@@ -146,7 +168,7 @@ export default async function BliMedPage({
             intro="Som medlem støtter du arbeidet vårt og er med på å bestemme retningen. Medlemskap og frivillig arbeid er to ulike ting – du kan gjerne være begge deler."
           >
             {sendt === "medlem" ? (
-              <Thanks text="Takk for at du melder deg inn! Betal kontingenten med Vipps til #595791, så aktiverer vi medlemskapet ditt." />
+              <Thanks text="Takk for at du melder deg inn! Betal kontingenten med Vipps til #595791, så aktiverer vi medlemskapet ditt." vippsLink={vippsLink} />
             ) : (
               <SubmissionForm action={submitMembership} className="flex flex-col gap-5">
                 <HoneypotFields />
@@ -155,11 +177,11 @@ export default async function BliMedPage({
                   <legend className={label}>Medlemskap</legend>
                   <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:gap-6">
                     <label className="flex items-center gap-2 text-sm text-ink-soft">
-                      <input type="radio" name="membership_type" value="enkelt" defaultChecked className="accent-[#9C3B44]" />
+                      <input type="radio" name="membership_type" value="enkelt" defaultChecked className="h-5 w-5 shrink-0 accent-[#9C3B44]" />
                       Enkelt person (100 kr)
                     </label>
                     <label className="flex items-center gap-2 text-sm text-ink-soft">
-                      <input type="radio" name="membership_type" value="familie" className="accent-[#9C3B44]" />
+                      <input type="radio" name="membership_type" value="familie" className="h-5 w-5 shrink-0 accent-[#9C3B44]" />
                       Familie (150 kr)
                     </label>
                   </div>
@@ -212,7 +234,7 @@ export default async function BliMedPage({
                   <textarea id="field-comment" name="comment" rows={2} className={input} />
                 </div>
                 <label className="block text-sm leading-relaxed text-ink-soft">
-                  <input type="checkbox" name="terms" required className="mr-2 accent-[#9C3B44]" />
+                  <input type="checkbox" name="terms" required className="mr-2 h-5 w-5 shrink-0 align-middle accent-[#9C3B44]" />
                   Jeg godtar{" "}
                   <a href="/medlemsvilkar" target="_blank" rel="noopener noreferrer" className="underline">
                     medlemsvilkårene
@@ -256,8 +278,8 @@ export default async function BliMedPage({
                   <legend className={label}>Interesser</legend>
                   <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
                     {interesser.map((i) => (
-                      <label key={i} className="flex items-center gap-2 text-sm text-ink-soft">
-                        <input type="checkbox" name="interesser" value={i} className="accent-[#9C3B44]" />
+                      <label key={i} className="flex min-h-10 items-center gap-2 text-sm text-ink-soft">
+                        <input type="checkbox" name="interesser" value={i} className="h-5 w-5 shrink-0 accent-[#9C3B44]" />
                         {i}
                       </label>
                     ))}
@@ -273,8 +295,8 @@ export default async function BliMedPage({
                   <legend className={label}>Når kan du?</legend>
                   <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
                     {tilgjengelighet.map((t) => (
-                      <label key={t} className="flex items-center gap-2 text-sm text-ink-soft">
-                        <input type="checkbox" name="tilgjengelighet" value={t} className="accent-[#9C3B44]" />
+                      <label key={t} className="flex min-h-10 items-center gap-2 text-sm text-ink-soft">
+                        <input type="checkbox" name="tilgjengelighet" value={t} className="h-5 w-5 shrink-0 accent-[#9C3B44]" />
                         {t}
                       </label>
                     ))}
@@ -284,8 +306,8 @@ export default async function BliMedPage({
                   <legend className={label}>Hva har du lyst til?</legend>
                   <div className="mt-2 flex flex-col gap-2">
                     {typer.map((t) => (
-                      <label key={t} className="flex items-center gap-2 text-sm text-ink-soft">
-                        <input type="checkbox" name="type_bidrag" value={t} className="accent-[#9C3B44]" />
+                      <label key={t} className="flex min-h-10 items-center gap-2 text-sm text-ink-soft">
+                        <input type="checkbox" name="type_bidrag" value={t} className="h-5 w-5 shrink-0 accent-[#9C3B44]" />
                         {t}
                       </label>
                     ))}
