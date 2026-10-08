@@ -22,7 +22,7 @@ export default function SupportUs({ vippsLink }: { vippsLink?: string | null }) 
               href={vippsLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-2xl px-8 py-4 text-center transition-transform hover:-translate-y-0.5"
+              className="rounded-2xl px-10 py-5 text-center shadow-lg transition-transform hover:-translate-y-0.5"
               style={{ backgroundColor: "#FF5B24" }}
             >
               <p className="text-xs font-semibold uppercase tracking-wide text-white/80">
@@ -33,7 +33,7 @@ export default function SupportUs({ vippsLink }: { vippsLink?: string | null }) 
               </p>
             </a>
           ) : (
-            <div className="rounded-2xl px-6 py-4" style={{ backgroundColor: "#FF5B24" }}>
+            <div className="rounded-2xl px-10 py-5 shadow-lg" style={{ backgroundColor: "#FF5B24" }}>
               <p className="text-xs font-semibold uppercase tracking-wide text-[#1A1512]">
                 Vipps
               </p>
@@ -42,8 +42,8 @@ export default function SupportUs({ vippsLink }: { vippsLink?: string | null }) 
               </p>
             </div>
           )}
-          <div className="rounded-2xl px-6 py-4" style={{ backgroundColor: "#9C3B44" }}>
-            <p className="text-xs font-semibold uppercase tracking-wide text-white/80">
+          <div className="rounded-2xl border border-white/40 bg-black/15 px-6 py-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-white/90">
               Bankkonto
             </p>
             <p className="mt-1 font-serif text-2xl font-medium text-white">
