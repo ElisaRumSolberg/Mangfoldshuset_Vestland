@@ -55,7 +55,7 @@ export default function ReportSection({
                   {quotes.map((q, i) => (
                     <li
                       key={i}
-                      className="rounded-xl border-l-4 border-fig bg-white px-5 py-3 font-serif text-base italic text-ink"
+                      className="rounded-xl border border-line bg-white px-5 py-3 font-serif text-base italic text-ink"
                     >
                       «{q}»
                     </li>
