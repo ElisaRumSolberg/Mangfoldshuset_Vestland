@@ -17,18 +17,43 @@ const lora = Lora({
 const description =
   "Mangfoldshuset Vestland skaper møteplasser der mennesker med ulike bakgrunner kan møtes, delta, lære og bidra.";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "NGO",
+  name: "Mangfoldshuset Vestland",
+  url: siteUrl,
+  logo: `${siteUrl}/logo.png`,
+  description,
+  email: "post@mangfoldshusetvestland.no",
+  telephone: "+4740567853",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Arne Abrahamsens vei 1",
+    postalCode: "5161",
+    addressLocality: "Laksevåg, Bergen",
+    addressCountry: "NO",
+  },
+  sameAs: [
+    "https://www.facebook.com/mangfoldhusetvestlandet/",
+    "https://www.instagram.com/mangfoldhusetvestlandet/",
+  ],
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: {
-    default: "Mangfoldshuset Vestland",
+    default: "Mangfoldshuset Vestland – møteplass for mangfold i Bergen",
     template: "%s",
   },
   description,
+  alternates: { canonical: "./" },
   openGraph: {
     type: "website",
     locale: "nb_NO",
     siteName: "Mangfoldshuset Vestland",
-    title: "Mangfoldshuset Vestland",
+    title: "Mangfoldshuset Vestland – møteplass for mangfold i Bergen",
     description,
     images: [{ url: "/logo.jpg", width: 488, height: 429, alt: "Mangfoldshuset Vestland" }],
   },
@@ -41,6 +66,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${inter.variable} ${lora.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-cream text-ink font-sans">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
         {children}
         <CookieConsent />
       </body>
