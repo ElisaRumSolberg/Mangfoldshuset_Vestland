@@ -36,7 +36,14 @@ export default function NyttPassordPage() {
     const supabase = createClient();
     const { error } = await supabase.auth.updateUser({ password });
     if (error) {
-      setError("Kunne ikke lagre passordet. Be om en ny lenke og prøv igjen.");
+      const msg = error.message.toLowerCase();
+      if (msg.includes("different from the old")) {
+        setError("Det nye passordet må være forskjellig fra det gamle.");
+      } else if (msg.includes("weak") || msg.includes("pwned") || msg.includes("password")) {
+        setError(`Passordet ble avvist: ${error.message}`);
+      } else {
+        setError(`Kunne ikke lagre passordet (${error.message}). Be om en ny lenke og prøv igjen.`);
+      }
       setLoading(false);
       return;
     }
