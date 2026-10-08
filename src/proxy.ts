@@ -31,7 +31,11 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
-  const isLoginRoute = request.nextUrl.pathname === "/admin/logg-inn";
+  const isResetRoute = request.nextUrl.pathname === "/admin/nytt-passord";
+  // Nytt-passord-siden åpnes fra e-postlenken, med en midlertidig gjenopprettingsøkt
+  // (uten rolle), så den følger de samme reglene som innloggingssiden.
+  const isLoginRoute =
+    request.nextUrl.pathname === "/admin/logg-inn" || isResetRoute;
 
   if (isAdminRoute && !isLoginRoute && !user) {
     const url = request.nextUrl.clone();
@@ -39,7 +43,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (isLoginRoute && user && roleFromUser(user)) {
+  if (isLoginRoute && !isResetRoute && user && roleFromUser(user)) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin";
     return NextResponse.redirect(url);

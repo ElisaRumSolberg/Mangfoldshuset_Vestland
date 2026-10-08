@@ -10,6 +10,24 @@ export default function LoggInnPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [info, setInfo] = useState<string | null>(null);
+
+  async function handleReset() {
+    setError(null);
+    setInfo(null);
+    if (!email) {
+      setError("Skriv inn e-postadressen din først.");
+      return;
+    }
+    setLoading(true);
+    const supabase = createClient();
+    await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/admin/nytt-passord`,
+    });
+    // Samme svar uansett om kontoen finnes, så siden ikke avslører hvem som er admin.
+    setInfo("Hvis adressen er registrert, har vi sendt en lenke for nytt passord.");
+    setLoading(false);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -71,6 +89,7 @@ export default function LoggInnPage() {
           </div>
 
           {error && <p className="text-sm text-fig">{error}</p>}
+          {info && <p className="text-sm text-ink-soft">{info}</p>}
 
           <button
             type="submit"
@@ -78,6 +97,14 @@ export default function LoggInnPage() {
             className="mt-2 rounded-full bg-fig px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark disabled:opacity-60"
           >
             {loading ? "Logger inn…" : "Logg inn"}
+          </button>
+          <button
+            type="button"
+            onClick={handleReset}
+            disabled={loading}
+            className="text-center text-sm text-ink-soft underline hover:text-ink disabled:opacity-60"
+          >
+            Glemt passord?
           </button>
         </form>
       </div>
