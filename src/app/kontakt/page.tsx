@@ -34,19 +34,19 @@ export default async function KontaktPage({
               <p className="mb-4 text-xs font-bold uppercase tracking-widest text-ink">
                 Kontaktinformasjon
               </p>
-              <div className="flex flex-col gap-4 text-sm text-ink-soft">
-                <p className="flex items-start gap-2.5">
+              <div className="flex flex-col gap-1 text-sm text-ink-soft">
+                <p className="flex items-start gap-2.5 pb-3">
                   <LocationIcon />
                   Arne Abrahamsens vei 1, Bergen
                 </p>
                 <a
                   href="mailto:ali.mangfoldhuset@gmail.com"
-                  className="flex items-center gap-2.5 hover:text-ink"
+                  className="flex items-center gap-2.5 py-3 hover:text-ink"
                 >
                   <MailIcon />
                   ali.mangfoldhuset@gmail.com
                 </a>
-                <a href="tel:40567853" className="flex items-center gap-2.5 hover:text-ink">
+                <a href="tel:40567853" className="flex items-center gap-2.5 py-3 hover:text-ink">
                   <PhoneIcon />
                   405 67 853
                 </a>

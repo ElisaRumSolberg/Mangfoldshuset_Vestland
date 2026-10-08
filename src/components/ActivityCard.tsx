@@ -117,9 +117,9 @@ export default function ActivityCard({
         <p className="mt-1.5 text-sm text-ink-soft">{place}</p>
         <p className="mt-2.5 line-clamp-3 text-sm leading-relaxed text-ink-soft">{desc}</p>
         <div className="mt-3.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-semibold text-green-dark">
-          <Link href={href ?? "/aktiviteter"}>Les mer →</Link>
+          <Link href={href ?? "/aktiviteter"} className="inline-flex min-h-11 items-center -my-3">Les mer →</Link>
           {externalLink && (
-            <a href={externalLink} target="_blank" rel="noopener noreferrer">
+            <a href={externalLink} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center -my-3">
               Se innlegget →
             </a>
           )}

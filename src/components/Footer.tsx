@@ -14,7 +14,7 @@ export default function Footer() {
             height={190}
             className="h-28 w-auto self-start sm:self-center"
           />
-          <div className="flex flex-col gap-3 text-sm">
+          <div className="flex flex-col gap-1 text-sm">
             <p>
               <span className="font-semibold text-white">Org.nr:</span> 914 732 999
             </p>
@@ -24,12 +24,12 @@ export default function Footer() {
             </p>
             <a
               href="mailto:ali.mangfoldhuset@gmail.com"
-              className="flex items-center gap-2.5 hover:text-white"
+              className="flex items-center gap-2.5 py-3 hover:text-white"
             >
               <span className="text-[#E7A5AC]"><MailIcon /></span>
               ali.mangfoldhuset@gmail.com
             </a>
-            <a href="tel:40567853" className="flex items-center gap-2.5 hover:text-white">
+            <a href="tel:40567853" className="flex items-center gap-2.5 py-3 hover:text-white">
               <span className="text-[#E7A5AC]"><PhoneIcon /></span>
               405 67 853
             </a>
@@ -84,7 +84,7 @@ export default function Footer() {
       <div className="border-t border-white/15">
         <div className="grid grid-cols-1 items-center gap-2 px-8 py-5 text-center text-xs text-[#B4B8A6] sm:grid-cols-3">
           <span className="sm:text-left">© {new Date().getFullYear()} Mangfoldshuset Vestland</span>
-          <Link href="/personvern" className="hover:text-white">
+          <Link href="/personvern" className="py-3 hover:text-white">
             Personvern
           </Link>
           <span className="sm:text-right">Nettside laget av Elisa Rumeysa Solberg</span>

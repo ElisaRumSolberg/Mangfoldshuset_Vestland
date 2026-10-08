@@ -58,7 +58,7 @@ export default async function ProgramPage({ params }: Props) {
     <>
       <Navbar />
       <main className="mx-auto w-full max-w-4xl px-6 py-16">
-        <Link href="/aktiviteter" className="text-sm font-semibold text-green-dark">
+        <Link href="/aktiviteter" className="inline-flex min-h-11 items-center -my-3 text-sm font-semibold text-green-dark">
           ← Alle aktiviteter
         </Link>
 
@@ -116,7 +116,7 @@ export default async function ProgramPage({ params }: Props) {
 
             <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-semibold text-green-dark">
               {p.external_link && (
-                <a href={p.external_link} target="_blank" rel="noopener noreferrer">
+                <a href={p.external_link} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center -my-3">
                   Se på Facebook →
                 </a>
               )}

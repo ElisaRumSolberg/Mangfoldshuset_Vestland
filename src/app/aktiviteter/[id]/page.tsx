@@ -52,7 +52,7 @@ export default async function ActivityPage({ params, searchParams }: Props) {
     <>
       <Navbar />
       <main className="mx-auto w-full max-w-5xl px-6 py-16">
-        <Link href="/aktiviteter" className="text-sm font-semibold text-green-dark">
+        <Link href="/aktiviteter" className="inline-flex min-h-11 items-center -my-3 text-sm font-semibold text-green-dark">
           ← Alle aktiviteter
         </Link>
 

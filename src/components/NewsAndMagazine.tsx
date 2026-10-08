@@ -47,7 +47,7 @@ export default async function NewsAndMagazine() {
             <h2 className="font-serif text-2xl">Siste nyheter</h2>
             <Link
               href="/nyheter"
-              className="text-sm font-semibold text-green-dark"
+              className="inline-flex min-h-11 items-center -my-3 text-sm font-semibold text-green-dark"
             >
               Se alle nyheter →
             </Link>

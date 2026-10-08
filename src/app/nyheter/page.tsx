@@ -93,7 +93,7 @@ export default async function NyheterPage() {
                       href={n.external_link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-3.5 inline-block text-sm font-semibold text-green-dark"
+                      className="mt-3.5 inline-flex min-h-11 items-center -mb-3 text-sm font-semibold text-green-dark"
                     >
                       Se innlegget →
                     </a>
