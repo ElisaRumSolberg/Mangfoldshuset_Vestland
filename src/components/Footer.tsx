@@ -23,11 +23,11 @@ export default function Footer() {
               Arne Abrahamsens vei 1, Bergen
             </p>
             <a
-              href="mailto:ali.mangfoldhuset@gmail.com"
+              href="mailto:post@mangfoldshusetvestland.no"
               className="flex items-center gap-2.5 py-3 hover:text-white"
             >
               <span className="text-[#E7A5AC]"><MailIcon /></span>
-              ali.mangfoldhuset@gmail.com
+              post@mangfoldshusetvestland.no
             </a>
             <a href="tel:40567853" className="flex items-center gap-2.5 py-3 hover:text-white">
               <span className="text-[#E7A5AC]"><PhoneIcon /></span>

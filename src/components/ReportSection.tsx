@@ -1,7 +1,7 @@
 import Link from "next/link";
 import PhotoGallery from "./PhotoGallery";
 
-const CONTACT_EMAIL = "ali.mangfoldhuset@gmail.com";
+const CONTACT_EMAIL = "post@mangfoldshusetvestland.no";
 
 /** «Slik gikk det»: deltakere, oppsummering, tilbakemeldinger og bilder. Tomt hvis alt mangler. */
 export default function ReportSection({

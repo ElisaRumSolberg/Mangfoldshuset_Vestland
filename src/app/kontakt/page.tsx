@@ -40,11 +40,11 @@ export default async function KontaktPage({
                   Arne Abrahamsens vei 1, Bergen
                 </p>
                 <a
-                  href="mailto:ali.mangfoldhuset@gmail.com"
+                  href="mailto:post@mangfoldshusetvestland.no"
                   className="flex items-center gap-2.5 py-3 hover:text-ink"
                 >
                   <MailIcon />
-                  ali.mangfoldhuset@gmail.com
+                  post@mangfoldshusetvestland.no
                 </a>
                 <a href="tel:40567853" className="flex items-center gap-2.5 py-3 hover:text-ink">
                   <PhoneIcon />

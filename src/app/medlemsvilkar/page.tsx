@@ -58,8 +58,8 @@ const sections: { title: string; body: React.ReactNode }[] = [
       <p>
         Medlemskapet opphører automatisk ved manglende fornyelse, eller ved
         skriftlig utmelding til{" "}
-        <a className="underline" href="mailto:ali.mangfoldhuset@gmail.com">
-          ali.mangfoldhuset@gmail.com
+        <a className="underline" href="mailto:post@mangfoldshusetvestland.no">
+          post@mangfoldshusetvestland.no
         </a>
         . Innbetalt kontingent refunderes ikke ved utmelding i løpet av
         medlemsåret.

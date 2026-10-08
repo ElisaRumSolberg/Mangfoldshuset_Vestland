@@ -14,8 +14,8 @@ const sections: { title: string; body: React.ReactNode }[] = [
       <p>
         Mangfoldshuset Vestland, org.nr. 914 732 999, Arne Abrahamsens vei 1,
         Bergen. Kontakt oss på{" "}
-        <a className="underline" href="mailto:ali.mangfoldhuset@gmail.com">
-          ali.mangfoldhuset@gmail.com
+        <a className="underline" href="mailto:post@mangfoldshusetvestland.no">
+          post@mangfoldshusetvestland.no
         </a>{" "}
         eller telefon 405 67 853 for spørsmål om personvern.
       </p>
