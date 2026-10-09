@@ -138,7 +138,7 @@ export default function NavbarClient({
         className="flex items-center justify-center bg-cream px-3 py-3 sm:px-6 sm:py-4"
       >
         <Image
-          src="/logo.png"
+          src="/logo-v2.png"
           alt="Mangfoldshuset Vestland"
           width={413}
           height={190}

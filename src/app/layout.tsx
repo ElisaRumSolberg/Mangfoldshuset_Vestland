@@ -24,7 +24,7 @@ const organizationJsonLd = {
   "@type": "NGO",
   name: "Mangfoldshuset Vestland",
   url: siteUrl,
-  logo: `${siteUrl}/logo.png`,
+  logo: `${siteUrl}/logo-v2.png`,
   description,
   email: "post@mangfoldshusetvestland.no",
   telephone: "+4740567853",
