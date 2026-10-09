@@ -50,6 +50,11 @@ export default async function UtvalgPage({ params }: Props) {
 
   let upcoming: ReturnType<typeof mapActivities> = [];
   let done: ReturnType<typeof mapActivities> = [];
+  // Bilder fra aktivitetene som hører til utvalget (galleriet på hver aktivitet),
+  // nyeste aktivitet først. Brukes automatisk i bildevisningen og "Flere bilder".
+  let activityPhotos: string[] = [];
+  let totalActivities = 0;
+  let lastActivityDate: string | null = null;
   if (u.activity_match && isSupabaseConfigured()) {
     const supabase = await createClient();
     const today = new Date().toISOString().slice(0, 10);
@@ -69,20 +74,36 @@ export default async function UtvalgPage({ params }: Props) {
         .or(`end_date.lt.${today},and(end_date.is.null,event_date.lt.${today})`)
         .order("event_date", { ascending: false }),
     ]);
-    upcoming = mapActivities((upcomingData ?? []).filter(matches));
-    done = mapActivities((doneData ?? []).filter(matches)).slice(0, 6);
+    const upcomingMatched = (upcomingData ?? []).filter(matches);
+    const doneMatched = (doneData ?? []).filter(matches);
+    totalActivities = upcomingMatched.length + doneMatched.length;
+    const lastDone = doneMatched[0]?.event_date as string | undefined;
+    lastActivityDate = lastDone
+      ? new Date(lastDone).toLocaleDateString("nb-NO", { day: "numeric", month: "long", year: "numeric" })
+      : null;
+    upcoming = mapActivities(upcomingMatched);
+    done = mapActivities(doneMatched).slice(0, 6);
+
+    activityPhotos = [...doneMatched, ...upcomingMatched]
+      .flatMap((a) => ((a.photos as string[] | null) ?? []))
+      .filter((src, i, all) => Boolean(src) && all.indexOf(src) === i)
+      .slice(0, 24);
   }
 
   // Egen fargeprofil (satt av admin), ellers stabilt valg ut fra navnet slik at
   // samme utvalg alltid får samme standardfarge.
+  const heroImages = u.cover_images.length ? u.cover_images : activityPhotos.slice(0, 8);
+  const galleryPhotos = [...u.photos, ...activityPhotos].filter(
+    (src, i, all) => all.indexOf(src) === i
+  );
+
   const custom = customColors(u);
   const nameSum = [...u.title].reduce((sum, c) => sum + c.charCodeAt(0), 0);
   const panelVariant = nameSum % 2 === 0 ? "green" : "fig";
-  const aboutPanelVariant = panelVariant === "green" ? "fig" : "green";
 
   // Bakgrunnene under "Om oss" (cream-2) skal alternere. Kommende/Tidligere
   // vises alltid (som på /aktiviteter), bilder bare når det finnes noen.
-  const visible = [true, true, u.photos.length > 0];
+  const visible = [true, true, galleryPhotos.length > 0];
   const [upcomingBg, doneBg, photosBg] = visible.reduce<{
     count: number;
     out: string[];
@@ -172,9 +193,9 @@ export default async function UtvalgPage({ params }: Props) {
                 )}
               </div>
             </div>
-            {u.cover_images.length ? (
+            {heroImages.length ? (
               <PhotoSlideshow
-                images={u.cover_images}
+                images={heroImages}
                 className="h-48 rounded-3xl border border-white/10 md:h-64"
               />
             ) : (
@@ -190,11 +211,36 @@ export default async function UtvalgPage({ params }: Props) {
         {/* Om oss: kort, i samme stil som forsidens Om oss-utsnitt */}
         <section className="bg-cream-2 py-16">
           <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-6 md:grid-cols-[0.85fr_1.15fr]">
-            <OrganicPanel
-              variant={aboutPanelVariant}
-              colors={custom ? { from: custom.from, to: custom.to } : undefined}
-              className="order-2 h-56 rounded-[20px] md:order-1"
-            />
+            <dl className="order-2 grid grid-cols-2 gap-4 rounded-[20px] border border-line bg-white p-6 md:order-1">
+              <div>
+                <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Aktiviteter</dt>
+                <dd className="mt-1 font-serif text-3xl font-medium text-ink">{totalActivities}</dd>
+              </div>
+              <div>
+                <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Siste aktivitet</dt>
+                <dd className="mt-1 font-serif text-xl font-medium text-ink">
+                  {lastActivityDate ?? "–"}
+                </dd>
+              </div>
+              {u.contact && (
+                <div className="col-span-2 border-t border-line pt-4">
+                  <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Kontakt</dt>
+                  <dd className="mt-1 text-sm">
+                    <a className="break-all font-semibold text-ink underline underline-offset-4" href={`mailto:${u.contact}`}>
+                      {u.contact}
+                    </a>
+                  </dd>
+                </div>
+              )}
+              <div className="col-span-2">
+                <Link
+                  href="/bli-med#frivillig"
+                  className="inline-flex min-h-11 items-center rounded-full bg-fig px-6 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
+                >
+                  Bli med i utvalget
+                </Link>
+              </div>
+            </dl>
             <div className="order-1 md:order-2">
               <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
                 Om oss
@@ -230,13 +276,13 @@ export default async function UtvalgPage({ params }: Props) {
           </div>
         </section>
 
-        {u.photos.length > 0 && (
+        {galleryPhotos.length > 0 && (
           <section className={`px-6 py-16 ${photosBg}`}>
             <div className="mx-auto max-w-6xl">
               <h2 className="font-serif text-2xl font-medium">Flere bilder</h2>
               <div className="mt-6 overflow-hidden rounded-[18px] border border-line">
                 <ActivityMedia
-                  images={u.photos}
+                  images={galleryPhotos}
                   title={u.title}
                   className="aspect-square w-full sm:aspect-[4/3]"
                 />
