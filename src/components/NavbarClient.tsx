@@ -135,14 +135,14 @@ export default function NavbarClient({
     <header className="sticky top-0 z-50 grid grid-cols-[auto_1fr_auto] items-stretch border-b border-line bg-cream/90 backdrop-blur-sm">
       <Link
         href="/"
-        className="flex items-center justify-center bg-cream px-3 py-3 sm:px-6 sm:py-4"
+        className="flex items-center justify-center bg-cream"
       >
         <Image
-          src="/logo-v2.png"
+          src="/logo-plate-v2.png"
           alt="Mangfoldshuset Vestland"
-          width={413}
-          height={190}
-          className="h-12 w-auto sm:h-24"
+          width={489}
+          height={266}
+          className="h-[67px] w-auto sm:h-[134px]"
           priority
         />
       </Link>
