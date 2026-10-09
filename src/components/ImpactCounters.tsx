@@ -37,21 +37,23 @@ export default async function ImpactCounters({
 
   if (variant === "hero") {
     return (
-      <div className="border-t border-white/20 pt-6 xl:border-r xl:border-t-0 xl:pr-8 xl:pt-0">
-        <h2 className="text-xs font-bold uppercase tracking-widest text-[#F3E2B3] xl:text-sm">
+      <div className="mt-10">
+        <h2 className="text-sm font-bold uppercase tracking-widest text-white sm:text-base">
           Samfunnsinnsats
         </h2>
-        <div className="mt-3 flex flex-wrap gap-x-8 gap-y-4 sm:gap-x-10 xl:flex-col xl:gap-y-6">
+        <div className="mt-4 flex gap-3 sm:gap-5">
           {counters.map((c) => (
-            <div key={c.label}>
-              <p className="font-serif text-3xl font-medium text-white xl:text-5xl">
-                {c.target === null ? <span aria-label="Tall ikke tilgjengelig">—</span> : <AnimatedNumber target={c.target} suffix={c.suffix} />}
-              </p>
-              <p className="mt-0.5 text-xs font-semibold text-[#F5F0E4] sm:text-sm xl:text-base">{c.label}</p>
+            <div key={c.label} className="flex w-24 flex-col items-center text-center sm:w-32">
+              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-[#F1E6CC] shadow-md sm:h-32 sm:w-32">
+                <span className="font-serif text-2xl font-bold text-fig sm:text-4xl">
+                  {c.target === null ? <span aria-label="Tall ikke tilgjengelig">—</span> : <AnimatedNumber target={c.target} suffix={c.suffix} />}
+                </span>
+              </div>
+              <p className="mt-2 text-xs font-semibold leading-tight text-white sm:text-sm">{c.label}</p>
             </div>
           ))}
         </div>
-        <p className="mt-5 max-w-xs text-xs italic leading-snug text-[#F5F0E4]/90">
+        <p className="mt-5 max-w-sm text-xs italic leading-snug text-white">
           *Deltakere summeres fra aktiviteter og faste tilbud. Øvrige tall oppdateres av administrator
         </p>
       </div>
