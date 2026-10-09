@@ -54,7 +54,7 @@ export default async function UtvalgPage({ params }: Props) {
   // nyeste aktivitet først. Brukes automatisk i bildevisningen og "Flere bilder".
   let activityPhotos: string[] = [];
   let totalActivities = 0;
-  let lastActivityDate: string | null = null;
+  let totalParticipants = 0;
   if (u.activity_match && isSupabaseConfigured()) {
     const supabase = await createClient();
     const today = new Date().toISOString().slice(0, 10);
@@ -77,10 +77,10 @@ export default async function UtvalgPage({ params }: Props) {
     const upcomingMatched = (upcomingData ?? []).filter(matches);
     const doneMatched = (doneData ?? []).filter(matches);
     totalActivities = upcomingMatched.length + doneMatched.length;
-    const lastDone = doneMatched[0]?.event_date as string | undefined;
-    lastActivityDate = lastDone
-      ? new Date(lastDone).toLocaleDateString("nb-NO", { day: "numeric", month: "long", year: "numeric" })
-      : null;
+    totalParticipants = [...upcomingMatched, ...doneMatched].reduce(
+      (sum, a) => sum + ((a.participants as number | null) ?? 0),
+      0
+    );
     upcoming = mapActivities(upcomingMatched);
     done = mapActivities(doneMatched).slice(0, 6);
 
@@ -217,9 +217,9 @@ export default async function UtvalgPage({ params }: Props) {
                 <dd className="mt-1 font-serif text-3xl font-medium text-ink">{totalActivities}</dd>
               </div>
               <div>
-                <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Siste aktivitet</dt>
-                <dd className="mt-1 font-serif text-xl font-medium text-ink">
-                  {lastActivityDate ?? "–"}
+                <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Deltakere</dt>
+                <dd className="mt-1 font-serif text-3xl font-medium text-ink">
+                  {totalParticipants > 0 ? `${totalParticipants.toLocaleString("nb-NO")}+` : "–"}
                 </dd>
               </div>
               {u.contact && (
