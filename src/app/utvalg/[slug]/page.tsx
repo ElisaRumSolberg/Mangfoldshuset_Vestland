@@ -7,6 +7,7 @@ import ActivityGrid from "@/components/ActivityGrid";
 import ActivityMedia from "@/components/ActivityMedia";
 import OrganicPanel from "@/components/OrganicPanel";
 import PhotoSlideshow from "@/components/PhotoSlideshow";
+import ActivityShowcase, { type ShowcaseSlide } from "@/components/ActivityShowcase";
 import { customColors, toUtvalg } from "@/lib/utvalg";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
@@ -55,6 +56,8 @@ export default async function UtvalgPage({ params }: Props) {
   let activityPhotos: string[] = [];
   let totalActivities = 0;
   let totalParticipants = 0;
+  // Bildeserie øverst: bilder fra utvalgets aktiviteter, med tittel og "Mer"-knapp (som på forsiden).
+  let heroSlides: ShowcaseSlide[] = [];
   if (u.activity_match && isSupabaseConfigured()) {
     const supabase = await createClient();
     const today = new Date().toISOString().slice(0, 10);
@@ -81,6 +84,24 @@ export default async function UtvalgPage({ params }: Props) {
       (sum, a) => sum + ((a.participants as number | null) ?? 0),
       0
     );
+    const newestFirst = [...upcomingMatched, ...doneMatched].sort((x, y) =>
+      String(y.event_date).localeCompare(String(x.event_date))
+    );
+    for (const a of newestFirst) {
+      const chosen = ((a.homepage_image_urls as string[] | null) ?? []).filter(Boolean);
+      const photos = ((a.photos as string[] | null) ?? []).filter(Boolean);
+      const images = chosen.length ? chosen : photos.length ? photos.slice(0, 2) : [a.image_url].filter(Boolean);
+      for (const image of images as string[]) {
+        heroSlides.push({
+          title: a.title as string,
+          image,
+          href: `/aktiviteter/${a.id}`,
+          // Plakater (afiser) vises i sin helhet, ekte foto fyller ruten.
+          isPoster: image === a.image_url,
+        });
+      }
+    }
+    heroSlides = heroSlides.slice(0, 10);
     upcoming = mapActivities(upcomingMatched);
     done = mapActivities(doneMatched).slice(0, 6);
 
@@ -92,8 +113,7 @@ export default async function UtvalgPage({ params }: Props) {
 
   // Egen fargeprofil (satt av admin), ellers stabilt valg ut fra navnet slik at
   // samme utvalg alltid får samme standardfarge.
-  const heroImages = u.cover_images.length ? u.cover_images : activityPhotos.slice(0, 8);
-  const galleryPhotos = [...u.photos, ...activityPhotos].filter(
+    const galleryPhotos = [...u.photos, ...activityPhotos].filter(
     (src, i, all) => all.indexOf(src) === i
   );
 
@@ -133,7 +153,7 @@ export default async function UtvalgPage({ params }: Props) {
                 : "radial-gradient(circle at 78% 22%, rgba(156,59,68,0.28), transparent 45%), radial-gradient(circle at 15% 85%, rgba(233,222,199,0.18), transparent 50%)",
             }}
           />
-          <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-6 py-16 md:grid-cols-[1.1fr_0.9fr] md:py-20">
+          <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-6 py-16 md:grid-cols-[1fr_1fr] md:py-16">
             <div>
               <span className="mb-5 inline-block rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm font-semibold text-[#EFE7D6]">
                 Utvalg
@@ -193,16 +213,21 @@ export default async function UtvalgPage({ params }: Props) {
                 )}
               </div>
             </div>
-            {heroImages.length ? (
+            {u.cover_images.length ? (
               <PhotoSlideshow
-                images={heroImages}
-                className="h-48 rounded-3xl border border-white/10 md:h-64"
+                images={u.cover_images}
+                className="h-80 rounded-3xl border border-white/10 md:h-[440px]"
+              />
+            ) : heroSlides.length ? (
+              <ActivityShowcase
+                slides={heroSlides}
+                className="h-80 rounded-3xl border border-white/10 md:h-[440px]"
               />
             ) : (
               <OrganicPanel
                 variant={panelVariant}
                 colors={custom ? { from: custom.accent, to: custom.from } : undefined}
-                className="h-48 md:h-64"
+                className="h-80 md:h-[440px]"
               />
             )}
           </div>
