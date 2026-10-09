@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 export default function AnimatedNumber({
   target,
   suffix = "",
-  duration = 1600,
+  duration = 1000,
 }: {
   target: number;
   suffix?: string;
@@ -44,8 +44,14 @@ export default function AnimatedNumber({
 
   return (
     <span ref={ref}>
-      {value.toLocaleString("nb-NO")}
-      {suffix}
+      <span aria-hidden="true">
+        {value.toLocaleString("nb-NO")}
+        {suffix}
+      </span>
+      <span className="sr-only">
+        {target.toLocaleString("nb-NO")}
+        {suffix}
+      </span>
     </span>
   );
 }

@@ -67,7 +67,7 @@ export default function ActivityShowcase({
           </p>
           <Link
             href={slide.href}
-            className="rounded-full bg-white/90 px-5 py-2 text-xs font-semibold uppercase tracking-wide text-ink transition-all hover:-translate-y-0.5 hover:bg-white"
+            className="inline-flex min-h-11 items-center rounded-full bg-white/90 px-5 text-xs font-semibold uppercase tracking-wide text-ink transition-all hover:-translate-y-0.5 hover:bg-white"
           >
             Mer
           </Link>
