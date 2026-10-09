@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Lora } from "next/font/google";
 import "./globals.css";
 import CookieConsent from "@/components/CookieConsent";
@@ -39,6 +39,12 @@ const organizationJsonLd = {
     "https://www.facebook.com/mangfoldhusetvestlandet/",
     "https://www.instagram.com/mangfoldhusetvestlandet/",
   ],
+};
+
+// Siden har bare lyst tema. Uten dette mørkner enkelte nettlesere (f.eks. Samsung Internet)
+// siden automatisk, og den mørke logoen forsvinner mot mørk bakgrunn.
+export const viewport: Viewport = {
+  colorScheme: "light",
 };
 
 export const metadata: Metadata = {
