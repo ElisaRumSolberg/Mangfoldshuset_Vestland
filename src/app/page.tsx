@@ -20,12 +20,15 @@ export default async function Home() {
     <>
       <Navbar />
       <main>
-        <Hero images={settings.hero_images} slides={showcaseSlides} />
+        <Hero
+          images={settings.hero_images}
+          slides={showcaseSlides}
+          stats={<ImpactCounters variant="hero" />}
+        />
         <UpcomingActivities />
         <AboutSnippet />
         <ContributeSection />
         <SupportUs vippsLink={settings.vipps_link} />
-        <ImpactCounters />
         <NewsAndMagazine />
       </main>
       <Footer />
