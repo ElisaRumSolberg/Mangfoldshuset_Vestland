@@ -8,11 +8,11 @@ export default function Footer() {
       <div className="flex flex-col gap-10 px-8 py-14 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-col gap-8 sm:flex-row sm:items-center sm:gap-12">
           <Image
-            src="/logo-white-v2.png"
+            src="/logo-white-v5.png"
             alt="Mangfoldshuset Vestland"
-            width={413}
-            height={190}
-            className="h-28 w-auto self-start sm:self-center"
+            width={1793}
+            height={1011}
+            className="h-32 w-auto self-start sm:self-center"
           />
           <div className="flex flex-col gap-1 text-sm">
             <p>

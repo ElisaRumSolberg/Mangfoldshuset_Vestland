@@ -25,7 +25,7 @@ export default function WarmHouseAnimation({ className = "" }: { className?: str
       </svg>
 
       <div className="wh-logo relative">
-        <Image src="/logo-v2.png" alt="Mangfoldshuset Vestland" width={413} height={190} className="h-28 w-auto sm:h-36" priority />
+        <Image src="/logo-v5.png" alt="Mangfoldshuset Vestland" width={1793} height={1011} className="h-32 w-auto sm:h-44" priority />
       </div>
     </div>
   );
