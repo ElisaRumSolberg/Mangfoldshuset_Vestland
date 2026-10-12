@@ -8,4 +8,4 @@ export function getResendClient() {
   return new Resend(process.env.RESEND_API_KEY);
 }
 
-export const NOTIFY_EMAIL = "ali.mangfoldhuset@gmail.com";
+export const NOTIFY_EMAIL = "post@mangfoldshusetvestland.no";

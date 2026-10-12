@@ -63,7 +63,7 @@ export async function submitMembership(formData: FormData) {
 
   if (isResendConfigured()) {
     await notifyAfterSave(() => getResendClient().emails.send({
-      from: "Mangfoldshuset Vestland <onboarding@resend.dev>",
+      from: "Mangfoldshuset Vestland <post@mangfoldshusetvestland.no>",
       to: NOTIFY_EMAIL,
       replyTo: email,
       subject: `Ny medlemssøknad: ${first_name} ${last_name}`,
@@ -110,7 +110,7 @@ export async function submitApplication(formData: FormData) {
       .map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(", ") : v}`)
       .join("\n");
     await notifyAfterSave(() => getResendClient().emails.send({
-      from: "Mangfoldshuset Vestland <onboarding@resend.dev>",
+      from: "Mangfoldshuset Vestland <post@mangfoldshusetvestland.no>",
       to: NOTIFY_EMAIL,
       replyTo: email,
       subject: `${LABELS[type]}: ${name}`,

@@ -32,7 +32,7 @@ export async function GET(request: Request) {
 
   const supabase = createAdminClient();
   const resend = getResendClient();
-  const from = process.env.RESEND_FROM ?? "Mangfoldshuset Vestland <onboarding@resend.dev>";
+  const from = process.env.RESEND_FROM ?? "Mangfoldshuset Vestland <post@mangfoldshusetvestland.no>";
 
   const todayMs = new Date(`${todayOslo()}T00:00:00Z`).getTime();
   const day = 86400000;
