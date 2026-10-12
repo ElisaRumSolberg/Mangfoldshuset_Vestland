@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ActivityGrid from "@/components/ActivityGrid";
-import ActivityMedia from "@/components/ActivityMedia";
 import OrganicPanel from "@/components/OrganicPanel";
 import PhotoSlideshow from "@/components/PhotoSlideshow";
 import ActivityShowcase, { type ShowcaseSlide } from "@/components/ActivityShowcase";
@@ -51,13 +50,14 @@ export default async function UtvalgPage({ params }: Props) {
 
   let upcoming: ReturnType<typeof mapActivities> = [];
   let done: ReturnType<typeof mapActivities> = [];
-  // Bilder fra aktivitetene som hører til utvalget (galleriet på hver aktivitet),
-  // nyeste aktivitet først. Brukes automatisk i bildevisningen og "Flere bilder".
-  let activityPhotos: string[] = [];
   let totalActivities = 0;
   let totalParticipants = 0;
   // Bildeserie øverst: bilder fra utvalgets aktiviteter, med tittel og "Mer"-knapp (som på forsiden).
   let heroSlides: ShowcaseSlide[] = [];
+  // «Fra aktivitetene» (oppsummeringer) og «Det deltakerne sier» (tilbakemeldinger),
+  // hentet automatisk fra aktivitetene som hører til utvalget.
+  let summaries: { id: string; title: string; date: string; participants: number | null; text: string }[] = [];
+  let quotes: { text: string; id: string; title: string }[] = [];
   if (u.activity_match && isSupabaseConfigured()) {
     const supabase = await createClient();
     const today = new Date().toISOString().slice(0, 10);
@@ -105,26 +105,37 @@ export default async function UtvalgPage({ params }: Props) {
     upcoming = mapActivities(upcomingMatched);
     done = mapActivities(doneMatched).slice(0, 6);
 
-    activityPhotos = [...doneMatched, ...upcomingMatched]
-      .flatMap((a) => ((a.photos as string[] | null) ?? []))
-      .filter((src, i, all) => Boolean(src) && all.indexOf(src) === i)
-      .slice(0, 24);
+    summaries = doneMatched
+      .filter((a) => String(a.summary ?? "").trim())
+      .slice(0, 4)
+      .map((a) => ({
+        id: a.id as string,
+        title: a.title as string,
+        date: shortDateRange(a),
+        participants: (a.participants as number | null) ?? null,
+        text: String(a.summary).trim(),
+      }));
+    quotes = doneMatched
+      .flatMap((a) =>
+        String(a.feedback ?? "")
+          .split("\n")
+          .map((q) => q.trim())
+          .filter(Boolean)
+          .map((text) => ({ text, id: a.id as string, title: a.title as string }))
+      )
+      .slice(0, 6);
   }
 
   // Egen fargeprofil (satt av admin), ellers stabilt valg ut fra navnet slik at
   // samme utvalg alltid får samme standardfarge.
-    const galleryPhotos = [...u.photos, ...activityPhotos].filter(
-    (src, i, all) => all.indexOf(src) === i
-  );
-
-  const custom = customColors(u);
+    const custom = customColors(u);
   const nameSum = [...u.title].reduce((sum, c) => sum + c.charCodeAt(0), 0);
   const panelVariant = nameSum % 2 === 0 ? "green" : "fig";
 
   // Bakgrunnene under "Om oss" (cream-2) skal alternere. Kommende/Tidligere
   // vises alltid (som på /aktiviteter), bilder bare når det finnes noen.
-  const visible = [true, true, galleryPhotos.length > 0];
-  const [upcomingBg, doneBg, photosBg] = visible.reduce<{
+  const visible = [true, summaries.length > 0, quotes.length > 0, true];
+  const [upcomingBg, summaryBg, quoteBg, doneBg] = visible.reduce<{
     count: number;
     out: string[];
   }>(
@@ -282,12 +293,89 @@ export default async function UtvalgPage({ params }: Props) {
             <h2 className="font-serif text-2xl font-medium">
               Kommende aktiviteter
             </h2>
-            <ActivityGrid
-              items={upcoming}
-              emptyText="Ingen kommende aktiviteter er lagt til ennå."
-            />
+            {upcoming.length > 0 ? (
+              <ActivityGrid items={upcoming} emptyText="" />
+            ) : (
+              <div className="mt-6 rounded-[18px] border border-line bg-white p-8">
+                <p className="font-serif text-xl text-ink">Ingen kommende aktiviteter akkurat nå</p>
+                <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-soft">
+                  Nye aktiviteter legges ut her så snart de er klare. Bli medlem i Mangfoldshuset Vestland, så hører du fra oss først.
+                </p>
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <Link
+                    href="/bli-med#medlem"
+                    className="inline-flex min-h-11 items-center rounded-full bg-fig px-6 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
+                  >
+                    Bli medlem
+                  </Link>
+                  <Link
+                    href="/bli-med#frivillig"
+                    className="inline-flex min-h-11 items-center rounded-full border border-ink px-6 text-sm font-semibold transition-colors hover:bg-ink hover:text-cream"
+                  >
+                    Bli med i utvalget
+                  </Link>
+                  {u.external_link && (
+                    <a
+                      href={u.external_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex min-h-11 items-center rounded-full border border-ink px-6 text-sm font-semibold transition-colors hover:bg-ink hover:text-cream"
+                    >
+                      Følg oss på Facebook
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </section>
+
+        {summaries.length > 0 && (
+          <section className={`px-6 py-16 ${summaryBg}`}>
+            <div className="mx-auto max-w-6xl">
+              <h2 className="font-serif text-2xl font-medium">Fra aktivitetene</h2>
+              <ul className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+                {summaries.map((x) => (
+                  <li key={x.id} className="rounded-[18px] border border-line bg-white p-6">
+                    <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
+                      {x.date}
+                      {x.participants ? ` · ${x.participants} deltakere` : ""}
+                    </p>
+                    <h3 className="mt-2 font-serif text-lg">
+                      <Link href={`/aktiviteter/${x.id}`} className="hover:text-fig">
+                        {x.title}
+                      </Link>
+                    </h3>
+                    <p className="mt-2 line-clamp-4 whitespace-pre-line text-sm leading-relaxed text-ink-soft">
+                      {x.text}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        )}
+
+        {quotes.length > 0 && (
+          <section className={`px-6 py-16 ${quoteBg}`}>
+            <div className="mx-auto max-w-6xl">
+              <h2 className="font-serif text-2xl font-medium">Det deltakerne sier</h2>
+              <ul className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {quotes.map((q, i) => (
+                  <li key={i} className="flex flex-col justify-between rounded-[18px] border border-line bg-white p-6">
+                    <p className="font-serif text-base italic leading-relaxed text-ink">«{q.text}»</p>
+                    <Link
+                      href={`/aktiviteter/${q.id}`}
+                      className="mt-4 inline-block text-xs font-semibold text-green-dark hover:underline"
+                    >
+                      Etter «{q.title}»
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        )}
 
         <section className={`px-6 py-16 ${doneBg}`}>
           <div className="mx-auto max-w-6xl">
@@ -301,20 +389,89 @@ export default async function UtvalgPage({ params }: Props) {
           </div>
         </section>
 
-        {galleryPhotos.length > 0 && (
-          <section className={`px-6 py-16 ${photosBg}`}>
-            <div className="mx-auto max-w-6xl">
-              <h2 className="font-serif text-2xl font-medium">Flere bilder</h2>
-              <div className="mt-6 overflow-hidden rounded-[18px] border border-line">
-                <ActivityMedia
-                  images={galleryPhotos}
-                  title={u.title}
-                  className="aspect-square w-full sm:aspect-[4/3]"
-                />
+        <section className="px-6 py-16 bg-cream-2">
+          <div className="mx-auto max-w-6xl">
+            <h2 className="font-serif text-2xl font-medium">Slik blir du med</h2>
+            <ol className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
+              <li className="rounded-[18px] border border-line bg-white p-6">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-fig font-serif text-lg text-white">1</span>
+                <h3 className="mt-4 font-serif text-lg">Bli medlem</h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+                  Fyll ut medlemsskjemaet. Medlemskap koster 100 kr for enkeltperson og 150 kr for familie per år.
+                </p>
+                <Link
+                  href="/bli-med#medlem"
+                  className="mt-4 inline-flex min-h-11 items-center text-sm font-semibold text-fig hover:underline"
+                >
+                  Bli medlem →
+                </Link>
+              </li>
+              <li className="rounded-[18px] border border-line bg-white p-6">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-fig font-serif text-lg text-white">2</span>
+                <h3 className="mt-4 font-serif text-lg">Betal kontingenten</h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+                  Betal med Vipps til #595791 eller til bankkonto 3207 31 01688, så aktiverer vi medlemskapet ditt.
+                </p>
+              </li>
+              <li className="rounded-[18px] border border-line bg-white p-6">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-fig font-serif text-lg text-white">3</span>
+                <h3 className="mt-4 font-serif text-lg">Bli med i utvalget</h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+                  Meld deg som frivillig, eller kom på en av aktivitetene våre og møt oss.
+                </p>
+                <Link
+                  href="/bli-med#frivillig"
+                  className="mt-4 inline-flex min-h-11 items-center text-sm font-semibold text-fig hover:underline"
+                >
+                  Bli frivillig →
+                </Link>
+              </li>
+            </ol>
+          </div>
+        </section>
+
+        {(u.external_link || u.instagram_link) && (
+          <section className="px-6 pb-16">
+            <div
+              className={`mx-auto flex max-w-6xl flex-col items-center gap-5 rounded-[20px] px-8 py-10 text-center text-white ${custom ? "" : "bg-gradient-to-br from-[#5F7A56] to-[#4D6245]"}`}
+              style={custom ? { backgroundImage: `linear-gradient(135deg, ${custom.from}, ${custom.to})` } : undefined}
+            >
+              <h2 className="font-serif text-2xl font-medium">Følg {u.title}</h2>
+              <p className="max-w-md text-sm leading-relaxed text-white/95">
+                Nyheter, bilder og invitasjoner til neste aktivitet legger vi ut i sosiale medier. Vil du høre fra oss først, bli medlem.
+              </p>
+              <div className="flex flex-wrap justify-center gap-3">
+                {u.external_link && (
+                  <a
+                    href={u.external_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-11 items-center rounded-full bg-white px-6 text-sm font-semibold text-ink transition-all hover:-translate-y-0.5"
+                  >
+                    Facebook
+                  </a>
+                )}
+                {u.instagram_link && (
+                  <a
+                    href={u.instagram_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-11 items-center rounded-full border border-white/70 px-6 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-white/15"
+                  >
+                    Instagram
+                  </a>
+                )}
+                <Link
+                  href="/bli-med#medlem"
+                  className="inline-flex min-h-11 items-center rounded-full bg-fig px-6 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-fig-dark"
+                >
+                  Bli medlem
+                </Link>
               </div>
             </div>
           </section>
         )}
+
       </main>
       <Footer />
     </>
