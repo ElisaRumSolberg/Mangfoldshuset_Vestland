@@ -95,13 +95,8 @@ export default function MedlemsvilkarPage() {
     <>
       <Navbar />
       <main className="mx-auto max-w-3xl px-6 py-20">
-        <div className="mb-8 rounded-xl border border-fig/30 bg-[#F7E9E9] px-5 py-4 text-sm text-fig">
-          Utkast – ikke godkjent av styret ennå. Innholdet må gjennomgås og
-          justeres før det er endelig.
-        </div>
-
         <h1 className="font-serif text-4xl font-medium">Medlemsvilkår</h1>
-        <p className="mt-3 text-sm text-ink-soft">Sist oppdatert: september 2026</p>
+        <p className="mt-3 text-sm text-ink-soft">Sist oppdatert: oktober 2026</p>
 
         <div className="mt-10 flex flex-col gap-10">
           {sections.map((s) => (
