@@ -24,7 +24,7 @@ const organizationJsonLd = {
   "@type": "NGO",
   name: "Mangfoldshuset Vestland",
   url: siteUrl,
-  logo: `${siteUrl}/logo-v5.png`,
+  logo: `${siteUrl}/logo-v6.png`,
   description,
   email: "post@mangfoldshusetvestland.no",
   telephone: "+4740567853",
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
     siteName: "Mangfoldshuset Vestland",
     title: "Mangfoldshuset Vestland – møteplass for mangfold i Bergen",
     description,
-    images: [{ url: "/logo-og-v5.png", width: 1200, height: 630, alt: "Mangfoldshuset Vestland" }],
+    images: [{ url: "/logo-og-v6.png", width: 1200, height: 630, alt: "Mangfoldshuset Vestland" }],
   },
 };
 

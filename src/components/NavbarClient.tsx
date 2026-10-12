@@ -138,7 +138,7 @@ export default function NavbarClient({
         className="flex items-center justify-center bg-cream"
       >
         <Image
-          src="/logo-plate-v5.png"
+          src="/logo-plate-v6.png"
           alt="Mangfoldshuset Vestland"
           width={2197}
           height={1415}
