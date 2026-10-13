@@ -88,13 +88,13 @@ export default function Footer() {
             Personvern
           </Link>
           <a
-            href="https://elisatech.io/projects/mangfoldshuset-vestland"
+            href="https://elisatech.io"
             target="_blank"
             rel="noopener noreferrer"
             className="py-3 hover:text-white sm:text-right"
-            aria-label="Nettside laget av Elisa Rumeysa Solberg (åpnes i ny fane)"
+            aria-label="Nettside laget av ElisaStudio (åpnes i ny fane)"
           >
-            Nettside laget av Elisa Rumeysa Solberg <span aria-hidden="true">↗</span>
+            Nettside laget av ElisaStudio <span aria-hidden="true">↗</span>
           </a>
         </div>
       </div>
