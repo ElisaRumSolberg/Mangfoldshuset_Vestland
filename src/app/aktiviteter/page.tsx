@@ -18,6 +18,7 @@ type MappedActivity = ReturnType<typeof mapActivities>[number];
 export default async function AktiviteterPage() {
   let upcoming: MappedActivity[] = [];
   let past: MappedActivity[] = [];
+  const yearById = new Map<string, string>();
   const programs = await fetchPrograms();
 
   if (isSupabaseConfigured()) {
@@ -39,10 +40,25 @@ export default async function AktiviteterPage() {
 
     upcoming = mapActivities(upcomingData ?? []);
     past = mapActivities(pastData ?? []);
+    // Året en aktivitet hører til: sluttdato hvis den finnes, ellers startdato.
+    for (const a of pastData ?? []) {
+      yearById.set(a.id as string, String((a.end_date as string | null) ?? a.event_date).slice(0, 4));
+    }
   }
 
   // Fremhevede først, så enkeltarrangementer, så faste tilbud (hver uke/måned).
   const merged = sortUpcoming([...upcoming, ...occurrenceCards(programs, 1)]);
+
+  // Tidligere aktiviteter gruppert per år, nyeste år først.
+  const pastGroups = Object.entries(
+    past.reduce<Record<string, MappedActivity[]>>((acc, a) => {
+      const year = yearById.get(a.id) ?? String(a.iso).slice(0, 4);
+      (acc[year] ??= []).push(a);
+      return acc;
+    }, {})
+  )
+    .sort(([a], [b]) => Number(b) - Number(a))
+    .map(([year, items]) => ({ year, items }));
 
   return (
     <>
@@ -69,10 +85,30 @@ export default async function AktiviteterPage() {
           <h2 className="font-serif text-2xl font-medium">
             Tidligere aktiviteter
           </h2>
-          <ActivityGrid
-            items={past}
-            emptyText="Ingen tidligere aktiviteter er lagt til ennå."
-          />
+          {pastGroups.length === 0 ? (
+            <p className="mt-4 text-sm text-ink-soft">
+              Ingen tidligere aktiviteter er lagt til ennå.
+            </p>
+          ) : (
+            pastGroups.map((g, i) => (
+              <details
+                key={g.year}
+                open={i === 0}
+                className="group mt-6 rounded-[18px] border border-line bg-white px-5 pb-6 pt-2"
+              >
+                <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 rounded-lg py-2 [&::-webkit-details-marker]:hidden">
+                  <span className="font-serif text-xl font-medium">{g.year}</span>
+                  <span className="flex items-center gap-2 text-sm text-ink-soft">
+                    {g.items.length} {g.items.length === 1 ? "aktivitet" : "aktiviteter"}
+                    <span aria-hidden="true" className="transition-transform group-open:rotate-180">
+                      ▾
+                    </span>
+                  </span>
+                </summary>
+                <ActivityGrid items={g.items} emptyText="" />
+              </details>
+            ))
+          )}
         </section>
       </main>
       <Footer />
