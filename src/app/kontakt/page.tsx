@@ -31,9 +31,9 @@ export default async function KontaktPage({
         <div className="mt-14 grid grid-cols-1 gap-14 md:grid-cols-[0.8fr_1.2fr]">
           <div className="flex flex-col gap-6">
             <div className="rounded-[18px] border border-line bg-cream-2 p-6">
-              <p className="mb-4 text-xs font-bold uppercase tracking-widest text-ink">
+              <h2 className="mb-4 text-xs font-bold uppercase tracking-widest text-ink">
                 Kontaktinformasjon
-              </p>
+              </h2>
               <div className="flex flex-col gap-1 text-sm text-ink-soft">
                 <p className="flex items-start gap-2.5 pb-3">
                   <LocationIcon />
@@ -54,16 +54,16 @@ export default async function KontaktPage({
             </div>
 
             <div className="rounded-[18px] border border-line bg-cream-2 p-6">
-              <p className="mb-4 text-xs font-bold uppercase tracking-widest text-ink">
+              <h2 className="mb-4 text-xs font-bold uppercase tracking-widest text-ink">
                 Følg oss
-              </p>
+              </h2>
               <div className="flex gap-2.5">
                 <a
                   href="https://www.facebook.com/mangfoldhusetvestlandet/"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Facebook"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-white transition-opacity hover:opacity-85"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg text-white transition-opacity hover:opacity-85"
                   style={{ backgroundColor: "#9C3B44" }}
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -75,7 +75,7 @@ export default async function KontaktPage({
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Instagram"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-white transition-opacity hover:opacity-85"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg text-white transition-opacity hover:opacity-85"
                   style={{ backgroundColor: "#4B6B4A" }}
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -89,6 +89,7 @@ export default async function KontaktPage({
           </div>
 
           <div className="rounded-[18px] border border-line bg-white p-8">
+            <h2 className="sr-only">Send oss en melding</h2>
             {sendt === "takk" ? (
               <div className="flex flex-col items-center justify-center gap-3 py-10 text-center">
                 <p className="font-serif text-2xl">Takk for meldingen!</p>

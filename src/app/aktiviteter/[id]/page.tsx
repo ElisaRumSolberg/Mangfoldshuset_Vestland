@@ -81,6 +81,7 @@ export default async function ActivityPage({ params, searchParams }: Props) {
 
             <h1 className="mt-3 font-serif text-4xl font-medium">{a.title}</h1>
 
+            <h2 className="sr-only">Praktisk informasjon</h2>
             <dl className="mt-5 grid grid-cols-1 gap-x-6 gap-y-2.5 rounded-[14px] border border-line bg-cream-2 p-5 text-sm sm:grid-cols-2">
               <div>
                 <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Dato</dt>
@@ -133,7 +134,8 @@ export default async function ActivityPage({ params, searchParams }: Props) {
               </div>
             )}
 
-            <p className="mt-6 whitespace-pre-line text-lg leading-relaxed text-ink-soft">
+            <h2 className="mt-8 font-serif text-2xl font-medium">Om aktiviteten</h2>
+            <p className="mt-3 whitespace-pre-line text-lg leading-relaxed text-ink-soft">
               {a.description}
             </p>
           </div>
@@ -160,6 +162,7 @@ export default async function ActivityPage({ params, searchParams }: Props) {
 
         {(a.responsible_name || a.responsible_phone || a.responsible_email) && (
           <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-ink-soft">
+            <h2 className="sr-only">Kontaktperson</h2>
             <span>Ansvarlig{a.responsible_name ? `: ${a.responsible_name}` : ""}</span>
             {a.responsible_phone && (
               <a href={`tel:${a.responsible_phone.replace(/\s/g, "")}`} className="font-semibold text-green-dark">
@@ -198,6 +201,7 @@ export default async function ActivityPage({ params, searchParams }: Props) {
                 <input
                   name="name"
                   required
+                  aria-label="Navn"
                   placeholder="Navn"
                   className="rounded-lg border border-line bg-white px-3 py-2.5 text-sm outline-none focus:border-fig"
                 />
@@ -205,11 +209,13 @@ export default async function ActivityPage({ params, searchParams }: Props) {
                   type="email"
                   name="email"
                   required
+                  aria-label="E-post"
                   placeholder="E-post"
                   className="rounded-lg border border-line bg-white px-3 py-2.5 text-sm outline-none focus:border-fig"
                 />
                 <input
                   name="phone"
+                  aria-label="Telefon (valgfritt)"
                   placeholder="Telefon (valgfritt)"
                   className="rounded-lg border border-line bg-white px-3 py-2.5 text-sm outline-none focus:border-fig"
                 />
@@ -218,12 +224,14 @@ export default async function ActivityPage({ params, searchParams }: Props) {
                   name="participants"
                   min={1}
                   defaultValue={1}
+                  aria-label="Antall deltakere"
                   placeholder="Antall deltakere"
                   className="rounded-lg border border-line bg-white px-3 py-2.5 text-sm outline-none focus:border-fig"
                 />
                 <textarea
                   name="comment"
                   rows={2}
+                  aria-label="Kommentar (valgfritt)"
                   placeholder="Kommentar (valgfritt)"
                   className="rounded-lg border border-line bg-white px-3 py-2.5 text-sm outline-none focus:border-fig sm:col-span-2"
                 />
