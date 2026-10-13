@@ -34,7 +34,7 @@ export default function ActivityShowcase({
 
   const count = slides.length;
   const arrow =
-    "absolute top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-lg text-ink shadow-md transition-colors hover:bg-white";
+    "absolute top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-lg text-ink shadow-md transition-colors hover:bg-white";
 
   return (
     <div className={`group relative overflow-hidden bg-ink ${className}`}>
@@ -95,17 +95,21 @@ export default function ActivityShowcase({
           >
             →
           </button>
-          <div className="absolute right-4 top-4 z-10 flex gap-1.5">
+          <div className="absolute right-2 top-2 z-10 flex">
             {slides.map((_, i) => (
               <button
                 key={i}
                 type="button"
                 aria-label={`Vis bilde ${i + 1}`}
                 onClick={() => setIndex(i)}
-                className={`h-1.5 w-1.5 rounded-full transition-all ${
-                  i === index ? "w-4 bg-white" : "bg-white/50"
-                }`}
-              />
+                className="flex h-8 w-6 items-center justify-center"
+              >
+                <span
+                  className={`block h-1.5 rounded-full transition-all ${
+                    i === index ? "w-4 bg-white" : "w-1.5 bg-white/50"
+                  }`}
+                />
+              </button>
             ))}
           </div>
         </>
