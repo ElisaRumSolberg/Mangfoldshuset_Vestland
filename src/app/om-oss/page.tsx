@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import PhotoSlideshow from "@/components/PhotoSlideshow";
 import WarmHouseAnimation from "@/components/WarmHouseAnimation";
 import { fetchSiteSettings } from "@/lib/site-settings";
+import MobileCollapse from "@/components/MobileCollapse";
 
 export const metadata: Metadata = {
   title: "Om oss – Mangfoldshuset Vestland",
@@ -279,8 +280,11 @@ export default async function OmOssPage() {
             til å planlegge og gjennomføre egne aktiviteter. Det er fritt for
             alle å velge hvilken gruppe man vil være aktiv i.
           </p>
-          <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
-            {grupper.map((g) => (
+          <MobileCollapse
+            className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3"
+            visibleOnMobile={3}
+            moreLabel="Vis alle grupper"
+            items={grupper.map((g) => (
               <div
                 key={g.title}
                 className="overflow-hidden rounded-[18px] border border-line bg-white"
@@ -294,7 +298,7 @@ export default async function OmOssPage() {
                 </div>
               </div>
             ))}
-          </div>
+          />
         </section>
 
         {/* Samarbeidspartnere */}

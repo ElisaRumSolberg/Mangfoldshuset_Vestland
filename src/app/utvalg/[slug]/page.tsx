@@ -7,6 +7,7 @@ import ActivityGrid from "@/components/ActivityGrid";
 import OrganicPanel from "@/components/OrganicPanel";
 import PhotoSlideshow from "@/components/PhotoSlideshow";
 import ActivityShowcase, { type ShowcaseSlide } from "@/components/ActivityShowcase";
+import MobileCollapse from "@/components/MobileCollapse";
 import { customColors, toUtvalg } from "@/lib/utvalg";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
@@ -334,9 +335,11 @@ export default async function UtvalgPage({ params }: Props) {
           <section className={`px-6 py-16 ${summaryBg}`}>
             <div className="mx-auto max-w-6xl">
               <h2 className="font-serif text-2xl font-medium">Fra aktivitetene</h2>
-              <ul className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-                {summaries.map((x) => (
-                  <li key={x.id} className="rounded-[18px] border border-line bg-white p-6">
+              <MobileCollapse
+                className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2"
+                visibleOnMobile={2}
+                items={summaries.map((x) => (
+                  <div key={x.id} className="rounded-[18px] border border-line bg-white p-6">
                     <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
                       {x.date}
                       {x.participants ? ` · ${x.participants} deltakere` : ""}
@@ -349,9 +352,9 @@ export default async function UtvalgPage({ params }: Props) {
                     <p className="mt-2 line-clamp-4 whitespace-pre-line text-sm leading-relaxed text-ink-soft">
                       {x.text}
                     </p>
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              />
             </div>
           </section>
         )}
@@ -360,9 +363,11 @@ export default async function UtvalgPage({ params }: Props) {
           <section className={`px-6 py-16 ${quoteBg}`}>
             <div className="mx-auto max-w-6xl">
               <h2 className="font-serif text-2xl font-medium">Det deltakerne sier</h2>
-              <ul className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {quotes.map((q, i) => (
-                  <li key={i} className="flex flex-col justify-between rounded-[18px] border border-line bg-white p-6">
+              <MobileCollapse
+                className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+                visibleOnMobile={3}
+                items={quotes.map((q, i) => (
+                  <div key={i} className="flex flex-col justify-between rounded-[18px] border border-line bg-white p-6">
                     <p className="font-serif text-base italic leading-relaxed text-ink">«{q.text}»</p>
                     <Link
                       href={`/aktiviteter/${q.id}`}
@@ -370,9 +375,9 @@ export default async function UtvalgPage({ params }: Props) {
                     >
                       Etter «{q.title}»
                     </Link>
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              />
             </div>
           </section>
         )}
