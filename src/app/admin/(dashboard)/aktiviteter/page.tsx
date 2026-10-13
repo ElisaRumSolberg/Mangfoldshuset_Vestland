@@ -19,16 +19,15 @@ export default async function AdminAktiviteterPage() {
         action={addActivity}
         className="mt-8 grid grid-cols-1 gap-4 rounded-2xl border border-line bg-cream p-6 sm:grid-cols-2"
       >
-        <input
+        <label><span className="mb-1 block text-sm font-medium text-ink">Tittel</span><input
           name="title"
           required
-          placeholder="Tittel"
-          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-        />
+          className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+        /></label>
         <div className="sm:col-span-2">
-          <label className="mb-1 block text-sm font-medium text-ink">
+          <p className="mb-1 text-sm font-medium text-ink">
             Kategori (velg én eller flere)
-          </label>
+          </p>
           <CategoryPicker />
         </div>
         <div>
@@ -50,29 +49,27 @@ export default async function AdminAktiviteterPage() {
             className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
           />
         </div>
-        <input
+        <label><span className="mb-1 block text-sm font-medium text-ink">Klokkeslett (valgfritt)</span><input
           name="event_time"
-          placeholder="Klokkeslett (f.eks. 18.00–20.00)"
-          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-        />
-        <input
+          placeholder="18.00–20.00"
+          className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+        /></label>
+        <label><span className="mb-1 block text-sm font-medium text-ink">Sted</span><input
           name="place"
           required
-          placeholder="Sted"
-          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-        />
-        <input
+          className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+        /></label>
+        <label className="sm:col-span-2"><span className="mb-1 block text-sm font-medium text-ink">Pris (valgfritt)</span><input
           name="price"
-          placeholder="Pris (f.eks. Gratis, eller 100 kr)"
-          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig sm:col-span-2"
-        />
-        <textarea
+          placeholder="Gratis, eller 100 kr"
+          className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+        /></label>
+        <label className="sm:col-span-2"><span className="mb-1 block text-sm font-medium text-ink">Kort beskrivelse</span><textarea
           name="description"
           required
-          placeholder="Kort beskrivelse"
           rows={2}
-          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig sm:col-span-2"
-        />
+          className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+        /></label>
         <div>
           <label className="mb-1 block text-sm font-medium text-ink">
             Bilde
@@ -101,23 +98,20 @@ export default async function AdminAktiviteterPage() {
             Ansvarlig (valgfritt – vises nederst på aktiviteten)
           </label>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <input
+            <label><span className="mb-1 block text-sm font-medium text-ink">Navn</span><input
               name="responsible_name"
-              placeholder="Navn"
-              className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-            />
-            <input
+              className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+            /></label>
+            <label><span className="mb-1 block text-sm font-medium text-ink">Telefon</span><input
               name="responsible_phone"
               type="tel"
-              placeholder="Telefon"
-              className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-            />
-            <input
+              className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+            /></label>
+            <label><span className="mb-1 block text-sm font-medium text-ink">E-post</span><input
               name="responsible_email"
               type="email"
-              placeholder="E-post"
-              className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-            />
+              className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+            /></label>
           </div>
         </div>
         <label className="flex items-center gap-2 text-sm text-ink sm:col-span-2">

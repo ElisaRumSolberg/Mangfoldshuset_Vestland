@@ -1,9 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { formUrl } from "@/lib/form-url";
+import { done, failed } from "@/lib/admin-flash";
 import { requireEditor } from "@/lib/auth-guard";
 
 export async function addIssue(formData: FormData) {
@@ -12,18 +12,20 @@ export async function addIssue(formData: FormData) {
   const coverUrl = formUrl(formData, "cover_url");
   const pdfUrl = formUrl(formData, "pdf_url");
 
-  if (!pdfUrl) return;
+  if (!pdfUrl) failed("/admin/mangfoldsposten", "mangler-pdf");
 
-  await supabase.from("magazine_issues").insert({
+  const { error } = await supabase.from("magazine_issues").insert({
     title: formData.get("title") as string,
     issue_date: formData.get("issue_date") as string,
     cover_image_url: coverUrl,
     pdf_url: pdfUrl,
   });
+  if (error) failed("/admin/mangfoldsposten", "generell", error);
 
   revalidatePath("/admin/mangfoldsposten");
   revalidatePath("/mangfoldsposten");
   revalidatePath("/");
+  done("/admin/mangfoldsposten", "lagt-til");
 }
 
 export async function updateIssue(id: string, formData: FormData) {
@@ -45,27 +47,24 @@ export async function updateIssue(id: string, formData: FormData) {
     .eq("id", id)
     .select();
 
-  if (error) {
-    throw new Error(`Kunne ikke oppdatere utgave: ${error.message}`);
-  }
-  if (!data || data.length === 0) {
-    throw new Error(
-      "Ingen rad ble oppdatert. Sjekk at RLS-policyen for UPDATE på 'magazine_issues' er kjørt (se supabase/media.sql)."
-    );
-  }
+  const back = `/admin/mangfoldsposten/${id}`;
+  if (error) failed(back, "generell", error);
+  if (!data || data.length === 0) failed(back, "ingen-endring");
 
   revalidatePath("/admin/mangfoldsposten");
   revalidatePath("/mangfoldsposten");
   revalidatePath("/");
-  redirect("/admin/mangfoldsposten");
+  done("/admin/mangfoldsposten", "lagret");
 }
 
 export async function deleteIssue(id: string) {
   await requireEditor();
   const supabase = await createClient();
-  await supabase.from("magazine_issues").delete().eq("id", id);
+  const { error } = await supabase.from("magazine_issues").delete().eq("id", id);
+  if (error) failed("/admin/mangfoldsposten", "generell", error);
 
   revalidatePath("/admin/mangfoldsposten");
   revalidatePath("/mangfoldsposten");
   revalidatePath("/");
+  done("/admin/mangfoldsposten", "slettet");
 }

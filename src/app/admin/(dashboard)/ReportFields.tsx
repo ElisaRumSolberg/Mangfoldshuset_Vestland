@@ -42,6 +42,10 @@ export default function ReportFields({
 
       <div className="sm:col-span-2">
         <label className={label}>Oppsummering (hva skjedde?)</label>
+        <p className="mb-1.5 text-xs text-ink-soft">
+          Skriv noen få setninger om hva som skjedde. Vises på aktivitetens side og på
+          utvalgets side.
+        </p>
         <textarea
           name="summary"
           rows={3}
@@ -54,6 +58,10 @@ export default function ReportFields({
         <label className={label}>
           Tilbakemeldinger (ett utsagn per linje – uten navn)
         </label>
+        <p className="mb-1.5 text-xs text-ink-soft">
+          Trykk Enter for å starte en ny linje. Hver linje blir ett sitat på nettsiden.
+          Skriv bare det deltakerne faktisk har sagt.
+        </p>
         <textarea
           name="feedback"
           rows={4}

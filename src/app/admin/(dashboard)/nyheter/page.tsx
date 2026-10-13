@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { addNews, deleteNews } from "./actions";
 import FileUpload from "../FileUpload";
+import DeleteButton from "../DeleteButton";
 
 export default async function AdminNyheterPage() {
   const supabase = await createClient();
@@ -18,19 +19,17 @@ export default async function AdminNyheterPage() {
         action={addNews}
         className="mt-8 flex flex-col gap-4 rounded-2xl border border-line bg-cream p-6"
       >
-        <input
+        <label><span className="mb-1 block text-sm font-medium text-ink">Overskrift</span><input
           name="title"
           required
-          placeholder="Overskrift"
-          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-        />
-        <textarea
+          className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+        /></label>
+        <label><span className="mb-1 block text-sm font-medium text-ink">Kort sammendrag</span><textarea
           name="summary"
           required
-          placeholder="Kort sammendrag"
           rows={3}
-          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-        />
+          className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+        /></label>
         <div>
           <label className="mb-1 block text-sm font-medium text-ink">
             Publiseringsdato (valgfritt – for å legge inn en nyhet med en tidligere dato)
@@ -106,12 +105,7 @@ export default async function AdminNyheterPage() {
                   Rediger
                 </Link>
                 <form action={deleteNews.bind(null, n.id)}>
-                  <button
-                    type="submit"
-                    className="rounded-full border border-line px-4 py-2 text-sm text-ink-soft transition-colors hover:border-fig hover:text-fig"
-                  >
-                    Slett
-                  </button>
+                  <DeleteButton what={n.title} />
                 </form>
               </div>
             </div>

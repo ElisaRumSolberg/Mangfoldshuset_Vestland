@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { formUrl, formUrls } from "@/lib/form-url";
+import { done, failed } from "@/lib/admin-flash";
 import { requireEditor } from "@/lib/auth-guard";
 
 export async function updateSiteSettings(formData: FormData) {
@@ -16,10 +17,11 @@ export async function updateSiteSettings(formData: FormData) {
 
   if (Object.keys(updates).length) {
     const { error } = await supabase.from("site_settings").update(updates).eq("id", 1);
-    if (error) throw new Error(`Kunne ikke lagre innstillinger: ${error.message}`);
+    if (error) failed("/admin/innhold", "generell", error);
   }
 
   revalidatePath("/");
   revalidatePath("/om-oss");
   revalidatePath("/admin/innhold");
+  done("/admin/innhold", "lagret");
 }

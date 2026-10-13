@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { addMember, deleteMember, markPaid } from "./actions";
+import DeleteButton from "../DeleteButton";
 
 type Status = "ubetalt" | "aktiv" | "snart" | "utlopt";
 
@@ -82,14 +83,17 @@ export default async function AdminMedlemmerPage({
           Legg til eksisterende medlem
         </summary>
         <form action={addMember} className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <input name="first_name" required placeholder="Fornavn" className={field} />
-          <input name="last_name" required placeholder="Etternavn" className={field} />
-          <input name="email" type="email" required placeholder="E-post" className={field} />
-          <input name="phone" placeholder="Telefon" className={field} />
-          <select name="membership_type" className={field} defaultValue="enkelt">
-            <option value="enkelt">Enkelt person (100 kr)</option>
-            <option value="familie">Familie (150 kr)</option>
-          </select>
+          <label><span className="mb-1 block text-sm font-medium text-ink">Fornavn</span><input name="first_name" required className={field} /></label>
+          <label><span className="mb-1 block text-sm font-medium text-ink">Etternavn</span><input name="last_name" required className={field} /></label>
+          <label><span className="mb-1 block text-sm font-medium text-ink">E-post</span><input name="email" type="email" required className={field} /></label>
+          <label><span className="mb-1 block text-sm font-medium text-ink">Telefon (valgfritt)</span><input name="phone" className={field} /></label>
+          <label>
+            <span className="mb-1 block text-sm font-medium text-ink">Type medlemskap</span>
+            <select name="membership_type" className={field} defaultValue="enkelt">
+              <option value="enkelt">Enkelt person (100 kr)</option>
+              <option value="familie">Familie (150 kr)</option>
+            </select>
+          </label>
           <label className="text-sm text-ink-soft sm:col-span-2">
             Medlemskap gjelder til (la stå tom hvis ikke betalt)
             <input name="expires_at" type="date" className={`${field} mt-1 block w-full`} />
@@ -159,12 +163,7 @@ export default async function AdminMedlemmerPage({
                   </button>
                 </form>
                 <form action={deleteMember.bind(null, m.id)}>
-                  <button
-                    type="submit"
-                    className="rounded-full border border-line px-4 py-2 text-sm text-ink-soft hover:border-fig hover:text-fig"
-                  >
-                    Slett
-                  </button>
+                  <DeleteButton what={`${m.first_name} ${m.last_name}`} extra="Medlemmet og eventuelle familiemedlemmer fjernes fra medlemslisten." />
                 </form>
               </div>
             </div>

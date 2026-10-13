@@ -15,7 +15,7 @@ export default async function AdminStatistikkPage() {
     <div>
       <h1 className="font-serif text-2xl font-medium text-ink">Statistikk</h1>
       <p className="mt-1 text-sm text-ink-soft">
-        Tallene som vises på forsiden (&ldquo;Vår innsats&rdquo;).
+        Tallene i «Samfunnsinnsats»-feltet på forsiden. Deltakere regnes ut automatisk fra aktivitetene dine; her legger du bare til det som ikke er registrert andre steder.
       </p>
 
       <form
@@ -26,6 +26,9 @@ export default async function AdminStatistikkPage() {
           <label className="mb-1 block text-sm font-medium text-ink">
             Aktiviteter i år
           </label>
+          <p className="mb-1.5 text-xs text-ink-soft">
+            Antall arrangementer dere har gjennomført i år.
+          </p>
           <input
             name="activities"
             type="number"
@@ -52,6 +55,9 @@ export default async function AdminStatistikkPage() {
           <label className="mb-1 block text-sm font-medium text-ink">
             Frivillige timer
           </label>
+          <p className="mb-1.5 text-xs text-ink-soft">
+            Samlet antall timer frivillige har brukt.
+          </p>
           <input
             name="volunteer_hours"
             type="number"

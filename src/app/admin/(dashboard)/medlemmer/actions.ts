@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { done, failed } from "@/lib/admin-flash";
 import { requireOwner } from "@/lib/auth-guard";
 
 function iso(d: Date) {
@@ -22,17 +23,19 @@ export async function markPaid(id: string) {
     .select("expires_at")
     .eq("id", id)
     .single();
-  if (!m) return;
+  if (!m) failed("/admin/medlemmer", "generell");
 
   const today = new Date(iso(new Date()));
   const current = m.expires_at ? new Date(m.expires_at) : null;
   const base = current && current > today ? current : today;
 
-  await supabase
+  const { error } = await supabase
     .from("members")
     .update({ paid_at: iso(today), expires_at: iso(plusOneYear(base)) })
     .eq("id", id);
+  if (error) failed("/admin/medlemmer", "generell", error);
   revalidatePath("/admin/medlemmer");
+  done("/admin/medlemmer", "betalt");
 }
 
 export async function addMember(formData: FormData) {
@@ -40,7 +43,7 @@ export async function addMember(formData: FormData) {
   const supabase = await createClient();
   const expires = (formData.get("expires_at") as string) || null;
 
-  await supabase.from("members").insert({
+  const { error } = await supabase.from("members").insert({
     first_name: formData.get("first_name") as string,
     last_name: formData.get("last_name") as string,
     email: formData.get("email") as string,
@@ -50,12 +53,16 @@ export async function addMember(formData: FormData) {
     paid_at: expires ? iso(new Date()) : null,
     expires_at: expires,
   });
+  if (error) failed("/admin/medlemmer", "generell", error);
   revalidatePath("/admin/medlemmer");
+  done("/admin/medlemmer", "lagt-til");
 }
 
 export async function deleteMember(id: string) {
   await requireOwner();
   const supabase = await createClient();
-  await supabase.from("members").delete().eq("id", id);
+  const { error } = await supabase.from("members").delete().eq("id", id);
+  if (error) failed("/admin/medlemmer", "generell", error);
   revalidatePath("/admin/medlemmer");
+  done("/admin/medlemmer", "slettet");
 }

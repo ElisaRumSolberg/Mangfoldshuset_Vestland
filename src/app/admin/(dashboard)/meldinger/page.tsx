@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { deleteMessage } from "./actions";
+import DeleteButton from "../DeleteButton";
 
 export default async function AdminMeldingerPage() {
   const supabase = await createClient();
@@ -13,6 +14,10 @@ export default async function AdminMeldingerPage() {
       <h1 className="font-serif text-2xl font-medium text-ink">
         Kontaktmeldinger
       </h1>
+      <p className="mt-1 max-w-2xl text-sm text-ink-soft">
+        Meldinger fra kontaktskjemaet på nettsiden. Du får også en kopi på e-post. Svar til
+        avsenderens e-postadresse, og slett meldingen når du er ferdig.
+      </p>
 
       <div className="mt-8 flex flex-col gap-3">
         {messages?.length ? (
@@ -32,12 +37,7 @@ export default async function AdminMeldingerPage() {
                   </p>
                 </div>
                 <form action={deleteMessage.bind(null, m.id)}>
-                  <button
-                    type="submit"
-                    className="rounded-full border border-line px-4 py-2 text-sm text-ink-soft transition-colors hover:border-fig hover:text-fig"
-                  >
-                    Slett
-                  </button>
+                  <DeleteButton what={`meldingen fra ${m.name}`} />
                 </form>
               </div>
               <p className="mt-3 text-sm leading-relaxed text-ink-soft">

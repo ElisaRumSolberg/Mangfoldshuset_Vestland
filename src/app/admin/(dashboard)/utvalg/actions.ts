@@ -1,9 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { formText, formUrl, formUrls } from "@/lib/form-url";
+import { done, failed } from "@/lib/admin-flash";
 import { requireEditor, requireUtvalgAccess } from "@/lib/auth-guard";
 
 function slugify(s: string) {
@@ -47,7 +47,7 @@ export async function addUtvalg(formData: FormData) {
   const supabase = await createClient();
   const f = fields(formData);
   const slug = slugify(f.title);
-  if (!slug) throw new Error("Skriv inn et navn for utvalget.");
+  if (!slug) failed("/admin/utvalg", "mangler-navn");
 
   const { error } = await supabase.from("utvalg").insert({
     ...f,
@@ -55,14 +55,9 @@ export async function addUtvalg(formData: FormData) {
     cover_images: formUrls(formData, "cover_images"),
     photos: formUrls(formData, "photos"),
   });
-  if (error) {
-    throw new Error(
-      error.code === "23505"
-        ? `Et utvalg med adressen /utvalg/${slug} finnes allerede. Velg et annet navn.`
-        : `Kunne ikke legge til utvalg: ${error.message}`
-    );
-  }
+  if (error) failed("/admin/utvalg", error.code === "23505" ? "navn-finnes" : "generell", error);
   refresh(slug);
+  done("/admin/utvalg", "lagt-til");
 }
 
 export async function updateUtvalg(id: string, formData: FormData) {
@@ -80,20 +75,19 @@ export async function updateUtvalg(id: string, formData: FormData) {
     .eq("id", id)
     .select();
 
-  if (error) throw new Error(`Kunne ikke oppdatere utvalg: ${error.message}`);
-  if (!data || data.length === 0) {
-    throw new Error(
-      "Ingen rad ble oppdatert. Sjekk at supabase/utvalg.sql er kjørt (RLS-policy for endring)."
-    );
-  }
+  const back = `/admin/utvalg/${id}`;
+  if (error) failed(back, "generell", error);
+  if (!data || data.length === 0) failed(back, "ingen-endring");
 
   refresh(data[0]?.slug as string | undefined);
-  redirect("/admin/utvalg");
+  done("/admin/utvalg", "lagret");
 }
 
 export async function deleteUtvalg(id: string) {
   await requireEditor();
   const supabase = await createClient();
-  await supabase.from("utvalg").delete().eq("id", id);
+  const { error } = await supabase.from("utvalg").delete().eq("id", id);
+  if (error) failed("/admin/utvalg", "generell", error);
   refresh();
+  done("/admin/utvalg", "slettet");
 }

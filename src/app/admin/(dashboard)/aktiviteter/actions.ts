@@ -1,9 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { formInt, formList, formText, formUrl, formUrls } from "@/lib/form-url";
+import { done, failed } from "@/lib/admin-flash";
 import { requireEditor } from "@/lib/auth-guard";
 
 export async function addActivity(formData: FormData) {
@@ -31,11 +31,12 @@ export async function addActivity(formData: FormData) {
     featured: formData.get("featured") === "on",
     show_on_homepage: formData.get("show_on_homepage") === "on",
   });
-  if (error) throw new Error(`Kunne ikke legge til aktivitet: ${error.message}`);
+  if (error) failed("/admin/aktiviteter", "generell", error);
 
   revalidatePath("/admin/aktiviteter");
   revalidatePath("/aktiviteter");
   revalidatePath("/");
+  done("/admin/aktiviteter", "lagt-til");
 }
 
 export async function updateActivity(id: string, formData: FormData) {
@@ -77,34 +78,34 @@ export async function updateActivity(id: string, formData: FormData) {
     .eq("id", id)
     .select();
 
-  if (error) {
-    throw new Error(`Kunne ikke oppdatere aktivitet: ${error.message}`);
-  }
-  if (!data || data.length === 0) {
-    throw new Error(
-      "Ingen rad ble oppdatert. Sjekk at RLS-policyen for UPDATE på 'activities' er kjørt (se supabase/schema.sql)."
-    );
-  }
+  const back = `/admin/aktiviteter/${id}`;
+  if (error) failed(back, "generell", error);
+  if (!data || data.length === 0) failed(back, "ingen-endring");
 
   revalidatePath("/admin/aktiviteter");
   revalidatePath("/aktiviteter");
   revalidatePath("/");
-  redirect("/admin/aktiviteter");
+  done("/admin/aktiviteter", "lagret");
 }
 
 export async function deleteActivity(id: string) {
   await requireEditor();
   const supabase = await createClient();
-  await supabase.from("activities").delete().eq("id", id);
+  const { error } = await supabase.from("activities").delete().eq("id", id);
+  if (error) failed("/admin/aktiviteter", "generell", error);
 
   revalidatePath("/admin/aktiviteter");
   revalidatePath("/aktiviteter");
   revalidatePath("/");
+  done("/admin/aktiviteter", "slettet");
 }
 
 export async function deleteSignup(activityId: string, signupId: string) {
   await requireEditor();
   const supabase = await createClient();
-  await supabase.from("activity_signups").delete().eq("id", signupId);
-  revalidatePath(`/admin/aktiviteter/${activityId}`);
+  const { error } = await supabase.from("activity_signups").delete().eq("id", signupId);
+  const back = `/admin/aktiviteter/${activityId}`;
+  if (error) failed(back, "generell", error);
+  revalidatePath(back);
+  done(back, "slettet");
 }

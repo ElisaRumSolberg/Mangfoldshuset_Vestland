@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import DeleteButton from "../DeleteButton";
 
 type Item = {
   id: string;
@@ -70,20 +71,11 @@ export default function AdminActivityList({
             >
               Rediger
             </Link>
-            <form
-              action={deleteAction.bind(null, a.id)}
-              onSubmit={(e) => {
-                if (!window.confirm(`Slette «${a.title}»? Dette kan ikke angres.`)) {
-                  e.preventDefault();
-                }
-              }}
-            >
-              <button
-                type="submit"
-                className="rounded-full border border-line px-4 py-2 text-sm text-ink-soft transition-colors hover:border-fig hover:text-fig"
-              >
-                Slett
-              </button>
+            <form action={deleteAction.bind(null, a.id)}>
+              <DeleteButton
+                what={a.title}
+                extra="Påmeldinger og bilder for aktiviteten forsvinner også."
+              />
             </form>
           </div>
         </div>

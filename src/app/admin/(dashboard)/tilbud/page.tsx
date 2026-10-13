@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { nextOccurrences, shortDate, timeText, todayOslo, toProgram, whenText } from "@/lib/recurring";
 import { addProgram, deleteProgram } from "./actions";
 import TilbudForm from "./TilbudForm";
+import DeleteButton from "../DeleteButton";
 
 export default async function AdminTilbudPage() {
   const supabase = await createClient();
@@ -63,12 +64,7 @@ export default async function AdminTilbudPage() {
                     Rediger
                   </Link>
                   <form action={deleteProgram.bind(null, p.id)}>
-                    <button
-                      type="submit"
-                      className="rounded-full border border-line px-4 py-2 text-sm text-ink-soft transition-colors hover:border-fig hover:text-fig"
-                    >
-                      Slett
-                    </button>
+                    <DeleteButton what={p.title} extra="Bilder, oppsummering og tilbakemeldinger for dette tilbudet forsvinner også." />
                   </form>
                 </div>
               </div>

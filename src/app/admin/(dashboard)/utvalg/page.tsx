@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { toUtvalg } from "@/lib/utvalg";
 import { addUtvalg, deleteUtvalg } from "./actions";
 import UtvalgForm from "./UtvalgForm";
+import DeleteButton from "../DeleteButton";
 
 export default async function AdminUtvalgPage() {
   const supabase = await createClient();
@@ -56,12 +57,7 @@ export default async function AdminUtvalgPage() {
                   Rediger
                 </Link>
                 <form action={deleteUtvalg.bind(null, u.id)}>
-                  <button
-                    type="submit"
-                    className="rounded-full border border-line px-4 py-2 text-sm text-ink-soft transition-colors hover:border-fig hover:text-fig"
-                  >
-                    Slett
-                  </button>
+                  <DeleteButton what={u.title} extra="Utvalgssiden på nettsiden forsvinner også. Aktivitetene dine blir værende." />
                 </form>
               </div>
             </div>

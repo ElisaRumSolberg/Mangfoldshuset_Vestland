@@ -1,9 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { formUrl } from "@/lib/form-url";
+import { done, failed } from "@/lib/admin-flash";
 import { requireEditor } from "@/lib/auth-guard";
 
 export async function addNews(formData: FormData) {
@@ -12,7 +12,7 @@ export async function addNews(formData: FormData) {
   const imageUrl = formUrl(formData, "image_url");
   const videoUrl = formUrl(formData, "video_url");
 
-  await supabase.from("news").insert({
+  const { error: addError } = await supabase.from("news").insert({
     title: formData.get("title") as string,
     summary: formData.get("summary") as string,
     published_at: (formData.get("published_at") as string) || undefined,
@@ -20,10 +20,12 @@ export async function addNews(formData: FormData) {
     video_url: videoUrl,
     external_link: formUrl(formData, "external_link"),
   });
+  if (addError) failed("/admin/nyheter", "generell", addError);
 
   revalidatePath("/admin/nyheter");
   revalidatePath("/nyheter");
   revalidatePath("/");
+  done("/admin/nyheter", "lagt-til");
 }
 
 export async function updateNews(id: string, formData: FormData) {
@@ -47,27 +49,24 @@ export async function updateNews(id: string, formData: FormData) {
     .eq("id", id)
     .select();
 
-  if (error) {
-    throw new Error(`Kunne ikke oppdatere nyhet: ${error.message}`);
-  }
-  if (!data || data.length === 0) {
-    throw new Error(
-      "Ingen rad ble oppdatert. Sjekk at RLS-policyen for UPDATE på 'news' er kjørt (se supabase/schema.sql)."
-    );
-  }
+  const back = `/admin/nyheter/${id}`;
+  if (error) failed(back, "generell", error);
+  if (!data || data.length === 0) failed(back, "ingen-endring");
 
   revalidatePath("/admin/nyheter");
   revalidatePath("/nyheter");
   revalidatePath("/");
-  redirect("/admin/nyheter");
+  done("/admin/nyheter", "lagret");
 }
 
 export async function deleteNews(id: string) {
   await requireEditor();
   const supabase = await createClient();
-  await supabase.from("news").delete().eq("id", id);
+  const { error } = await supabase.from("news").delete().eq("id", id);
+  if (error) failed("/admin/nyheter", "generell", error);
 
   revalidatePath("/admin/nyheter");
   revalidatePath("/nyheter");
   revalidatePath("/");
+  done("/admin/nyheter", "slettet");
 }

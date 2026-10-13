@@ -37,13 +37,13 @@ export default async function EditIssuePage({
         action={updateWithId}
         className="mt-8 grid grid-cols-1 gap-4 rounded-2xl border border-line bg-cream p-6 sm:grid-cols-2"
       >
-        <input
+        <label><span className="mb-1 block text-sm font-medium text-ink">Tittel</span><input
           name="title"
           required
           defaultValue={issue.title}
-          placeholder="Tittel (f.eks. Høst 2026)"
-          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-        />
+          placeholder="Høst 2026"
+          className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+        /></label>
         <input
           name="issue_date"
           type="date"

@@ -34,21 +34,19 @@ export default async function EditNewsPage({
         action={updateWithId}
         className="mt-8 flex flex-col gap-4 rounded-2xl border border-line bg-cream p-6"
       >
-        <input
+        <label><span className="mb-1 block text-sm font-medium text-ink">Overskrift</span><input
           name="title"
           required
           defaultValue={item.title}
-          placeholder="Overskrift"
-          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-        />
-        <textarea
+          className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+        /></label>
+        <label><span className="mb-1 block text-sm font-medium text-ink">Kort sammendrag</span><textarea
           name="summary"
           required
           defaultValue={item.summary}
-          placeholder="Kort sammendrag"
           rows={3}
-          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-        />
+          className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+        /></label>
         <div>
           <label className="mb-1 block text-sm font-medium text-ink">
             Publiseringsdato

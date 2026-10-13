@@ -70,7 +70,8 @@ export default function UtvalgForm({
           className={field}
         />
         <p className="mt-1 text-xs text-ink-soft">
-          Aktiviteter med dette ordet i kategorien vises på utvalgets side.
+          Skriv samme ord som du bruker som kategori på aktivitetene (f.eks. «ungdom»). Aktiviteter
+          med dette ordet vises på utvalgets side. Skrives ordet annerledes, blir listen tom.
         </p>
       </div>
       <div>

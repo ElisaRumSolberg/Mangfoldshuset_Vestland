@@ -1,9 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { formInt, formUrl, formUrls } from "@/lib/form-url";
+import { done, failed } from "@/lib/admin-flash";
 import { requireEditor } from "@/lib/auth-guard";
 
 function text(formData: FormData, key: string) {
@@ -53,8 +53,9 @@ export async function addProgram(formData: FormData) {
     ...fields(formData),
     image_url: formUrl(formData, "image_url"),
   });
-  if (error) throw new Error(`Kunne ikke legge til tilbud: ${error.message}`);
+  if (error) failed("/admin/tilbud", "generell", error);
   refresh();
+  done("/admin/tilbud", "lagt-til");
 }
 
 export async function updateProgram(id: string, formData: FormData) {
@@ -79,20 +80,19 @@ export async function updateProgram(id: string, formData: FormData) {
     .eq("id", id)
     .select();
 
-  if (error) throw new Error(`Kunne ikke oppdatere tilbud: ${error.message}`);
-  if (!data || data.length === 0) {
-    throw new Error(
-      "Ingen rad ble oppdatert. Sjekk at supabase/tilbud.sql er kjørt (RLS-policy for endring)."
-    );
-  }
+  const back = `/admin/tilbud/${id}`;
+  if (error) failed(back, "generell", error);
+  if (!data || data.length === 0) failed(back, "ingen-endring");
 
   refresh();
-  redirect("/admin/tilbud");
+  done("/admin/tilbud", "lagret");
 }
 
 export async function deleteProgram(id: string) {
   await requireEditor();
   const supabase = await createClient();
-  await supabase.from("recurring_programs").delete().eq("id", id);
+  const { error } = await supabase.from("recurring_programs").delete().eq("id", id);
+  if (error) failed("/admin/tilbud", "generell", error);
   refresh();
+  done("/admin/tilbud", "slettet");
 }

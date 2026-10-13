@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { deleteApplication } from "./actions";
+import DeleteButton from "../DeleteButton";
 
 const TYPE_LABELS: Record<string, string> = {
   frivillig: "Frivillig",
@@ -19,6 +20,10 @@ export default async function AdminSkjemaPage() {
       <h1 className="font-serif text-2xl font-medium text-ink">
         Frivillige, idéer og samarbeid
       </h1>
+      <p className="mt-1 max-w-2xl text-sm text-ink-soft">
+        Dette er det folk har sendt inn via «Bli med»-siden: frivillige, idéer og forslag om samarbeid. Svar dem på
+        e-post eller telefon. Slett når du er ferdig.
+      </p>
 
       <div className="mt-8 flex flex-col gap-3">
         {items?.length ? (
@@ -39,12 +44,7 @@ export default async function AdminSkjemaPage() {
                   </p>
                 </div>
                 <form action={deleteApplication.bind(null, a.id)}>
-                  <button
-                    type="submit"
-                    className="rounded-full border border-line px-4 py-2 text-sm text-ink-soft transition-colors hover:border-fig hover:text-fig"
-                  >
-                    Slett
-                  </button>
+                  <DeleteButton what={`søknaden fra ${a.name}`} />
                 </form>
               </div>
               <dl className="mt-3 flex flex-col gap-1 text-sm text-ink-soft">

@@ -1,11 +1,13 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import LogoutButton from "./LogoutButton";
+import FlashNotice from "./FlashNotice";
 import { createClient } from "@/lib/supabase/server";
 import { roleFromUser } from "@/lib/roles";
 import { redirect } from "next/navigation";
 
 const links = [
-  { href: "/admin", label: "Dashboard", ownerOnly: true },
+  { href: "/admin", label: "Oversikt", ownerOnly: true },
   { href: "/admin/medlemmer", label: "Medlemmer", ownerOnly: true },
   { href: "/admin/innhold", label: "Innhold", ownerOnly: false },
   { href: "/admin/aktiviteter", label: "Aktiviteter", ownerOnly: false },
@@ -14,8 +16,9 @@ const links = [
   { href: "/admin/nyheter", label: "Nyheter", ownerOnly: false },
   { href: "/admin/mangfoldsposten", label: "Mangfoldsposten", ownerOnly: false },
   { href: "/admin/meldinger", label: "Meldinger", ownerOnly: true },
-  { href: "/admin/skjema", label: "Skjema", ownerOnly: true },
+  { href: "/admin/skjema", label: "Søknader", ownerOnly: true },
   { href: "/admin/statistikk", label: "Statistikk", ownerOnly: true },
+  { href: "/admin/hjelp", label: "Hjelp", ownerOnly: false },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -26,7 +29,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const role = roleFromUser(user);
   if (!user || !role) redirect("/admin/logg-inn?feil=tilgang");
   const visibleLinks =
-    role === "utvalg" ? [] : links.filter((l) => !l.ownerOnly || role === "owner");
+    role === "utvalg"
+      ? links.filter((l) => l.href === "/admin/hjelp")
+      : links.filter((l) => !l.ownerOnly || role === "owner");
 
   return (
     <div className="min-h-screen bg-cream-2">
@@ -56,7 +61,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           ))}
         </nav>
       </header>
-      <main className="mx-auto max-w-5xl px-6 py-10">{children}</main>
+      <main className="mx-auto max-w-5xl px-6 py-10">
+        <Suspense fallback={null}>
+          <FlashNotice />
+        </Suspense>
+        {children}
+      </main>
     </div>
   );
 }

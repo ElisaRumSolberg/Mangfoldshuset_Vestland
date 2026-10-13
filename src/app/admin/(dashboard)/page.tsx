@@ -28,7 +28,7 @@ export default async function AdminDashboard() {
   const cards = [
     { href: "/admin/medlemmer", label: "Medlemmer", value: memberCount ?? 0 },
     { href: "/admin/aktiviteter", label: "Aktiviteter", value: activityCount ?? 0 },
-    { href: "/admin/statistikk", label: "Personer", value: participantCount },
+    { href: "/admin/statistikk", label: "Deltakere totalt", value: participantCount },
   ];
 
   const rows = (followUp ?? []).map((m) => ({
@@ -38,9 +38,13 @@ export default async function AdminDashboard() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-medium text-ink">Dashboard</h1>
+      <h1 className="font-serif text-2xl font-medium text-ink">Oversikt</h1>
       <p className="mt-1 text-sm text-ink-soft">
-        Oversikt over innhold på nettsiden.
+        Her ser du hva som skjer. Trenger du hjelp?{" "}
+        <Link href="/admin/hjelp" className="font-semibold text-green-dark underline">
+          Les brukerveiledningen
+        </Link>
+        .
       </p>
 
       <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">

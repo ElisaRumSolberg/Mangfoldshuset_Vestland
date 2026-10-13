@@ -6,6 +6,7 @@ import FileUpload from "../../FileUpload";
 import ReportFields from "../../ReportFields";
 import CategoryPicker from "../../CategoryPicker";
 import ShareBox from "../../ShareBox";
+import DeleteButton from "../../DeleteButton";
 
 export default async function EditActivityPage({
   params,
@@ -45,17 +46,16 @@ export default async function EditActivityPage({
         action={updateWithId}
         className="mt-8 grid grid-cols-1 gap-4 rounded-2xl border border-line bg-cream p-6 sm:grid-cols-2"
       >
-        <input
+        <label><span className="mb-1 block text-sm font-medium text-ink">Tittel</span><input
           name="title"
           required
           defaultValue={activity.title}
-          placeholder="Tittel"
-          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-        />
+          className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+        /></label>
         <div className="sm:col-span-2">
-          <label className="mb-1 block text-sm font-medium text-ink">
+          <p className="mb-1 text-sm font-medium text-ink">
             Kategori (velg én eller flere)
-          </label>
+          </p>
           <CategoryPicker initial={activity.categories ?? []} />
         </div>
         <div>
@@ -79,33 +79,31 @@ export default async function EditActivityPage({
             className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
           />
         </div>
-        <input
+        <label><span className="mb-1 block text-sm font-medium text-ink">Klokkeslett (valgfritt)</span><input
           name="event_time"
           defaultValue={activity.event_time ?? ""}
-          placeholder="Klokkeslett (f.eks. 18.00–20.00)"
-          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-        />
-        <input
+          placeholder="18.00–20.00"
+          className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+        /></label>
+        <label><span className="mb-1 block text-sm font-medium text-ink">Sted</span><input
           name="place"
           required
           defaultValue={activity.place}
-          placeholder="Sted"
-          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-        />
-        <input
+          className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+        /></label>
+        <label className="sm:col-span-2"><span className="mb-1 block text-sm font-medium text-ink">Pris (valgfritt)</span><input
           name="price"
           defaultValue={activity.price ?? ""}
-          placeholder="Pris (f.eks. Gratis, eller 100 kr)"
-          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig sm:col-span-2"
-        />
-        <textarea
+          placeholder="Gratis, eller 100 kr"
+          className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+        /></label>
+        <label className="sm:col-span-2"><span className="mb-1 block text-sm font-medium text-ink">Kort beskrivelse</span><textarea
           name="description"
           required
           defaultValue={activity.description}
-          placeholder="Kort beskrivelse"
           rows={2}
-          className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig sm:col-span-2"
-        />
+          className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+        /></label>
 
         {activity.image_url && (
           <div className="flex items-center gap-3 sm:col-span-2">
@@ -150,26 +148,23 @@ export default async function EditActivityPage({
             Ansvarlig (valgfritt – vises nederst på aktiviteten)
           </label>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <input
+            <label><span className="mb-1 block text-sm font-medium text-ink">Navn</span><input
               name="responsible_name"
               defaultValue={activity.responsible_name ?? ""}
-              placeholder="Navn"
-              className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-            />
-            <input
+              className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+            /></label>
+            <label><span className="mb-1 block text-sm font-medium text-ink">Telefon</span><input
               name="responsible_phone"
               type="tel"
               defaultValue={activity.responsible_phone ?? ""}
-              placeholder="Telefon"
-              className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-            />
-            <input
+              className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+            /></label>
+            <label><span className="mb-1 block text-sm font-medium text-ink">E-post</span><input
               name="responsible_email"
               type="email"
               defaultValue={activity.responsible_email ?? ""}
-              placeholder="E-post"
-              className="rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-            />
+              className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+            /></label>
           </div>
         </div>
 
@@ -285,12 +280,7 @@ export default async function EditActivityPage({
                   )}
                 </div>
                 <form action={deleteSignup.bind(null, id, s.id)}>
-                  <button
-                    type="submit"
-                    className="rounded-full border border-line px-4 py-2 text-sm text-ink-soft transition-colors hover:border-fig hover:text-fig"
-                  >
-                    Slett
-                  </button>
+                  <DeleteButton what={`påmeldingen fra ${s.name}`} />
                 </form>
               </div>
             ))}

@@ -42,10 +42,15 @@ export default async function AdminInnholdPage() {
         </div>
 
         <div className="sm:col-span-2">
-          <label className="mb-1 block text-sm font-medium text-ink">
-            Lenke til Vipps innsamling (valgfritt – erstatter Vipps-nummeret med en «Gi med Vipps»-knapp)
+          <label htmlFor="vipps_link" className="mb-1 block text-sm font-medium text-ink">
+            Lenke til Vipps innsamling (valgfritt)
           </label>
+          <p className="mb-2 text-xs text-ink-soft">
+            Lim inn lenken du har fått fra Vipps (den starter med https://). Da vises en
+            «Gi med Vipps»-knapp på nettsiden. Er feltet tomt, vises Vipps-nummeret i stedet.
+          </p>
           <input
+            id="vipps_link"
             name="vipps_link"
             type="url"
             defaultValue={settings.vipps_link ?? ""}
