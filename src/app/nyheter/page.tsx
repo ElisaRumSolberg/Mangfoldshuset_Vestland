@@ -76,7 +76,13 @@ export default async function NyheterPage() {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={n.image_url} alt={n.title} className="warm-photo aspect-[4/3] w-full object-cover object-top" />
                 ) : (
-                  <div className={`aspect-[4/3] bg-gradient-to-br ${grads[i % grads.length]}`} />
+                  <div
+                    className={`flex aspect-[4/3] items-center justify-center bg-gradient-to-br ${grads[i % grads.length]}`}
+                    aria-hidden="true"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/logo-white-v6.png" alt="" className="h-20 w-auto opacity-40" />
+                  </div>
                 )}
                 <div className="p-5">
                   <p className="text-xs text-ink-soft">

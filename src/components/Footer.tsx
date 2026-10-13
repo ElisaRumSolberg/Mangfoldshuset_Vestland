@@ -56,7 +56,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
-              className="flex h-10 w-10 items-center justify-center rounded-lg text-white transition-opacity hover:opacity-85"
+              className="flex h-11 w-11 items-center justify-center rounded-lg text-white transition-opacity hover:opacity-85"
               style={{ backgroundColor: "#9C3B44" }}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -68,7 +68,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
-              className="flex h-10 w-10 items-center justify-center rounded-lg text-white transition-opacity hover:opacity-85"
+              className="flex h-11 w-11 items-center justify-center rounded-lg text-white transition-opacity hover:opacity-85"
               style={{ backgroundColor: "#6E8B67" }}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
