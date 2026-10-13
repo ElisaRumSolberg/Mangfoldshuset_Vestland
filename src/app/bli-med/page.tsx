@@ -1,4 +1,5 @@
 import SubmissionForm from "@/components/SubmissionForm";
+import BliMedTabs from "@/components/BliMedTabs";
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -95,7 +96,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} className="scroll-mt-32 border-t border-line py-16">
+    <section id={id} className="scroll-mt-32 pb-6 pt-8">
       <h2 className="font-serif text-3xl font-medium">{title}</h2>
       <p className="mt-3 max-w-xl text-base leading-relaxed text-ink-soft">
         {intro}
@@ -144,24 +145,15 @@ export default async function BliMedPage({
           Mangfoldshuset er åpent for alle. Du kan bli medlem, bidra som
           frivillig, dele en idé eller samarbeide med oss.
         </p>
-        <div className="mt-6 flex flex-wrap gap-3 text-sm font-semibold">
-          {[
-            ["#medlem", "Bli medlem"],
-            ["#frivillig", "Bli frivillig"],
-            ["#ide", "Har du en idé?"],
-            ["#samarbeid", "Samarbeid med oss"],
-          ].map(([href, text]) => (
-            <a
-              key={href}
-              href={href}
-              className="rounded-full bg-[#F7E9E9] px-5 py-2.5 text-fig transition-opacity hover:opacity-80"
-            >
-              {text}
-            </a>
-          ))}
-        </div>
-
-        <div className="mt-10">
+        <BliMedTabs
+          initial={sendt ?? feil}
+          tabs={[
+            { id: "medlem", label: "Bli medlem" },
+            { id: "frivillig", label: "Bli frivillig" },
+            { id: "ide", label: "Har du en idé?" },
+            { id: "samarbeid", label: "Samarbeid med oss" },
+          ]}
+        >
           <Section
             id="medlem"
             title="Bli medlem"
@@ -392,7 +384,7 @@ export default async function BliMedPage({
               </SubmissionForm>
             )}
           </Section>
-        </div>
+        </BliMedTabs>
       </main>
       <Footer />
     </>
