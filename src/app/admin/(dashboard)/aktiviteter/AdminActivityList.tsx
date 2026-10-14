@@ -95,7 +95,7 @@ export default function AdminActivityList({
             ←
           </button>
           <span className="text-xs text-ink-soft" aria-live="polite">
-            {start + 1}–{Math.min(start + PAGE_SIZE, items.length)}{t("av")}{" "}{items.length}
+            {start + 1}–{Math.min(start + PAGE_SIZE, items.length)} {t("av")} {items.length}
           </span>
           <button
             type="button"

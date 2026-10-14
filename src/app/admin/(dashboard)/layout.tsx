@@ -72,7 +72,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </div>
         <nav
           aria-label={t("Hovedmeny")}
-          className="mx-auto flex max-w-5xl flex-wrap gap-x-6 gap-y-3 px-6 pb-3 text-sm font-medium text-ink-soft"
+          className="mx-auto flex max-w-5xl flex-col gap-1 px-6 pb-4 pt-1 text-sm font-medium text-ink-soft"
         >
           {groups
             .map((g) => ({
@@ -81,19 +81,21 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             }))
             .filter((g) => g.items.length > 0)
             .map((g) => (
-              <div key={g.label} className="flex flex-wrap items-center gap-1">
-                <span className="mr-1 text-xs font-semibold uppercase tracking-wide text-ink-soft/70">
+              <div key={g.label} className="flex flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-3">
+                <span className="px-4 text-xs font-semibold uppercase tracking-wide text-ink-soft/70 sm:w-28 sm:shrink-0 sm:px-0">
                   {t(g.label)}
                 </span>
-                {g.items.map((l) => (
-                  <Link
-                    key={l.href}
-                    href={l.href}
-                    className="rounded-full px-4 py-2 hover:bg-ink/5 hover:text-ink"
-                  >
-                    {t(l.label)}
-                  </Link>
-                ))}
+                <div className="flex flex-wrap gap-1">
+                  {g.items.map((l) => (
+                    <Link
+                      key={l.href}
+                      href={l.href}
+                      className="rounded-full px-4 py-2 hover:bg-ink/5 hover:text-ink"
+                    >
+                      {t(l.label)}
+                    </Link>
+                  ))}
+                </div>
               </div>
             ))}
         </nav>
