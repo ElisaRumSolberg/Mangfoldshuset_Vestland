@@ -30,16 +30,29 @@ const FILTERS: [string, string][] = [
   ["aktiv", "Aktive"],
 ];
 
+function ageOf(birth: string | null): number | null {
+  if (!birth) return null;
+  const b = new Date(birth);
+  if (Number.isNaN(b.getTime())) return null;
+  const now = new Date();
+  let age = now.getUTCFullYear() - b.getUTCFullYear();
+  const before =
+    now.getUTCMonth() < b.getUTCMonth() ||
+    (now.getUTCMonth() === b.getUTCMonth() && now.getUTCDate() < b.getUTCDate());
+  if (before) age -= 1;
+  return age >= 0 && age < 130 ? age : null;
+}
+
 const field =
   "rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig";
 
 export default async function AdminMedlemmerPage({
   searchParams,
 }: {
-  searchParams: Promise<{ filter?: string; q?: string }>;
+  searchParams: Promise<{ filter?: string; q?: string; view?: string }>;
 }) {
   const t = await getT();
-  const { filter = "alle", q = "" } = await searchParams;
+  const { filter = "alle", q = "", view = "medlemskap" } = await searchParams;
   const query = q.trim().toLowerCase();
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -55,6 +68,7 @@ export default async function AdminMedlemmerPage({
       last_name: string;
       email: string;
       phone: string | null;
+      birth_date: string | null;
       expires_at: string | null;
       membership_type: "enkelt" | "familie";
       family_members: { name: string; birth_date: string | null }[];
@@ -77,6 +91,24 @@ export default async function AdminMedlemmerPage({
         ].some((v) => v.toLowerCase().includes(query))
       )
     : byStatus;
+
+  // Én rad per person: hovedmedlem og hvert familiemedlem for seg.
+  const personRows = shown.flatMap((m) => [
+    {
+      key: `${m.id}-main`,
+      name: `${m.first_name} ${m.last_name}`,
+      birth: m.birth_date,
+      relation: null as string | null,
+      m,
+    },
+    ...(m.family_members ?? []).map((f, i) => ({
+      key: `${m.id}-fam-${i}`,
+      name: f.name,
+      birth: f.birth_date,
+      relation: `${m.first_name} ${m.last_name}`,
+      m,
+    })),
+  ]);
 
   return (
     <div>
@@ -125,6 +157,7 @@ export default async function AdminMedlemmerPage({
 
       <form action="/admin/medlemmer" method="get" role="search" className="mt-6 flex flex-wrap gap-2">
         <input type="hidden" name="filter" value={filter} />
+        <input type="hidden" name="view" value={view} />
         <label className="sr-only" htmlFor="q">{t("Søk etter medlem")}
         </label>
         <input
@@ -142,18 +175,39 @@ export default async function AdminMedlemmerPage({
         </button>
         {q && (
           <Link
-            href={`/admin/medlemmer?filter=${filter}`}
+            href={`/admin/medlemmer?view=${view}&filter=${filter}`}
             className="inline-flex min-h-11 items-center rounded-full border border-line px-5 text-sm text-ink-soft hover:text-ink"
           >{t("Fjern søk")}
           </Link>
         )}
       </form>
 
-      <div className="mt-4 flex flex-wrap gap-2 text-sm">
+      <div className="mt-4 flex flex-wrap items-center gap-2 text-sm" role="group" aria-label={t("Visning")}>
+        <span className="mr-1 font-semibold text-ink-soft">{t("Visning")}:</span>
+        {(
+          [
+            ["medlemskap", "Medlemskap"],
+            ["personer", "Hver person for seg"],
+          ] as const
+        ).map(([key, text]) => (
+          <Link
+            key={key}
+            href={`/admin/medlemmer?view=${key}&filter=${filter}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
+            aria-current={view === key ? "true" : undefined}
+            className={`min-h-11 inline-flex items-center rounded-full px-4 ${
+              view === key ? "bg-ink text-cream" : "border border-line text-ink-soft hover:text-ink"
+            }`}
+          >
+            {t(text)}
+          </Link>
+        ))}
+      </div>
+
+      <div className="mt-3 flex flex-wrap gap-2 text-sm">
         {FILTERS.map(([key, text]) => (
           <Link
             key={key}
-            href={`/admin/medlemmer?filter=${key}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
+            href={`/admin/medlemmer?view=${view}&filter=${key}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
             className={`rounded-full px-4 py-2 ${
               filter === key ? "bg-fig text-white" : "border border-line text-ink-soft hover:text-ink"
             }`}
@@ -163,6 +217,45 @@ export default async function AdminMedlemmerPage({
         ))}
       </div>
 
+      {view === "personer" ? (
+        <div className="mt-6">
+          <p className="mb-3 text-sm text-ink-soft">
+            {t("{n} personer vises", { n: personRows.length })}
+          </p>
+          <ul className="flex flex-col divide-y divide-line rounded-xl border border-line bg-cream">
+            {personRows.length ? (
+              personRows.map((r) => {
+                const age = ageOf(r.birth);
+                return (
+                  <li key={r.key} className="flex flex-wrap items-center justify-between gap-3 px-5 py-3">
+                    <div>
+                      <p className="text-sm font-semibold text-ink">
+                        {r.name}{" "}
+                        <span className={`ml-1 rounded-full px-2.5 py-0.5 font-sans text-xs font-bold ${BADGE[r.m.status].cls}`}>
+                          {t(BADGE[r.m.status].label)}
+                        </span>
+                      </p>
+                      <p className="text-sm text-ink-soft">
+                        {r.relation
+                          ? t("Familiemedlem av {name}", { name: r.relation })
+                          : t("Hovedmedlem")}
+                        {" · "}
+                        {r.birth
+                          ? `${t("født {date}", { date: r.birth })}${age !== null ? ` (${t("{n} år", { n: age })})` : ""}`
+                          : t("fødselsdato mangler")}
+                        {!r.relation && r.m.phone ? ` · ${r.m.phone}` : ""}
+                        {!r.relation ? ` · ${r.m.email}` : ""}
+                      </p>
+                    </div>
+                  </li>
+                );
+              })
+            ) : (
+              <li className="px-5 py-4 text-sm text-ink-soft">{t("Ingen personer her.")}</li>
+            )}
+          </ul>
+        </div>
+      ) : (
       <div className="mt-6 flex flex-col gap-3">
         {shown.length ? (
           shown.map((m) => (
@@ -183,8 +276,24 @@ export default async function AdminMedlemmerPage({
                   {m.phone ? ` · ${m.phone}` : ""}
                 </p>
                 {m.family_members?.length > 0 && (
-                  <p className="text-sm text-ink-soft">{t("Familie:")}{" "}{m.family_members.map((f) => f.name).join(", ")}
-                  </p>
+                  <div className="mt-1 text-sm text-ink-soft">
+                    <p className="font-semibold text-ink">
+                      {t("Familiemedlemmer ({n})", { n: m.family_members.length })}
+                    </p>
+                    <ul className="mt-0.5 list-disc pl-5">
+                      {m.family_members.map((f, i) => {
+                        const age = ageOf(f.birth_date);
+                        return (
+                          <li key={i}>
+                            {f.name}
+                            {f.birth_date
+                              ? ` · ${t("født {date}", { date: f.birth_date })}${age !== null ? ` (${t("{n} år", { n: age })})` : ""}`
+                              : ` · ${t("fødselsdato mangler")}`}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
                 )}
                 <p className="text-sm text-ink-soft">
                   {m.expires_at
@@ -219,6 +328,7 @@ export default async function AdminMedlemmerPage({
           </p>
         )}
       </div>
+      )}
     </div>
   );
 }

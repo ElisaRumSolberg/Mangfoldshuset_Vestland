@@ -255,6 +255,17 @@ export const TR: Record<string, string> = {
     "Üye ve varsa aile üyeleri üye listesinden kaldırılır.",
   "Ingen medlemmer funnet for «{q}».": "«{q}» için üye bulunamadı.",
   "Ingen medlemmer her.": "Burada üye yok.",
+  Visning: "Görünüm",
+  Medlemskap: "Üyelikler",
+  "Hver person for seg": "Her kişi ayrı ayrı",
+  "Familiemedlemmer ({n})": "Aile üyeleri ({n})",
+  "født {date}": "doğum tarihi {date}",
+  "{n} år": "{n} yaşında",
+  "fødselsdato mangler": "doğum tarihi yok",
+  "{n} personer vises": "{n} kişi gösteriliyor",
+  "Familiemedlem av {name}": "{name} kişisinin aile üyesi",
+  Hovedmedlem: "Ana üye",
+  "Ingen personer her.": "Burada kişi yok.",
 
   // Mesajlar / başvurular
   Kontaktmeldinger: "İletişim mesajları",
