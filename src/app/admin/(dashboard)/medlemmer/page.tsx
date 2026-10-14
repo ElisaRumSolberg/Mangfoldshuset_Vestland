@@ -144,6 +144,10 @@ export default async function AdminMedlemmerPage({
               <option value="familie">{t("Familie (150 kr)")}</option>
             </select>
           </label>
+          <label>
+            <span className="mb-1 block text-sm font-medium text-ink">{t("Fødselsdato (valgfritt)")}</span>
+            <input name="birth_date" type="date" className={`${field} w-full`} />
+          </label>
           <label className="text-sm text-ink-soft sm:col-span-2">{t("Medlemskap gjelder til (la stå tom hvis ikke betalt)")}
             <input name="expires_at" type="date" className={`${field} mt-1 block w-full`} />
           </label>
@@ -274,6 +278,13 @@ export default async function AdminMedlemmerPage({
                   {m.membership_type === "familie" ? t("Familie (150 kr)") : t("Enkelt (100 kr)")} ·{" "}
                   {m.email}
                   {m.phone ? ` · ${m.phone}` : ""}
+                </p>
+                <p className="text-sm text-ink-soft">
+                  {m.birth_date
+                    ? `${t("født {date}", { date: m.birth_date })}${
+                        ageOf(m.birth_date) !== null ? ` (${t("{n} år", { n: ageOf(m.birth_date)! })})` : ""
+                      }`
+                    : t("fødselsdato mangler")}
                 </p>
                 {m.family_members?.length > 0 && (
                   <div className="mt-1 text-sm text-ink-soft">

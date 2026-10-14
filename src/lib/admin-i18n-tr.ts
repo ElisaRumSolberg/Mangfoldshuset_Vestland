@@ -262,6 +262,7 @@ export const TR: Record<string, string> = {
   "født {date}": "doğum tarihi {date}",
   "{n} år": "{n} yaşında",
   "fødselsdato mangler": "doğum tarihi yok",
+  "Fødselsdato (valgfritt)": "Doğum tarihi (isteğe bağlı)",
   "{n} personer vises": "{n} kişi gösteriliyor",
   "Familiemedlem av {name}": "{name} kişisinin aile üyesi",
   Hovedmedlem: "Ana üye",
