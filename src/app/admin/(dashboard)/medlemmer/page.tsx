@@ -35,9 +35,10 @@ const field =
 export default async function AdminMedlemmerPage({
   searchParams,
 }: {
-  searchParams: Promise<{ filter?: string }>;
+  searchParams: Promise<{ filter?: string; q?: string }>;
 }) {
-  const { filter = "alle" } = await searchParams;
+  const { filter = "alle", q = "" } = await searchParams;
+  const query = q.trim().toLowerCase();
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("members")
@@ -61,7 +62,19 @@ export default async function AdminMedlemmerPage({
   });
   const persons = members.reduce((n, m) => n + 1 + (m.family_members?.length ?? 0), 0);
   const counts = (s: string) => members.filter((m) => m.status === s).length;
-  const shown = filter === "alle" ? members : members.filter((m) => m.status === filter);
+  const byStatus = filter === "alle" ? members : members.filter((m) => m.status === filter);
+  const shown = query
+    ? byStatus.filter((m) =>
+        [
+          m.first_name,
+          m.last_name,
+          `${m.first_name} ${m.last_name}`,
+          m.email,
+          m.phone ?? "",
+          ...(m.family_members ?? []).map((f) => f.name),
+        ].some((v) => v.toLowerCase().includes(query))
+      )
+    : byStatus;
 
   return (
     <div>
@@ -107,11 +120,40 @@ export default async function AdminMedlemmerPage({
         </form>
       </details>
 
-      <div className="mt-6 flex flex-wrap gap-2 text-sm">
+      <form action="/admin/medlemmer" method="get" role="search" className="mt-6 flex flex-wrap gap-2">
+        <input type="hidden" name="filter" value={filter} />
+        <label className="sr-only" htmlFor="q">
+          Søk etter medlem
+        </label>
+        <input
+          id="q"
+          name="q"
+          type="search"
+          defaultValue={q}
+          placeholder="Søk på navn, e-post eller telefon"
+          className="min-h-11 w-full max-w-sm rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
+        />
+        <button
+          type="submit"
+          className="min-h-11 rounded-full bg-fig px-5 text-sm font-semibold text-white hover:bg-fig-dark"
+        >
+          Søk
+        </button>
+        {q && (
+          <Link
+            href={`/admin/medlemmer?filter=${filter}`}
+            className="inline-flex min-h-11 items-center rounded-full border border-line px-5 text-sm text-ink-soft hover:text-ink"
+          >
+            Fjern søk
+          </Link>
+        )}
+      </form>
+
+      <div className="mt-4 flex flex-wrap gap-2 text-sm">
         {FILTERS.map(([key, text]) => (
           <Link
             key={key}
-            href={`/admin/medlemmer?filter=${key}`}
+            href={`/admin/medlemmer?filter=${key}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
             className={`rounded-full px-4 py-2 ${
               filter === key ? "bg-fig text-white" : "border border-line text-ink-soft hover:text-ink"
             }`}
@@ -169,7 +211,9 @@ export default async function AdminMedlemmerPage({
             </div>
           ))
         ) : (
-          <p className="text-sm text-ink-soft">Ingen medlemmer her.</p>
+          <p className="text-sm text-ink-soft">
+            {q ? `Ingen medlemmer funnet for «${q}».` : "Ingen medlemmer her."}
+          </p>
         )}
       </div>
     </div>

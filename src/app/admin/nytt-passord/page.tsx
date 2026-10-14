@@ -1,5 +1,6 @@
 "use client";
 
+import PasswordInput from "@/components/PasswordInput";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -63,9 +64,8 @@ export default function NyttPassordPage() {
               <label htmlFor="password" className="mb-1 block text-sm font-medium text-ink">
                 Nytt passord (minst 12 tegn)
               </label>
-              <input
+              <PasswordInput
                 id="password"
-                type="password"
                 required
                 minLength={12}
                 autoComplete="new-password"

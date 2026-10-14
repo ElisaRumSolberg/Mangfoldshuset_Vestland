@@ -21,6 +21,23 @@ const links = [
   { href: "/admin/hjelp", label: "Hjelp", ownerOnly: false },
 ];
 
+const groups = [
+  { label: "Start", hrefs: ["/admin"] },
+  {
+    label: "Nettsiden",
+    hrefs: [
+      "/admin/aktiviteter",
+      "/admin/tilbud",
+      "/admin/utvalg",
+      "/admin/nyheter",
+      "/admin/mangfoldsposten",
+      "/admin/innhold",
+    ],
+  },
+  { label: "Folk", hrefs: ["/admin/medlemmer", "/admin/meldinger", "/admin/skjema"] },
+  { label: "Annet", hrefs: ["/admin/statistikk", "/admin/hjelp"] },
+];
+
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
   const {
@@ -49,16 +66,32 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </div>
           <LogoutButton />
         </div>
-        <nav className="mx-auto flex max-w-5xl flex-wrap gap-1 px-6 pb-3 text-sm font-medium text-ink-soft">
-          {visibleLinks.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className="rounded-full px-4 py-2 hover:bg-ink/5 hover:text-ink"
-            >
-              {l.label}
-            </Link>
-          ))}
+        <nav
+          aria-label="Hovedmeny"
+          className="mx-auto flex max-w-5xl flex-wrap gap-x-6 gap-y-3 px-6 pb-3 text-sm font-medium text-ink-soft"
+        >
+          {groups
+            .map((g) => ({
+              ...g,
+              items: visibleLinks.filter((l) => g.hrefs.includes(l.href)),
+            }))
+            .filter((g) => g.items.length > 0)
+            .map((g) => (
+              <div key={g.label} className="flex flex-wrap items-center gap-1">
+                <span className="mr-1 text-xs font-semibold uppercase tracking-wide text-ink-soft/70">
+                  {g.label}
+                </span>
+                {g.items.map((l) => (
+                  <Link
+                    key={l.href}
+                    href={l.href}
+                    className="rounded-full px-4 py-2 hover:bg-ink/5 hover:text-ink"
+                  >
+                    {l.label}
+                  </Link>
+                ))}
+              </div>
+            ))}
         </nav>
       </header>
       <main className="mx-auto max-w-5xl px-6 py-10">

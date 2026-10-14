@@ -1,5 +1,6 @@
 "use client";
 
+import PasswordInput from "@/components/PasswordInput";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -78,9 +79,9 @@ export default function LoggInnPage() {
             <label htmlFor="password" className="mb-1 block text-sm font-medium text-ink">
               Passord
             </label>
-            <input
+            <PasswordInput
               id="password"
-              type="password"
+              autoComplete="current-password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}

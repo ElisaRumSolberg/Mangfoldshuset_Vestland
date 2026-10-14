@@ -18,9 +18,9 @@ export default function AdminError({
     <div className="mx-auto max-w-xl px-6 py-16">
       <h1 className="font-serif text-2xl font-medium text-ink">Noe gikk galt</h1>
       <p className="mt-4 text-base leading-relaxed text-ink-soft">
-        Det ble ikke noe av dette. Ingenting er slettet. Prøv igjen, eller gå tilbake til
-        forsiden av admin. Hvis det skjer flere ganger, send en melding til den som har
-        ansvar for nettsiden og oppgi koden under.
+        Det ble ikke noe av dette. Ingenting er slettet. Har du hatt siden åpen en stund, kan den
+        være utdatert: trykk «Last siden på nytt» og prøv igjen. Hvis det skjer flere ganger, send
+        en melding til den som har ansvar for nettsiden og oppgi koden under.
       </p>
       {error.digest && (
         <p className="mt-3 text-sm text-ink-soft">
@@ -30,8 +30,15 @@ export default function AdminError({
       <div className="mt-6 flex flex-wrap gap-3">
         <button
           type="button"
-          onClick={reset}
+          onClick={() => window.location.reload()}
           className="min-h-11 rounded-full bg-fig px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
+        >
+          Last siden på nytt
+        </button>
+        <button
+          type="button"
+          onClick={reset}
+          className="min-h-11 rounded-full border border-line px-6 py-2.5 text-sm font-semibold text-ink hover:border-ink"
         >
           Prøv igjen
         </button>
