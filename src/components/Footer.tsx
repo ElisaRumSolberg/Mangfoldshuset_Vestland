@@ -88,7 +88,7 @@ export default function Footer() {
             Personvern
           </Link>
           <a
-            href="https://elisatech.io"
+            href="https://www.elisastudio.no"
             target="_blank"
             rel="noopener noreferrer"
             className="py-3 hover:text-white sm:text-right"
