@@ -1,3 +1,4 @@
+import { getT } from "@/lib/admin-i18n-server";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { nextOccurrences, shortDate, timeText, todayOslo, toProgram, whenText } from "@/lib/recurring";
@@ -6,6 +7,7 @@ import TilbudForm from "./TilbudForm";
 import DeleteButton from "../DeleteButton";
 
 export default async function AdminTilbudPage() {
+  const t = await getT();
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("recurring_programs")
@@ -16,21 +18,17 @@ export default async function AdminTilbudPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-medium text-ink">Faste tilbud</h1>
-      <p className="mt-2 max-w-2xl text-sm text-ink-soft">
-        Aktiviteter som gjentas (hver uke eller hver måned). Datoene regnes ut automatisk og
-        vises under «Kommende aktiviteter». Engangsarrangementer legger du inn under
-        Aktiviteter.
+      <h1 className="font-serif text-2xl font-medium text-ink">{t("Faste tilbud")}</h1>
+      <p className="mt-2 max-w-2xl text-sm text-ink-soft">{t("Aktiviteter som gjentas (hver uke eller hver måned). Datoene regnes ut automatisk og vises under «Kommende aktiviteter». Engangsarrangementer legger du inn under Aktiviteter.")}
       </p>
 
       {error && (
-        <p className="mt-6 rounded-lg border border-fig/40 bg-[#F7E9E9] px-4 py-3 text-sm text-fig">
-          Kunne ikke hente faste tilbud: {error.message}. Kjør{" "}
-          <code>supabase/tilbud.sql</code> i Supabase SQL Editor først.
+        <p className="mt-6 rounded-lg border border-fig/40 bg-[#F7E9E9] px-4 py-3 text-sm text-fig">{t("Kunne ikke hente faste tilbud:")}{" "}{error.message}{t(". Kjør")}{" "}
+          <code>{t("supabase/tilbud.sql")}</code>{t("i Supabase SQL Editor først.")}
         </p>
       )}
 
-      <TilbudForm action={addProgram} submitLabel="Legg til tilbud" />
+      <TilbudForm action={addProgram} submitLabel={t("Legg til tilbud")} />
 
       <div className="mt-8 flex flex-col gap-3">
         {programs.length ? (
@@ -45,33 +43,31 @@ export default async function AdminTilbudPage() {
                   <p className="font-serif text-base font-semibold text-ink">
                     {p.title}
                     {!p.active && (
-                      <span className="ml-2 rounded-full bg-ink/10 px-2 py-0.5 font-sans text-xs font-medium text-ink-soft">
-                        Skjult
+                      <span className="ml-2 rounded-full bg-ink/10 px-2 py-0.5 font-sans text-xs font-medium text-ink-soft">{t("Skjult")}
                       </span>
                     )}
                   </p>
                   <p className="text-sm text-ink-soft">
-                    {whenText(p)}
-                    {timeText(p) ? ` · ${timeText(p)}` : ""}
-                    {next ? ` · neste: ${shortDate(next)}` : ""}
+                    {t(whenText(p))}
+                    {timeText(p) ? ` · ${timeText(p)!.replace("kl.", t("kl."))}` : ""}
+                    {next ? ` · ${t("neste:")} ${shortDate(next)}` : ""}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <Link
                     href={`/admin/tilbud/${p.id}`}
                     className="rounded-full border border-line px-4 py-2 text-sm text-ink-soft transition-colors hover:border-ink hover:text-ink"
-                  >
-                    Rediger
+                  >{t("Rediger")}
                   </Link>
                   <form action={deleteProgram.bind(null, p.id)}>
-                    <DeleteButton what={p.title} extra="Bilder, oppsummering og tilbakemeldinger for dette tilbudet forsvinner også." />
+                    <DeleteButton what={p.title} extra={t("Bilder, oppsummering og tilbakemeldinger for dette tilbudet forsvinner også.")} />
                   </form>
                 </div>
               </div>
             );
           })
         ) : (
-          <p className="text-sm text-ink-soft">Ingen faste tilbud ennå.</p>
+          <p className="text-sm text-ink-soft">{t("Ingen faste tilbud ennå.")}</p>
         )}
       </div>
     </div>

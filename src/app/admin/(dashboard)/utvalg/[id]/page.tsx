@@ -1,3 +1,4 @@
+import { getT } from "@/lib/admin-i18n-server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
@@ -11,6 +12,7 @@ export default async function EditUtvalgPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const t = await getT();
   const { id } = await params;
   const supabase = await createClient();
   const [{ data }, { data: userData }] = await Promise.all([
@@ -25,11 +27,10 @@ export default async function EditUtvalgPage({
   return (
     <div>
       {role !== "utvalg" && (
-        <Link href="/admin/utvalg" className="text-sm text-ink-soft hover:text-ink">
-          ← Tilbake til utvalg
+        <Link href="/admin/utvalg" className="text-sm text-ink-soft hover:text-ink">{t("← Tilbake til utvalg")}
         </Link>
       )}
-      <h1 className="mt-3 font-serif text-2xl font-medium text-ink">Rediger utvalg</h1>
+      <h1 className="mt-3 font-serif text-2xl font-medium text-ink">{t("Rediger utvalg")}</h1>
 
       <UtvalgForm
         action={updateUtvalg.bind(null, id)}

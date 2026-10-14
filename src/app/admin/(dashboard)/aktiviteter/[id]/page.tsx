@@ -1,3 +1,4 @@
+import { getT } from "@/lib/admin-i18n-server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
@@ -13,6 +14,7 @@ export default async function EditActivityPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const t = await getT();
   const { id } = await params;
   const supabase = await createClient();
   const [{ data: activity }, { data: signups }] = await Promise.all([
@@ -31,11 +33,9 @@ export default async function EditActivityPage({
 
   return (
     <div>
-      <Link href="/admin/aktiviteter" className="text-sm text-ink-soft hover:text-ink">
-        ← Tilbake til aktiviteter
+      <Link href="/admin/aktiviteter" className="text-sm text-ink-soft hover:text-ink">{t("← Tilbake til aktiviteter")}
       </Link>
-      <h1 className="mt-3 font-serif text-2xl font-medium text-ink">
-        Rediger aktivitet
+      <h1 className="mt-3 font-serif text-2xl font-medium text-ink">{t("Rediger aktivitet")}
       </h1>
 
       <ShareBox
@@ -46,20 +46,19 @@ export default async function EditActivityPage({
         action={updateWithId}
         className="mt-8 grid grid-cols-1 gap-4 rounded-2xl border border-line bg-cream p-6 sm:grid-cols-2"
       >
-        <label><span className="mb-1 block text-sm font-medium text-ink">Tittel</span><input
+        <label><span className="mb-1 block text-sm font-medium text-ink">{t("Tittel")}</span><input
           name="title"
           required
           defaultValue={activity.title}
           className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
         /></label>
         <div className="sm:col-span-2">
-          <p className="mb-1 text-sm font-medium text-ink">
-            Kategori (velg én eller flere)
+          <p className="mb-1 text-sm font-medium text-ink">{t("Kategori (velg én eller flere)")}
           </p>
           <CategoryPicker initial={activity.categories ?? []} />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium text-ink">Startdato</label>
+          <label className="mb-1 block text-sm font-medium text-ink">{t("Startdato")}</label>
           <input
             name="event_date"
             type="date"
@@ -69,8 +68,7 @@ export default async function EditActivityPage({
           />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium text-ink">
-            Sluttdato (valgfritt – for flerdagers aktiviteter)
+          <label className="mb-1 block text-sm font-medium text-ink">{t("Sluttdato (valgfritt – for flerdagers aktiviteter)")}
           </label>
           <input
             name="end_date"
@@ -79,25 +77,25 @@ export default async function EditActivityPage({
             className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
           />
         </div>
-        <label><span className="mb-1 block text-sm font-medium text-ink">Klokkeslett (valgfritt)</span><input
+        <label><span className="mb-1 block text-sm font-medium text-ink">{t("Klokkeslett (valgfritt)")}</span><input
           name="event_time"
           defaultValue={activity.event_time ?? ""}
           placeholder="18.00–20.00"
           className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
         /></label>
-        <label><span className="mb-1 block text-sm font-medium text-ink">Sted</span><input
+        <label><span className="mb-1 block text-sm font-medium text-ink">{t("Sted")}</span><input
           name="place"
           required
           defaultValue={activity.place}
           className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
         /></label>
-        <label className="sm:col-span-2"><span className="mb-1 block text-sm font-medium text-ink">Pris (valgfritt)</span><input
+        <label className="sm:col-span-2"><span className="mb-1 block text-sm font-medium text-ink">{t("Pris (valgfritt)")}</span><input
           name="price"
           defaultValue={activity.price ?? ""}
-          placeholder="Gratis, eller 100 kr"
+          placeholder={t("Gratis, eller 100 kr")}
           className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
         /></label>
-        <label className="sm:col-span-2"><span className="mb-1 block text-sm font-medium text-ink">Kort beskrivelse</span><textarea
+        <label className="sm:col-span-2"><span className="mb-1 block text-sm font-medium text-ink">{t("Kort beskrivelse")}</span><textarea
           name="description"
           required
           defaultValue={activity.description}
@@ -114,26 +112,22 @@ export default async function EditActivityPage({
               className="h-24 w-24 rounded-lg object-cover"
             />
             <label className="flex items-center gap-2 text-sm text-fig">
-              <input type="checkbox" name="remove_image" className="h-4 w-4 accent-fig" />
-              Fjern bildet
+              <input type="checkbox" name="remove_image" className="h-4 w-4 accent-fig" />{t("Fjern bildet")}
             </label>
           </div>
         )}
         <div>
-          <label className="mb-1 block text-sm font-medium text-ink">
-            Nytt bilde (valgfritt – erstatter gjeldende)
+          <label className="mb-1 block text-sm font-medium text-ink">{t("Nytt bilde (valgfritt – erstatter gjeldende)")}
           </label>
           <FileUpload name="image_url" folder="aktiviteter" accept="image/*" />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium text-ink">
-            Ny video (valgfritt – erstatter gjeldende)
+          <label className="mb-1 block text-sm font-medium text-ink">{t("Ny video (valgfritt – erstatter gjeldende)")}
           </label>
           <FileUpload name="video_url" folder="aktiviteter" accept="video/*" />
         </div>
         <div className="sm:col-span-2">
-          <label className="mb-1 block text-sm font-medium text-ink">
-            Lenke til Facebook/Instagram-innlegg (valgfritt)
+          <label className="mb-1 block text-sm font-medium text-ink">{t("Lenke til Facebook/Instagram-innlegg (valgfritt)")}
           </label>
           <input
             name="external_link"
@@ -144,22 +138,21 @@ export default async function EditActivityPage({
           />
         </div>
         <div className="sm:col-span-2">
-          <label className="mb-1 block text-sm font-medium text-ink">
-            Ansvarlig (valgfritt – vises nederst på aktiviteten)
+          <label className="mb-1 block text-sm font-medium text-ink">{t("Ansvarlig (valgfritt – vises nederst på aktiviteten)")}
           </label>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <label><span className="mb-1 block text-sm font-medium text-ink">Navn</span><input
+            <label><span className="mb-1 block text-sm font-medium text-ink">{t("Navn")}</span><input
               name="responsible_name"
               defaultValue={activity.responsible_name ?? ""}
               className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
             /></label>
-            <label><span className="mb-1 block text-sm font-medium text-ink">Telefon</span><input
+            <label><span className="mb-1 block text-sm font-medium text-ink">{t("Telefon")}</span><input
               name="responsible_phone"
               type="tel"
               defaultValue={activity.responsible_phone ?? ""}
               className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
             /></label>
-            <label><span className="mb-1 block text-sm font-medium text-ink">E-post</span><input
+            <label><span className="mb-1 block text-sm font-medium text-ink">{t("E-post")}</span><input
               name="responsible_email"
               type="email"
               defaultValue={activity.responsible_email ?? ""}
@@ -169,8 +162,8 @@ export default async function EditActivityPage({
         </div>
 
         <ReportFields
-          heading="Slik gikk det (fylles ut etter arrangementet)"
-          participantsLabel="Antall deltakere"
+          heading={t("Slik gikk det (fylles ut etter arrangementet)")}
+          participantsLabel={t("Antall deltakere")}
           folder="aktiviteter"
           defaults={{
             participants: activity.participants ?? null,
@@ -186,8 +179,7 @@ export default async function EditActivityPage({
             type="checkbox"
             defaultChecked={activity.registration_open ?? false}
             className="h-4 w-4 accent-fig"
-          />
-          Åpne for påmelding – vis skjema på aktivitetens side
+          />{t("Åpne for påmelding – vis skjema på aktivitetens side")}
         </label>
 
         <label className="flex items-center gap-2 text-sm text-ink sm:col-span-2">
@@ -196,8 +188,7 @@ export default async function EditActivityPage({
             type="checkbox"
             defaultChecked={activity.featured ?? false}
             className="h-4 w-4 accent-fig"
-          />
-          Fremhevet – vis øverst i «Kommende aktiviteter»
+          />{t("Fremhevet – vis øverst i «Kommende aktiviteter»")}
         </label>
 
         <label className="flex items-center gap-2 text-sm text-ink sm:col-span-2">
@@ -206,24 +197,22 @@ export default async function EditActivityPage({
             type="checkbox"
             defaultChecked={activity.show_on_homepage ?? false}
             className="h-4 w-4 accent-fig"
-          />
-          Vis bilde i karusellen på forsiden
+          />{t("Vis bilde i karusellen på forsiden")}
         </label>
 
         {(() => {
           const choices = [
-            ...(activity.image_url ? [{ url: activity.image_url as string, label: "Plakat" }] : []),
+            ...(activity.image_url ? [{ url: activity.image_url as string, label: t("Plakat") }] : []),
             ...((activity.photos as string[] | null) ?? []).map((url, i) => ({
               url,
-              label: `Bilde ${i + 1}`,
+              label: t("Bilde {n}", { n: i + 1 }),
             })),
           ];
           if (choices.length === 0) return null;
           const chosen: string[] = activity.homepage_image_urls ?? [];
           return (
             <div className="sm:col-span-2">
-              <label className="mb-2 block text-sm font-medium text-ink">
-                Hvilke bilder skal vises i karusellen på forsiden? (velg én eller flere – ingen valgt = automatisk)
+              <label className="mb-2 block text-sm font-medium text-ink">{t("Hvilke bilder skal vises i karusellen på forsiden? (velg én eller flere – ingen valgt = automatisk)")}
               </label>
               <div className="flex flex-wrap gap-3">
                 {choices.map((c) => (
@@ -247,14 +236,12 @@ export default async function EditActivityPage({
         <button
           type="submit"
           className="rounded-full bg-fig px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark sm:col-span-2 sm:w-fit"
-        >
-          Lagre endringer
+        >{t("Lagre endringer")}
         </button>
       </form>
 
       <div className="mt-10">
-        <h2 className="font-serif text-xl font-medium text-ink">
-          Påmeldte {signups && signups.length > 0 && `(${signups.length} – ${totalParticipants} personer)`}
+        <h2 className="font-serif text-xl font-medium text-ink">{t("Påmeldte")}{" "}{signups && signups.length > 0 && t("({n} – {p} personer)", { n: signups.length, p: totalParticipants })}
         </h2>
         {signups && signups.length > 0 ? (
           <div className="mt-4 flex flex-col gap-3">
@@ -267,7 +254,7 @@ export default async function EditActivityPage({
                   <p className="font-semibold text-ink">
                     {s.name}{" "}
                     <span className="font-normal text-ink-soft">
-                      · {s.participants} {s.participants === 1 ? "person" : "personer"}
+                      · {s.participants} {s.participants === 1 ? t("person") : t("personer")}
                     </span>
                   </p>
                   <p className="text-sm text-ink-soft">
@@ -280,13 +267,13 @@ export default async function EditActivityPage({
                   )}
                 </div>
                 <form action={deleteSignup.bind(null, id, s.id)}>
-                  <DeleteButton what={`påmeldingen fra ${s.name}`} />
+                  <DeleteButton what={t("påmeldingen fra {name}", { name: s.name })} />
                 </form>
               </div>
             ))}
           </div>
         ) : (
-          <p className="mt-3 text-sm text-ink-soft">Ingen påmeldte ennå.</p>
+          <p className="mt-3 text-sm text-ink-soft">{t("Ingen påmeldte ennå.")}</p>
         )}
       </div>
     </div>

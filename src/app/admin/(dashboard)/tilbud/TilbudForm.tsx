@@ -1,3 +1,4 @@
+import { getT } from "@/lib/admin-i18n-server";
 import FileUpload from "../FileUpload";
 import ReportFields from "../ReportFields";
 import { NTH_OPTIONS, WEEKDAY_OPTIONS, type Program } from "@/lib/recurring";
@@ -6,7 +7,7 @@ const field =
   "w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig";
 const label = "mb-1 block text-sm font-medium text-ink";
 
-export default function TilbudForm({
+export default async function TilbudForm({
   action,
   program,
   submitLabel,
@@ -15,66 +16,66 @@ export default function TilbudForm({
   program?: Program;
   submitLabel: string;
 }) {
+  const t = await getT();
   return (
     <form
       action={action}
       className="mt-8 grid grid-cols-1 gap-4 rounded-2xl border border-line bg-cream p-6 sm:grid-cols-2"
     >
       <div className="sm:col-span-2">
-        <label className={label}>Navn</label>
+        <label className={label}>{t("Navn")}</label>
         <input
           name="title"
           required
           defaultValue={program?.title}
-          placeholder="F.eks. Barseltreff"
+          placeholder={t("F.eks. Barseltreff")}
           className={field}
         />
       </div>
 
       <div className="sm:col-span-2">
-        <label className={label}>Beskrivelse</label>
+        <label className={label}>{t("Beskrivelse")}</label>
         <textarea
           name="description"
           rows={3}
           defaultValue={program?.description}
-          placeholder="Kort om hva tilbudet er og hvem det er for"
+          placeholder={t("Kort om hva tilbudet er og hvem det er for")}
           className={field}
         />
       </div>
 
       <div>
-        <label className={label}>Hvor ofte</label>
+        <label className={label}>{t("Hvor ofte")}</label>
         <select name="frequency" defaultValue={program?.frequency ?? "weekly"} className={field}>
-          <option value="weekly">Hver uke</option>
-          <option value="monthly">Hver måned</option>
+          <option value="weekly">{t("Hver uke")}</option>
+          <option value="monthly">{t("Hver måned")}</option>
         </select>
       </div>
       <div>
-        <label className={label}>Ukedag</label>
+        <label className={label}>{t("Ukedag")}</label>
         <select name="weekday" defaultValue={program?.weekday ?? 5} className={field}>
           {WEEKDAY_OPTIONS.map((d) => (
             <option key={d.value} value={d.value}>
-              {d.label}
+              {t(d.label)}
             </option>
           ))}
         </select>
       </div>
 
       <div className="sm:col-span-2">
-        <label className={label}>
-          Hvilken uke i måneden (bare for «Hver måned», f.eks. siste søndag)
+        <label className={label}>{t("Hvilken uke i måneden (bare for «Hver måned», f.eks. siste søndag)")}
         </label>
         <select name="nth" defaultValue={program?.nth ?? -1} className={field}>
           {NTH_OPTIONS.map((n) => (
             <option key={n.value} value={n.value}>
-              {n.label}
+              {t(n.label)}
             </option>
           ))}
         </select>
       </div>
 
       <div>
-        <label className={label}>Starter kl.</label>
+        <label className={label}>{t("Starter kl.")}</label>
         <input
           name="start_time"
           type="time"
@@ -83,7 +84,7 @@ export default function TilbudForm({
         />
       </div>
       <div>
-        <label className={label}>Slutter kl. (valgfritt)</label>
+        <label className={label}>{t("Slutter kl. (valgfritt)")}</label>
         <input
           name="end_time"
           type="time"
@@ -93,7 +94,7 @@ export default function TilbudForm({
       </div>
 
       <div>
-        <label className={label}>Første dato (valgfritt, f.eks. oppstart)</label>
+        <label className={label}>{t("Første dato (valgfritt, f.eks. oppstart)")}</label>
         <input
           name="start_date"
           type="date"
@@ -102,7 +103,7 @@ export default function TilbudForm({
         />
       </div>
       <div>
-        <label className={label}>Siste dato (valgfritt, hvis tilbudet avsluttes)</label>
+        <label className={label}>{t("Siste dato (valgfritt, hvis tilbudet avsluttes)")}</label>
         <input
           name="end_date"
           type="date"
@@ -112,53 +113,53 @@ export default function TilbudForm({
       </div>
 
       <div className="sm:col-span-2">
-        <label className={label}>Sted</label>
+        <label className={label}>{t("Sted")}</label>
         <input
           name="place"
           required
           defaultValue={program?.place}
-          placeholder="Mangfoldhuset, Arne Abrahamsens vei 1, 5161 Laksevåg"
+          placeholder={t("Mangfoldhuset, Arne Abrahamsens vei 1, 5161 Laksevåg")}
           className={field}
         />
       </div>
 
       <div>
-        <label className={label}>Merknad (valgfritt)</label>
+        <label className={label}>{t("Merknad (valgfritt)")}</label>
         <input
           name="note"
           defaultValue={program?.note ?? ""}
-          placeholder="Ingen påmelding – bare kom"
+          placeholder={t("Ingen påmelding – bare kom")}
           className={field}
         />
       </div>
       <div className="sm:col-span-2">
-        <label className={label}>Ansvarlig (valgfritt – vises nederst på kortet)</label>
+        <label className={label}>{t("Ansvarlig (valgfritt – vises nederst på kortet)")}</label>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <input
             name="responsible_name"
             defaultValue={program?.responsible_name ?? ""}
-            placeholder="Navn"
+            placeholder={t("Navn")}
             className={field}
           />
           <input
             name="responsible_phone"
             type="tel"
             defaultValue={program?.responsible_phone ?? ""}
-            placeholder="Telefon"
+            placeholder={t("Telefon")}
             className={field}
           />
           <input
             name="contact"
             type="email"
             defaultValue={program?.contact ?? ""}
-            placeholder="E-post"
+            placeholder={t("E-post")}
             className={field}
           />
         </div>
       </div>
 
       <div className="sm:col-span-2">
-        <label className={label}>Lenke til Facebook/Instagram (valgfritt)</label>
+        <label className={label}>{t("Lenke til Facebook/Instagram (valgfritt)")}</label>
         <input
           name="external_link"
           type="url"
@@ -169,8 +170,7 @@ export default function TilbudForm({
       </div>
 
       <div className="sm:col-span-2">
-        <label className={label}>
-          Avlyste datoer (valgfritt – skriv ÅÅÅÅ-MM-DD, skill med komma)
+        <label className={label}>{t("Avlyste datoer (valgfritt – skriv ÅÅÅÅ-MM-DD, skill med komma)")}
         </label>
         <input
           name="skipped_dates"
@@ -183,16 +183,15 @@ export default function TilbudForm({
       <div className="sm:col-span-2">
         <label className={label}>
           {program?.image_url
-            ? "Ny plakat (valgfritt – erstatter gjeldende)"
-            : "Plakat (valgfritt)"}
+            ? t("Ny plakat (valgfritt – erstatter gjeldende)")
+            : t("Plakat (valgfritt)")}
         </label>
         {program?.image_url && (
           <div className="mb-2 flex items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={program.image_url} alt="" className="h-24 rounded-lg object-cover" />
             <label className="flex items-center gap-2 text-sm text-fig">
-              <input type="checkbox" name="remove_image" className="h-4 w-4 accent-fig" />
-              Fjern bildet
+              <input type="checkbox" name="remove_image" className="h-4 w-4 accent-fig" />{t("Fjern bildet")}
             </label>
           </div>
         )}
@@ -201,8 +200,8 @@ export default function TilbudForm({
 
       {program && (
         <ReportFields
-          heading="Bilder og tilbakemeldinger"
-          participantsLabel="Deltakere totalt så langt (samlet antall besøk)"
+          heading={t("Bilder og tilbakemeldinger")}
+          participantsLabel={t("Deltakere totalt så langt (samlet antall besøk)")}
           folder="tilbud"
           defaults={{
             participants: program.participants,
@@ -215,18 +214,15 @@ export default function TilbudForm({
 
       {program && (
         <div className="sm:col-span-2">
-          <label className={label}>
-            Høydepunkter (gjestebesøk, temadager osv. – ett per linje)
+          <label className={label}>{t("Høydepunkter (gjestebesøk, temadager osv. – ett per linje)")}
           </label>
-          <p className="mb-1 text-xs text-ink-soft">
-            Format: DD.MM.ÅÅÅÅ: Tekst – f.eks. «17.06.2026: Besøk av Firat Bahcivan fra Mangfoldhuset Oslo».
-            Legg til en ny linje hver gang noe skjer, i stedet for å skrive om hele oppsummeringen.
+          <p className="mb-1 text-xs text-ink-soft">{t("Format: DD.MM.ÅÅÅÅ: Tekst – f.eks. «17.06.2026: Besøk av Firat Bahcivan fra Mangfoldhuset Oslo». Legg til en ny linje hver gang noe skjer, i stedet for å skrive om hele oppsummeringen.")}
           </p>
           <textarea
             name="highlights"
             rows={5}
             defaultValue={program.highlights ?? ""}
-            placeholder={"17.06.2026: Besøk av Firat Bahcivan fra Mangfoldhuset Oslo.\n26.04.2026: Første klesbyttedag."}
+            placeholder={t("17.06.2026: Besøk av Firat Bahcivan fra Mangfoldhuset Oslo.\n26.04.2026: Første klesbyttedag.")}
             className={field}
           />
         </div>
@@ -238,22 +234,20 @@ export default function TilbudForm({
           type="checkbox"
           defaultChecked={program?.show_on_homepage ?? false}
           className="h-4 w-4 accent-fig"
-        />
-        Vis bilde i karusellen på forsiden
+        />{t("Vis bilde i karusellen på forsiden")}
       </label>
 
       {program &&
         (() => {
           const choices = [
-            ...(program.image_url ? [{ url: program.image_url, label: "Plakat" }] : []),
-            ...program.photos.map((url, i) => ({ url, label: `Bilde ${i + 1}` })),
+            ...(program.image_url ? [{ url: program.image_url, label: t("Plakat") }] : []),
+            ...program.photos.map((url, i) => ({ url, label: t("Bilde {n}", { n: i + 1 }) })),
           ];
           if (choices.length === 0) return null;
           const chosen = program.homepage_image_urls ?? [];
           return (
             <div className="sm:col-span-2">
-              <label className="mb-2 block text-sm font-medium text-ink">
-                Hvilke bilder skal vises i karusellen på forsiden? (velg én eller flere – ingen valgt = automatisk)
+              <label className="mb-2 block text-sm font-medium text-ink">{t("Hvilke bilder skal vises i karusellen på forsiden? (velg én eller flere – ingen valgt = automatisk)")}
               </label>
               <div className="flex flex-wrap gap-3">
                 {choices.map((c) => (
@@ -280,8 +274,7 @@ export default function TilbudForm({
           type="checkbox"
           defaultChecked={program?.featured ?? false}
           className="h-4 w-4 accent-fig"
-        />
-        Fremhevet – vis øverst (til du fjerner haken)
+        />{t("Fremhevet – vis øverst (til du fjerner haken)")}
       </label>
 
       <label className="flex items-center gap-2 text-sm text-ink sm:col-span-2">
@@ -290,15 +283,14 @@ export default function TilbudForm({
           type="checkbox"
           defaultChecked={program?.active ?? true}
           className="h-4 w-4 accent-fig"
-        />
-        Vis på nettsiden
+        />{t("Vis på nettsiden")}
       </label>
 
       <button
         type="submit"
         className="rounded-full bg-fig px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark sm:col-span-2 sm:w-fit"
       >
-        {submitLabel}
+        {t(submitLabel)}
       </button>
     </form>
   );

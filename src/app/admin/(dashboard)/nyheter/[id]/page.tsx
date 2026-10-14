@@ -1,3 +1,4 @@
+import { getT } from "@/lib/admin-i18n-server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
@@ -9,6 +10,7 @@ export default async function EditNewsPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const t = await getT();
   const { id } = await params;
   const supabase = await createClient();
   const { data: item } = await supabase
@@ -23,24 +25,22 @@ export default async function EditNewsPage({
 
   return (
     <div>
-      <Link href="/admin/nyheter" className="text-sm text-ink-soft hover:text-ink">
-        ← Tilbake til nyheter
+      <Link href="/admin/nyheter" className="text-sm text-ink-soft hover:text-ink">{t("← Tilbake til nyheter")}
       </Link>
-      <h1 className="mt-3 font-serif text-2xl font-medium text-ink">
-        Rediger nyhet
+      <h1 className="mt-3 font-serif text-2xl font-medium text-ink">{t("Rediger nyhet")}
       </h1>
 
       <form
         action={updateWithId}
         className="mt-8 flex flex-col gap-4 rounded-2xl border border-line bg-cream p-6"
       >
-        <label><span className="mb-1 block text-sm font-medium text-ink">Overskrift</span><input
+        <label><span className="mb-1 block text-sm font-medium text-ink">{t("Overskrift")}</span><input
           name="title"
           required
           defaultValue={item.title}
           className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
         /></label>
-        <label><span className="mb-1 block text-sm font-medium text-ink">Kort sammendrag</span><textarea
+        <label><span className="mb-1 block text-sm font-medium text-ink">{t("Kort sammendrag")}</span><textarea
           name="summary"
           required
           defaultValue={item.summary}
@@ -48,8 +48,7 @@ export default async function EditNewsPage({
           className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
         /></label>
         <div>
-          <label className="mb-1 block text-sm font-medium text-ink">
-            Publiseringsdato
+          <label className="mb-1 block text-sm font-medium text-ink">{t("Publiseringsdato")}
           </label>
           <input
             name="published_at"
@@ -69,21 +68,18 @@ export default async function EditNewsPage({
         )}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className="mb-1 block text-sm font-medium text-ink">
-              Nytt bilde (valgfritt – erstatter gjeldende)
+            <label className="mb-1 block text-sm font-medium text-ink">{t("Nytt bilde (valgfritt – erstatter gjeldende)")}
             </label>
             <FileUpload name="image_url" folder="nyheter" accept="image/*" />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-ink">
-              Ny video (valgfritt – erstatter gjeldende)
+            <label className="mb-1 block text-sm font-medium text-ink">{t("Ny video (valgfritt – erstatter gjeldende)")}
             </label>
             <FileUpload name="video_url" folder="nyheter" accept="video/*" />
           </div>
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium text-ink">
-            Lenke til Facebook/Instagram-innlegg (valgfritt)
+          <label className="mb-1 block text-sm font-medium text-ink">{t("Lenke til Facebook/Instagram-innlegg (valgfritt)")}
           </label>
           <input
             name="external_link"
@@ -97,8 +93,7 @@ export default async function EditNewsPage({
         <button
           type="submit"
           className="w-fit rounded-full bg-fig px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
-        >
-          Lagre endringer
+        >{t("Lagre endringer")}
         </button>
       </form>
     </div>

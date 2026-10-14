@@ -1,11 +1,14 @@
 "use client";
 
+
+import { useT } from "@/components/admin/AdminLang";
 import PasswordInput from "@/components/PasswordInput";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export default function NyttPassordPage() {
+  const t = useT();
   const router = useRouter();
   const [ready, setReady] = useState(false);
   const [password, setPassword] = useState("");
@@ -30,7 +33,7 @@ export default function NyttPassordPage() {
     e.preventDefault();
     setError(null);
     if (password.length < 12) {
-      setError("Passordet må være minst 12 tegn.");
+      setError(t("Passordet må være minst 12 tegn."));
       return;
     }
     setLoading(true);
@@ -39,11 +42,11 @@ export default function NyttPassordPage() {
     if (error) {
       const msg = error.message.toLowerCase();
       if (msg.includes("different from the old")) {
-        setError("Det nye passordet må være forskjellig fra det gamle.");
+        setError(t("Det nye passordet må være forskjellig fra det gamle."));
       } else if (msg.includes("weak") || msg.includes("pwned") || msg.includes("password")) {
-        setError(`Passordet ble avvist: ${error.message}`);
+        setError(t("Passordet ble avvist: {error}", { error: error.message }));
       } else {
-        setError(`Kunne ikke lagre passordet (${error.message}). Be om en ny lenke og prøv igjen.`);
+        setError(t("Kunne ikke lagre passordet ({error}). Be om en ny lenke og prøv igjen.", { error: error.message }));
       }
       setLoading(false);
       return;
@@ -55,14 +58,13 @@ export default function NyttPassordPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-cream-2 px-6">
       <div className="w-full max-w-sm rounded-2xl border border-line bg-cream p-8 shadow-sm">
-        <h1 className="font-serif text-2xl font-medium text-ink">Nytt passord</h1>
-        <p className="mt-1 text-sm text-ink-soft">Mangfoldshuset Vestland</p>
+        <h1 className="font-serif text-2xl font-medium text-ink">{t("Nytt passord")}</h1>
+        <p className="mt-1 text-sm text-ink-soft">{t("Mangfoldshuset Vestland")}</p>
 
         {ready ? (
           <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
             <div>
-              <label htmlFor="password" className="mb-1 block text-sm font-medium text-ink">
-                Nytt passord (minst 12 tegn)
+              <label htmlFor="password" className="mb-1 block text-sm font-medium text-ink">{t("Nytt passord (minst 12 tegn)")}
               </label>
               <PasswordInput
                 id="password"
@@ -80,15 +82,12 @@ export default function NyttPassordPage() {
               disabled={loading}
               className="mt-2 rounded-full bg-fig px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark disabled:opacity-60"
             >
-              {loading ? "Lagrer…" : "Lagre passord"}
+              {loading ? t("Lagrer…") : t("Lagre passord")}
             </button>
           </form>
         ) : (
-          <p className="mt-6 text-sm text-ink-soft">
-            Åpne lenken fra e-posten for å velge nytt passord. Har lenken utløpt,
-            kan du be om en ny på{" "}
-            <a href="/admin/logg-inn" className="underline hover:text-ink">
-              innloggingssiden
+          <p className="mt-6 text-sm text-ink-soft">{t("Åpne lenken fra e-posten for å velge nytt passord. Har lenken utløpt, kan du be om en ny på")}{" "}
+            <a href="/admin/logg-inn" className="underline hover:text-ink">{t("innloggingssiden")}
             </a>
             .
           </p>

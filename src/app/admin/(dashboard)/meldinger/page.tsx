@@ -1,8 +1,10 @@
+import { getT } from "@/lib/admin-i18n-server";
 import { createClient } from "@/lib/supabase/server";
 import { deleteMessage } from "./actions";
 import DeleteButton from "../DeleteButton";
 
 export default async function AdminMeldingerPage() {
+  const t = await getT();
   const supabase = await createClient();
   const { data: messages } = await supabase
     .from("contact_messages")
@@ -11,12 +13,9 @@ export default async function AdminMeldingerPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-medium text-ink">
-        Kontaktmeldinger
+      <h1 className="font-serif text-2xl font-medium text-ink">{t("Kontaktmeldinger")}
       </h1>
-      <p className="mt-1 max-w-2xl text-sm text-ink-soft">
-        Meldinger fra kontaktskjemaet på nettsiden. Du får også en kopi på e-post. Svar til
-        avsenderens e-postadresse, og slett meldingen når du er ferdig.
+      <p className="mt-1 max-w-2xl text-sm text-ink-soft">{t("Meldinger fra kontaktskjemaet på nettsiden. Du får også en kopi på e-post. Svar til avsenderens e-postadresse, og slett meldingen når du er ferdig.")}
       </p>
 
       <div className="mt-8 flex flex-col gap-3">
@@ -37,7 +36,7 @@ export default async function AdminMeldingerPage() {
                   </p>
                 </div>
                 <form action={deleteMessage.bind(null, m.id)}>
-                  <DeleteButton what={`meldingen fra ${m.name}`} />
+                  <DeleteButton what={t("meldingen fra {name}", { name: m.name })} />
                 </form>
               </div>
               <p className="mt-3 text-sm leading-relaxed text-ink-soft">
@@ -46,7 +45,7 @@ export default async function AdminMeldingerPage() {
             </div>
           ))
         ) : (
-          <p className="text-sm text-ink-soft">Ingen meldinger ennå.</p>
+          <p className="text-sm text-ink-soft">{t("Ingen meldinger ennå.")}</p>
         )}
       </div>
     </div>

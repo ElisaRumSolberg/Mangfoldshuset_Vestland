@@ -1,3 +1,4 @@
+import { getT } from "@/lib/admin-i18n-server";
 import { createClient } from "@/lib/supabase/server";
 import { deleteApplication } from "./actions";
 import DeleteButton from "../DeleteButton";
@@ -9,6 +10,7 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 export default async function AdminSkjemaPage() {
+  const t = await getT();
   const supabase = await createClient();
   const { data: items } = await supabase
     .from("applications")
@@ -17,12 +19,9 @@ export default async function AdminSkjemaPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-medium text-ink">
-        Frivillige, idéer og samarbeid
+      <h1 className="font-serif text-2xl font-medium text-ink">{t("Frivillige, idéer og samarbeid")}
       </h1>
-      <p className="mt-1 max-w-2xl text-sm text-ink-soft">
-        Dette er det folk har sendt inn via «Bli med»-siden: frivillige, idéer og forslag om samarbeid. Svar dem på
-        e-post eller telefon. Slett når du er ferdig.
+      <p className="mt-1 max-w-2xl text-sm text-ink-soft">{t("Dette er det folk har sendt inn via «Bli med»-siden: frivillige, idéer og forslag om samarbeid. Svar dem på e-post eller telefon. Slett når du er ferdig.")}
       </p>
 
       <div className="mt-8 flex flex-col gap-3">
@@ -33,7 +32,7 @@ export default async function AdminSkjemaPage() {
                 <div>
                   <p className="font-serif text-base font-semibold text-ink">
                     <span className="mr-2 rounded-full bg-[#F7E9E9] px-2.5 py-0.5 font-sans text-xs font-bold text-fig">
-                      {TYPE_LABELS[a.type] ?? a.type}
+                      {t(TYPE_LABELS[a.type] ?? a.type)}
                     </span>
                     {a.name}
                   </p>
@@ -44,7 +43,7 @@ export default async function AdminSkjemaPage() {
                   </p>
                 </div>
                 <form action={deleteApplication.bind(null, a.id)}>
-                  <DeleteButton what={`søknaden fra ${a.name}`} />
+                  <DeleteButton what={t("søknaden fra {name}", { name: a.name })} />
                 </form>
               </div>
               <dl className="mt-3 flex flex-col gap-1 text-sm text-ink-soft">
@@ -60,7 +59,7 @@ export default async function AdminSkjemaPage() {
             </div>
           ))
         ) : (
-          <p className="text-sm text-ink-soft">Ingen skjema ennå.</p>
+          <p className="text-sm text-ink-soft">{t("Ingen skjema ennå.")}</p>
         )}
       </div>
     </div>

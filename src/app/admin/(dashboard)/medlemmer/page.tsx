@@ -1,3 +1,4 @@
+import { getT } from "@/lib/admin-i18n-server";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { addMember, deleteMember, markPaid } from "./actions";
@@ -37,6 +38,7 @@ export default async function AdminMedlemmerPage({
 }: {
   searchParams: Promise<{ filter?: string; q?: string }>;
 }) {
+  const t = await getT();
   const { filter = "alle", q = "" } = await searchParams;
   const query = q.trim().toLowerCase();
   const supabase = await createClient();
@@ -78,73 +80,71 @@ export default async function AdminMedlemmerPage({
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-medium text-ink">Medlemmer</h1>
+      <h1 className="font-serif text-2xl font-medium text-ink">{t("Medlemmer")}</h1>
       <p className="mt-1 text-sm text-ink-soft">
-        {members.length} medlemskap ({persons} personer) · {counts("aktiv") + counts("snart")} aktive ·{" "}
-        {counts("snart")} utløper snart · {counts("utlopt")} utløpt ·{" "}
-        {counts("ubetalt")} ikke betalt
+        {t("{members} medlemskap ({persons} personer) · {active} aktive · {soon} utløper snart · {expired} utløpt · {unpaid} ikke betalt", {
+          members: members.length,
+          persons,
+          active: counts("aktiv") + counts("snart"),
+          soon: counts("snart"),
+          expired: counts("utlopt"),
+          unpaid: counts("ubetalt"),
+        })}
       </p>
 
       {error && (
-        <p className="mt-4 rounded-lg bg-[#F7E9E9] px-4 py-3 text-sm text-fig">
-          Kunne ikke hente medlemmer: {error.message}
+        <p className="mt-4 rounded-lg bg-[#F7E9E9] px-4 py-3 text-sm text-fig">{t("Kunne ikke hente medlemmer:")}{" "}{error.message}
         </p>
       )}
 
       <details className="mt-6 rounded-2xl border border-line bg-cream p-5">
-        <summary className="cursor-pointer text-sm font-semibold text-ink">
-          Legg til eksisterende medlem
+        <summary className="cursor-pointer text-sm font-semibold text-ink">{t("Legg til eksisterende medlem")}
         </summary>
         <form action={addMember} className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <label><span className="mb-1 block text-sm font-medium text-ink">Fornavn</span><input name="first_name" required className={field} /></label>
-          <label><span className="mb-1 block text-sm font-medium text-ink">Etternavn</span><input name="last_name" required className={field} /></label>
-          <label><span className="mb-1 block text-sm font-medium text-ink">E-post</span><input name="email" type="email" required className={field} /></label>
-          <label><span className="mb-1 block text-sm font-medium text-ink">Telefon (valgfritt)</span><input name="phone" className={field} /></label>
+          <label><span className="mb-1 block text-sm font-medium text-ink">{t("Fornavn")}</span><input name="first_name" required className={field} /></label>
+          <label><span className="mb-1 block text-sm font-medium text-ink">{t("Etternavn")}</span><input name="last_name" required className={field} /></label>
+          <label><span className="mb-1 block text-sm font-medium text-ink">{t("E-post")}</span><input name="email" type="email" required className={field} /></label>
+          <label><span className="mb-1 block text-sm font-medium text-ink">{t("Telefon (valgfritt)")}</span><input name="phone" className={field} /></label>
           <label>
-            <span className="mb-1 block text-sm font-medium text-ink">Type medlemskap</span>
+            <span className="mb-1 block text-sm font-medium text-ink">{t("Type medlemskap")}</span>
             <select name="membership_type" className={field} defaultValue="enkelt">
-              <option value="enkelt">Enkelt person (100 kr)</option>
-              <option value="familie">Familie (150 kr)</option>
+              <option value="enkelt">{t("Enkelt person (100 kr)")}</option>
+              <option value="familie">{t("Familie (150 kr)")}</option>
             </select>
           </label>
-          <label className="text-sm text-ink-soft sm:col-span-2">
-            Medlemskap gjelder til (la stå tom hvis ikke betalt)
+          <label className="text-sm text-ink-soft sm:col-span-2">{t("Medlemskap gjelder til (la stå tom hvis ikke betalt)")}
             <input name="expires_at" type="date" className={`${field} mt-1 block w-full`} />
           </label>
           <button
             type="submit"
             className="w-fit rounded-full bg-fig px-5 py-2.5 text-sm font-semibold text-white hover:bg-fig-dark"
-          >
-            Legg til
+          >{t("Legg til")}
           </button>
         </form>
       </details>
 
       <form action="/admin/medlemmer" method="get" role="search" className="mt-6 flex flex-wrap gap-2">
         <input type="hidden" name="filter" value={filter} />
-        <label className="sr-only" htmlFor="q">
-          Søk etter medlem
+        <label className="sr-only" htmlFor="q">{t("Søk etter medlem")}
         </label>
         <input
           id="q"
           name="q"
           type="search"
           defaultValue={q}
-          placeholder="Søk på navn, e-post eller telefon"
+          placeholder={t("Søk på navn, e-post eller telefon")}
           className="min-h-11 w-full max-w-sm rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
         />
         <button
           type="submit"
           className="min-h-11 rounded-full bg-fig px-5 text-sm font-semibold text-white hover:bg-fig-dark"
-        >
-          Søk
+        >{t("Søk")}
         </button>
         {q && (
           <Link
             href={`/admin/medlemmer?filter=${filter}`}
             className="inline-flex min-h-11 items-center rounded-full border border-line px-5 text-sm text-ink-soft hover:text-ink"
-          >
-            Fjern søk
+          >{t("Fjern søk")}
           </Link>
         )}
       </form>
@@ -158,7 +158,7 @@ export default async function AdminMedlemmerPage({
               filter === key ? "bg-fig text-white" : "border border-line text-ink-soft hover:text-ink"
             }`}
           >
-            {text}
+            {t(text)}
           </Link>
         ))}
       </div>
@@ -174,25 +174,28 @@ export default async function AdminMedlemmerPage({
                 <p className="font-serif text-base font-semibold text-ink">
                   {m.first_name} {m.last_name}{" "}
                   <span className={`ml-2 rounded-full px-2.5 py-0.5 font-sans text-xs font-bold ${BADGE[m.status].cls}`}>
-                    {BADGE[m.status].label}
+                    {t(BADGE[m.status].label)}
                   </span>
                 </p>
                 <p className="text-sm text-ink-soft">
-                  {m.membership_type === "familie" ? "Familie (150 kr)" : "Enkelt (100 kr)"} ·{" "}
+                  {m.membership_type === "familie" ? t("Familie (150 kr)") : t("Enkelt (100 kr)")} ·{" "}
                   {m.email}
                   {m.phone ? ` · ${m.phone}` : ""}
                 </p>
                 {m.family_members?.length > 0 && (
-                  <p className="text-sm text-ink-soft">
-                    Familie: {m.family_members.map((f) => f.name).join(", ")}
+                  <p className="text-sm text-ink-soft">{t("Familie:")}{" "}{m.family_members.map((f) => f.name).join(", ")}
                   </p>
                 )}
                 <p className="text-sm text-ink-soft">
                   {m.expires_at
-                    ? `Gyldig til ${m.expires_at} (${
-                        m.days! >= 0 ? `${m.days} dager igjen` : `utløpt for ${-m.days!} dager siden`
-                      })`
-                    : "Venter på betaling (Vipps #595791)"}
+                    ? t("Gyldig til {date} ({info})", {
+                        date: m.expires_at,
+                        info:
+                          m.days! >= 0
+                            ? t("{n} dager igjen", { n: m.days! })
+                            : t("utløpt for {n} dager siden", { n: -m.days! }),
+                      })
+                    : t("Venter på betaling (Vipps #595791)")}
                 </p>
               </div>
               <div className="flex items-center gap-2">
@@ -201,18 +204,18 @@ export default async function AdminMedlemmerPage({
                     type="submit"
                     className="rounded-full bg-[#EAF0E9] px-4 py-2 text-sm font-semibold text-green-dark hover:opacity-80"
                   >
-                    {m.expires_at ? "Forny (+1 år)" : "Marker betalt"}
+                    {m.expires_at ? t("Forny (+1 år)") : t("Marker betalt")}
                   </button>
                 </form>
                 <form action={deleteMember.bind(null, m.id)}>
-                  <DeleteButton what={`${m.first_name} ${m.last_name}`} extra="Medlemmet og eventuelle familiemedlemmer fjernes fra medlemslisten." />
+                  <DeleteButton what={`${m.first_name} ${m.last_name}`} extra={t("Medlemmet og eventuelle familiemedlemmer fjernes fra medlemslisten.")} />
                 </form>
               </div>
             </div>
           ))
         ) : (
           <p className="text-sm text-ink-soft">
-            {q ? `Ingen medlemmer funnet for «${q}».` : "Ingen medlemmer her."}
+            {q ? t("Ingen medlemmer funnet for «{q}».", { q }) : t("Ingen medlemmer her.")}
           </p>
         )}
       </div>

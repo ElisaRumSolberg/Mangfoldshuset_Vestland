@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useT } from "@/components/admin/AdminLang";
 import { useState } from "react";
 import { CATEGORY_OPTIONS } from "@/lib/categories";
 
@@ -14,6 +16,7 @@ const chip = (active: boolean) =>
 // flere skjulte "categories"-felt, slik at serverhandlingen leser dem med
 // formData.getAll("categories").
 export default function CategoryPicker({ initial = [] }: { initial?: string[] }) {
+  const t = useT();
   const extra = initial.filter(
     (c) => !(CATEGORY_OPTIONS as readonly string[]).includes(c)
   );
@@ -63,7 +66,7 @@ export default function CategoryPicker({ initial = [] }: { initial?: string[] })
             <button
               type="button"
               onClick={() => removeOwn(tag)}
-              aria-label={`Fjern kategorien ${tag}`}
+              aria-label={t("Fjern kategorien {tag}", { tag })}
               className="text-ink-soft transition-colors hover:text-fig"
             >
               ✕
@@ -82,20 +85,19 @@ export default function CategoryPicker({ initial = [] }: { initial?: string[] })
               addOwn();
             }
           }}
-          placeholder="Ny kategori …"
+          placeholder={t("Ny kategori …")}
           className="flex-1 rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
         />
         <button
           type="button"
           onClick={addOwn}
           className="rounded-lg border border-line px-4 py-2 text-sm font-semibold text-ink transition-colors hover:border-fig hover:text-fig"
-        >
-          Legg til
+        >{t("Legg til")}
         </button>
       </div>
 
       {selected.length === 0 && (
-        <p className="mt-1.5 text-xs text-fig">Velg minst én kategori.</p>
+        <p className="mt-1.5 text-xs text-fig">{t("Velg minst én kategori.")}</p>
       )}
 
       {selected.map((tag) => (

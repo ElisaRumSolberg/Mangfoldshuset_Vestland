@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useT } from "@/components/admin/AdminLang";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
@@ -42,6 +44,7 @@ export default function PhotosField({
   /** Navnet på skjemafeltet (og feltet_present). Standard "photos" for bildegalleri. */
   name?: string;
 }) {
+  const t = useT();
   const [photos, setPhotos] = useState(initial);
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
@@ -52,16 +55,16 @@ export default function PhotosField({
     if (!files.length) return;
 
     setError("");
-    input.setCustomValidity("Vent til opplastingen er ferdig.");
+    input.setCustomValidity(t("Vent til opplastingen er ferdig."));
     const supabase = createClient();
     const added: string[] = [];
     const failed: string[] = [];
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      setStatus(`Laster opp bilde ${i + 1} av ${files.length} …`);
+      setStatus(t("Laster opp bilde {i} av {n} …", { i: i + 1, n: files.length }));
       if (file.size > MAX_MB * 1024 * 1024) {
-        failed.push(`${file.name}: over ${MAX_MB} MB`);
+        failed.push(t("{name}: over {max} MB", { name: file.name, max: MAX_MB }));
         continue;
       }
       const out = await shrink(file);
@@ -82,8 +85,8 @@ export default function PhotosField({
     setPhotos((p) => [...p, ...added]);
     input.value = "";
     input.setCustomValidity("");
-    setStatus(added.length ? `✓ ${added.length} bilde(r) lastet opp – husk å lagre endringene.` : "");
-    if (failed.length) setError(`Kunne ikke laste opp: ${failed.join("; ")}`);
+    setStatus(added.length ? t("✓ {n} bilde(r) lastet opp – husk å lagre endringene.", { n: added.length }) : "");
+    if (failed.length) setError(t("Kunne ikke laste opp: {list}", { list: failed.join("; ") }));
   }
 
   return (
@@ -103,8 +106,7 @@ export default function PhotosField({
                 type="button"
                 onClick={() => setPhotos((p) => p.filter((u) => u !== url))}
                 className="absolute right-1 top-1 rounded-full bg-white/95 px-2 py-0.5 text-xs font-semibold text-fig shadow"
-              >
-                Fjern
+              >{t("Fjern")}
               </button>
             </li>
           ))}

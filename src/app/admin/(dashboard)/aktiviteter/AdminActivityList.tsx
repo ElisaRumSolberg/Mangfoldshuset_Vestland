@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useT } from "@/components/admin/AdminLang";
 import { useState } from "react";
 import Link from "next/link";
 import DeleteButton from "../DeleteButton";
@@ -24,10 +26,11 @@ export default function AdminActivityList({
   items: Item[];
   deleteAction: (id: string, formData: FormData) => Promise<void>;
 }) {
+  const t = useT();
   const [start, setStart] = useState(0);
 
   if (!items.length) {
-    return <p className="text-sm text-ink-soft">Ingen aktiviteter ennå.</p>;
+    return <p className="text-sm text-ink-soft">{t("Ingen aktiviteter ennå.")}</p>;
   }
 
   const canPage = items.length > PAGE_SIZE;
@@ -52,7 +55,7 @@ export default function AdminActivityList({
             <div>
               <p className="font-serif text-base font-semibold text-ink">
                 {a.featured && (
-                  <span className="mr-1.5 text-fig" title="Fremhevet">
+                  <span className="mr-1.5 text-fig" title={t("Fremhevet")}>
                     ★
                   </span>
                 )}
@@ -68,13 +71,12 @@ export default function AdminActivityList({
             <Link
               href={`/admin/aktiviteter/${a.id}`}
               className="rounded-full border border-line px-4 py-2 text-sm text-ink-soft transition-colors hover:border-ink hover:text-ink"
-            >
-              Rediger
+            >{t("Rediger")}
             </Link>
             <form action={deleteAction.bind(null, a.id)}>
               <DeleteButton
                 what={a.title}
-                extra="Påmeldinger og bilder for aktiviteten forsvinner også."
+                extra={t("Påmeldinger og bilder for aktiviteten forsvinner også.")}
               />
             </form>
           </div>
@@ -87,13 +89,13 @@ export default function AdminActivityList({
             type="button"
             onClick={() => setStart((v) => Math.max(0, v - PAGE_SIZE))}
             disabled={start === 0}
-            aria-label="Forrige"
+            aria-label={t("Forrige")}
             className="rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-cream disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-ink"
           >
             ←
           </button>
           <span className="text-xs text-ink-soft" aria-live="polite">
-            {start + 1}–{Math.min(start + PAGE_SIZE, items.length)} av {items.length}
+            {start + 1}–{Math.min(start + PAGE_SIZE, items.length)}{t("av")}{" "}{items.length}
           </span>
           <button
             type="button"
@@ -101,7 +103,7 @@ export default function AdminActivityList({
               setStart((v) => Math.min(v + PAGE_SIZE, Math.max(0, items.length - 1)))
             }
             disabled={start + PAGE_SIZE >= items.length}
-            aria-label="Neste"
+            aria-label={t("Neste")}
             className="rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-cream disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-ink"
           >
             →

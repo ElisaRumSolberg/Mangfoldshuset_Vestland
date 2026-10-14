@@ -1,11 +1,15 @@
 "use client";
 
+
+import { useT } from "@/components/admin/AdminLang";
 import PasswordInput from "@/components/PasswordInput";
+import { LangSwitch } from "@/components/admin/AdminLang";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export default function LoggInnPage() {
+  const t = useT();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,7 +21,7 @@ export default function LoggInnPage() {
     setError(null);
     setInfo(null);
     if (!email) {
-      setError("Skriv inn e-postadressen din først.");
+      setError(t("Skriv inn e-postadressen din først."));
       return;
     }
     setLoading(true);
@@ -26,7 +30,7 @@ export default function LoggInnPage() {
       redirectTo: `${window.location.origin}/admin/nytt-passord`,
     });
     // Samme svar uansett om kontoen finnes, så siden ikke avslører hvem som er admin.
-    setInfo("Hvis adressen er registrert, har vi sendt en lenke for nytt passord.");
+    setInfo(t("Hvis adressen er registrert, har vi sendt en lenke for nytt passord."));
     setLoading(false);
   }
 
@@ -42,7 +46,7 @@ export default function LoggInnPage() {
     });
 
     if (error) {
-      setError("Feil e-post eller passord.");
+      setError(t("Feil e-post eller passord."));
       setLoading(false);
       return;
     }
@@ -53,18 +57,18 @@ export default function LoggInnPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-cream-2 px-6">
+      <div className="absolute right-4 top-4">
+        <LangSwitch />
+      </div>
       <div className="w-full max-w-sm rounded-2xl border border-line bg-cream p-8 shadow-sm">
-        <h1 className="font-serif text-2xl font-medium text-ink">
-          Admin – Logg inn
+        <h1 className="font-serif text-2xl font-medium text-ink">{t("Admin – Logg inn")}
         </h1>
-        <p className="mt-1 text-sm text-ink-soft">
-          Mangfoldshuset Vestland
+        <p className="mt-1 text-sm text-ink-soft">{t("Mangfoldshuset Vestland")}
         </p>
 
         <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
           <div>
-            <label htmlFor="email" className="mb-1 block text-sm font-medium text-ink">
-              E-post
+            <label htmlFor="email" className="mb-1 block text-sm font-medium text-ink">{t("E-post")}
             </label>
             <input
               id="email"
@@ -76,8 +80,7 @@ export default function LoggInnPage() {
             />
           </div>
           <div>
-            <label htmlFor="password" className="mb-1 block text-sm font-medium text-ink">
-              Passord
+            <label htmlFor="password" className="mb-1 block text-sm font-medium text-ink">{t("Passord")}
             </label>
             <PasswordInput
               id="password"
@@ -97,15 +100,14 @@ export default function LoggInnPage() {
             disabled={loading}
             className="mt-2 rounded-full bg-fig px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark disabled:opacity-60"
           >
-            {loading ? "Logger inn…" : "Logg inn"}
+            {loading ? t("Logger inn…") : t("Logg inn")}
           </button>
           <button
             type="button"
             onClick={handleReset}
             disabled={loading}
             className="text-center text-sm text-ink-soft underline hover:text-ink disabled:opacity-60"
-          >
-            Glemt passord?
+          >{t("Glemt passord?")}
           </button>
         </form>
       </div>

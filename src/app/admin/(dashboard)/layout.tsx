@@ -1,6 +1,8 @@
+import { getT } from "@/lib/admin-i18n-server";
 import Link from "next/link";
 import { Suspense } from "react";
 import LogoutButton from "./LogoutButton";
+import { LangSwitch } from "@/components/admin/AdminLang";
 import FlashNotice from "./FlashNotice";
 import { createClient } from "@/lib/supabase/server";
 import { roleFromUser } from "@/lib/roles";
@@ -39,6 +41,7 @@ const groups = [
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  const t = await getT();
   const supabase = await createClient();
   const {
     data: { user },
@@ -55,19 +58,20 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <header className="border-b border-line bg-cream">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
           <div>
-            <p className="font-serif text-lg font-semibold text-ink">
-              Mangfoldshuset Vestland
+            <p className="font-serif text-lg font-semibold text-ink">{t("Mangfoldshuset Vestland")}
             </p>
-            <p className="text-xs text-ink-soft">
-              Admin
-              {role === "editor" ? " · Redaktør" : ""}
-              {role === "utvalg" ? " · Utvalg" : ""}
+            <p className="text-xs text-ink-soft">{t("Admin")}
+              {role === "editor" ? ` · ${t("Redaktør")}` : ""}
+              {role === "utvalg" ? ` · ${t("Utvalg")}` : ""}
             </p>
           </div>
-          <LogoutButton />
+          <div className="flex items-center gap-3">
+            <LangSwitch />
+            <LogoutButton />
+          </div>
         </div>
         <nav
-          aria-label="Hovedmeny"
+          aria-label={t("Hovedmeny")}
           className="mx-auto flex max-w-5xl flex-wrap gap-x-6 gap-y-3 px-6 pb-3 text-sm font-medium text-ink-soft"
         >
           {groups
@@ -79,7 +83,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             .map((g) => (
               <div key={g.label} className="flex flex-wrap items-center gap-1">
                 <span className="mr-1 text-xs font-semibold uppercase tracking-wide text-ink-soft/70">
-                  {g.label}
+                  {t(g.label)}
                 </span>
                 {g.items.map((l) => (
                   <Link
@@ -87,7 +91,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                     href={l.href}
                     className="rounded-full px-4 py-2 hover:bg-ink/5 hover:text-ink"
                   >
-                    {l.label}
+                    {t(l.label)}
                   </Link>
                 ))}
               </div>

@@ -1,3 +1,4 @@
+import { getT } from "@/lib/admin-i18n-server";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { addIssue, deleteIssue } from "./actions";
@@ -5,6 +6,7 @@ import FileUpload from "../FileUpload";
 import DeleteButton from "../DeleteButton";
 
 export default async function AdminMangfoldspostenPage() {
+  const t = await getT();
   const supabase = await createClient();
   const { data: issues } = await supabase
     .from("magazine_issues")
@@ -13,22 +15,21 @@ export default async function AdminMangfoldspostenPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-medium text-ink">
-        Mangfoldsposten
+      <h1 className="font-serif text-2xl font-medium text-ink">{t("Mangfoldsposten")}
       </h1>
 
       <form
         action={addIssue}
         className="mt-8 grid grid-cols-1 gap-4 rounded-2xl border border-line bg-cream p-6 sm:grid-cols-2"
       >
-        <label><span className="mb-1 block text-sm font-medium text-ink">Tittel</span><input
+        <label><span className="mb-1 block text-sm font-medium text-ink">{t("Tittel")}</span><input
           name="title"
           required
-          placeholder="Høst 2026"
+          placeholder={t("Høst 2026")}
           className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
         /></label>
         <label>
-          <span className="mb-1 block text-sm font-medium text-ink">Utgivelsesdato</span>
+          <span className="mb-1 block text-sm font-medium text-ink">{t("Utgivelsesdato")}</span>
           <input
             name="issue_date"
             type="date"
@@ -37,26 +38,21 @@ export default async function AdminMangfoldspostenPage() {
           />
         </label>
         <div>
-          <label className="mb-1 block text-sm font-medium text-ink">
-            Forsidebilde
+          <label className="mb-1 block text-sm font-medium text-ink">{t("Forsidebilde")}
           </label>
           <FileUpload name="cover_url" folder="mangfoldsposten" accept="image/*" />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium text-ink">
-            PDF-fil av bladet
+          <label className="mb-1 block text-sm font-medium text-ink">{t("PDF-fil av bladet")}
           </label>
-          <p className="mb-1.5 text-xs text-ink-soft">
-            Store filer kan ta et minutt å laste opp. Vent til det står «✓ … er lastet opp»
-            før du trykker «Publiser utgave».
+          <p className="mb-1.5 text-xs text-ink-soft">{t("Store filer kan ta et minutt å laste opp. Vent til det står «✓ … er lastet opp» før du trykker «Publiser utgave».")}
           </p>
           <FileUpload name="pdf_url" folder="mangfoldsposten" accept="application/pdf" required />
         </div>
         <button
           type="submit"
           className="rounded-full bg-fig px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark sm:col-span-2 sm:w-fit"
-        >
-          Publiser utgave
+        >{t("Publiser utgave")}
         </button>
       </form>
 
@@ -89,14 +85,12 @@ export default async function AdminMangfoldspostenPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="rounded-full border border-line px-4 py-2 text-sm text-ink-soft transition-colors hover:border-ink hover:text-ink"
-                >
-                  Åpne PDF
+                >{t("Åpne PDF")}
                 </a>
                 <Link
                   href={`/admin/mangfoldsposten/${i.id}`}
                   className="rounded-full border border-line px-4 py-2 text-sm text-ink-soft transition-colors hover:border-ink hover:text-ink"
-                >
-                  Rediger
+                >{t("Rediger")}
                 </Link>
                 <form action={deleteIssue.bind(null, i.id)}>
                   <DeleteButton what={i.title} />
@@ -105,7 +99,7 @@ export default async function AdminMangfoldspostenPage() {
             </div>
           ))
         ) : (
-          <p className="text-sm text-ink-soft">Ingen utgaver ennå.</p>
+          <p className="text-sm text-ink-soft">{t("Ingen utgaver ennå.")}</p>
         )}
       </div>
     </div>

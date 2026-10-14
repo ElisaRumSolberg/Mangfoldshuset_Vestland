@@ -1,3 +1,4 @@
+import { getT } from "@/lib/admin-i18n-server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
@@ -9,6 +10,7 @@ export default async function EditIssuePage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const t = await getT();
   const { id } = await params;
   const supabase = await createClient();
   const { data: issue } = await supabase
@@ -26,22 +28,20 @@ export default async function EditIssuePage({
       <Link
         href="/admin/mangfoldsposten"
         className="text-sm text-ink-soft hover:text-ink"
-      >
-        ← Tilbake til Mangfoldsposten
+      >{t("← Tilbake til Mangfoldsposten")}
       </Link>
-      <h1 className="mt-3 font-serif text-2xl font-medium text-ink">
-        Rediger utgave
+      <h1 className="mt-3 font-serif text-2xl font-medium text-ink">{t("Rediger utgave")}
       </h1>
 
       <form
         action={updateWithId}
         className="mt-8 grid grid-cols-1 gap-4 rounded-2xl border border-line bg-cream p-6 sm:grid-cols-2"
       >
-        <label><span className="mb-1 block text-sm font-medium text-ink">Tittel</span><input
+        <label><span className="mb-1 block text-sm font-medium text-ink">{t("Tittel")}</span><input
           name="title"
           required
           defaultValue={issue.title}
-          placeholder="Høst 2026"
+          placeholder={t("Høst 2026")}
           className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
         /></label>
         <input
@@ -62,14 +62,12 @@ export default async function EditIssuePage({
         )}
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-ink">
-            Nytt forsidebilde (valgfritt – erstatter gjeldende)
+          <label className="mb-1 block text-sm font-medium text-ink">{t("Nytt forsidebilde (valgfritt – erstatter gjeldende)")}
           </label>
           <FileUpload name="cover_url" folder="mangfoldsposten" accept="image/*" />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium text-ink">
-            Ny PDF (valgfritt – erstatter gjeldende)
+          <label className="mb-1 block text-sm font-medium text-ink">{t("Ny PDF (valgfritt – erstatter gjeldende)")}
           </label>
           <FileUpload name="pdf_url" folder="mangfoldsposten" accept="application/pdf" />
         </div>
@@ -77,8 +75,7 @@ export default async function EditIssuePage({
         <button
           type="submit"
           className="rounded-full bg-fig px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark sm:col-span-2 sm:w-fit"
-        >
-          Lagre endringer
+        >{t("Lagre endringer")}
         </button>
       </form>
     </div>

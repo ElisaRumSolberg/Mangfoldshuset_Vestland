@@ -1,3 +1,4 @@
+import { getT } from "@/lib/admin-i18n-server";
 import { fetchSiteSettings } from "@/lib/site-settings";
 import { updateSiteSettings } from "./actions";
 import PhotosField from "../PhotosField";
@@ -14,14 +15,13 @@ const faste_lenker = [
 ];
 
 export default async function AdminInnholdPage() {
+  const t = await getT();
   const settings = await fetchSiteSettings();
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-medium text-ink">Innhold</h1>
-      <p className="mt-2 max-w-2xl text-sm text-ink-soft">
-        Bilder som vises i stedet for det fargede designet på forsiden og Om
-        oss-siden. Flere bilder glir automatisk over i hverandre.
+      <h1 className="font-serif text-2xl font-medium text-ink">{t("Innhold")}</h1>
+      <p className="mt-2 max-w-2xl text-sm text-ink-soft">{t("Bilder som vises i stedet for det fargede designet på forsiden og Om oss-siden. Flere bilder glir automatisk over i hverandre.")}
       </p>
 
       <form
@@ -29,25 +29,20 @@ export default async function AdminInnholdPage() {
         className="mt-8 grid grid-cols-1 gap-8 rounded-2xl border border-line bg-cream p-6 sm:grid-cols-2"
       >
         <div>
-          <label className="mb-1 block text-sm font-medium text-ink">
-            Forsidebilder (hjemmesiden)
+          <label className="mb-1 block text-sm font-medium text-ink">{t("Forsidebilder (hjemmesiden)")}
           </label>
           <PhotosField initial={settings.hero_images} folder="innhold" name="hero_images" />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium text-ink">
-            Bilder til Om oss
+          <label className="mb-1 block text-sm font-medium text-ink">{t("Bilder til Om oss")}
           </label>
           <PhotosField initial={settings.om_oss_images} folder="innhold" name="om_oss_images" />
         </div>
 
         <div className="sm:col-span-2">
-          <label htmlFor="vipps_link" className="mb-1 block text-sm font-medium text-ink">
-            Lenke til Vipps innsamling (valgfritt)
+          <label htmlFor="vipps_link" className="mb-1 block text-sm font-medium text-ink">{t("Lenke til Vipps innsamling (valgfritt)")}
           </label>
-          <p className="mb-2 text-xs text-ink-soft">
-            Lim inn lenken du har fått fra Vipps (den starter med https://). Da vises en
-            «Gi med Vipps»-knapp på nettsiden. Er feltet tomt, vises Vipps-nummeret i stedet.
+          <p className="mb-2 text-xs text-ink-soft">{t("Lim inn lenken du har fått fra Vipps (den starter med https://). Da vises en «Gi med Vipps»-knapp på nettsiden. Er feltet tomt, vises Vipps-nummeret i stedet.")}
           </p>
           <input
             id="vipps_link"
@@ -62,17 +57,13 @@ export default async function AdminInnholdPage() {
         <button
           type="submit"
           className="rounded-full bg-fig px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark sm:col-span-2 sm:w-fit"
-        >
-          Lagre bilder
+        >{t("Lagre bilder")}
         </button>
       </form>
 
-      <h2 className="mt-12 font-serif text-xl font-medium text-ink">
-        Lenker og QR-koder til plakater
+      <h2 className="mt-12 font-serif text-xl font-medium text-ink">{t("Lenker og QR-koder til plakater")}
       </h2>
-      <p className="mt-2 max-w-2xl text-sm text-ink-soft">
-        Ferdige lenker og QR-koder til de vanligste stedene – klar til å lime
-        inn i en plakat.
+      <p className="mt-2 max-w-2xl text-sm text-ink-soft">{t("Ferdige lenker og QR-koder til de vanligste stedene – klar til å lime inn i en plakat.")}
       </p>
       {faste_lenker.map((l) => (
         <ShareBox key={l.label} url={l.url} title={l.label} />

@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useT } from "@/components/admin/AdminLang";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { FLASH_ERR, FLASH_OK } from "@/lib/admin-flash-messages";
@@ -22,6 +24,7 @@ function lookup(code: string | null) {
  * så meldingen ikke dukker opp igjen ved oppdatering av siden.
  */
 export default function FlashNotice() {
+  const t = useT();
   const params = useSearchParams();
   const ok = params.get("ok");
   const err = params.get("feil");
@@ -45,7 +48,8 @@ export default function FlashNotice() {
     } catch {}
   }, [code]);
 
-  const notice = lookup(shown);
+  const found = lookup(shown);
+  const notice = found ? { ...found, text: t(found.text) } : null;
   if (!notice) return null;
   const isErr = notice.err;
 
@@ -65,10 +69,9 @@ export default function FlashNotice() {
       <button
         type="button"
         onClick={() => setShown(null)}
-        aria-label="Lukk meldingen"
+        aria-label={t("Lukk meldingen")}
         className="-m-2 min-h-11 min-w-11 shrink-0 rounded-full text-lg leading-none hover:opacity-70"
-      >
-        ×
+      >{t("×")}
       </button>
     </div>
   );

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import HjelpTr from "./HjelpTr";
+import { getAdminLang } from "@/lib/admin-i18n-server";
 
 export const metadata: Metadata = { title: "Hjelp – brukerveiledning" };
 
@@ -39,33 +40,11 @@ function Steps({ children }: { children: React.ReactNode }) {
   return <ol className="list-decimal space-y-1.5 pl-6">{children}</ol>;
 }
 
-export default async function HjelpPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ dil?: string }>;
-}) {
-  const { dil } = await searchParams;
-  const tr = dil === "tr";
-  const tab = "inline-flex min-h-11 items-center rounded-full px-5 text-sm font-semibold";
+export default async function HjelpPage() {
+  const tr = (await getAdminLang()) === "tr";
 
   return (
     <div className="max-w-3xl">
-      <div className="mb-6 flex gap-2" role="group" aria-label="Språk / Dil">
-        <Link
-          href="/admin/hjelp"
-          aria-current={!tr ? "true" : undefined}
-          className={`${tab} ${!tr ? "bg-fig text-white" : "bg-[#F7E9E9] text-fig"}`}
-        >
-          Norsk
-        </Link>
-        <Link
-          href="/admin/hjelp?dil=tr"
-          aria-current={tr ? "true" : undefined}
-          className={`${tab} ${tr ? "bg-fig text-white" : "bg-[#F7E9E9] text-fig"}`}
-        >
-          Türkçe
-        </Link>
-      </div>
       {tr ? (
         <HjelpTr />
       ) : (
