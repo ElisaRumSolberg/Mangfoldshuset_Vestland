@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HoneypotFields from "@/components/HoneypotFields";
+import FamilyRows from "@/components/FamilyRows";
 import { fetchSiteSettings } from "@/lib/site-settings";
 import { submitApplication, submitMembership } from "./actions";
 
@@ -92,15 +93,15 @@ function Section({
 }: {
   id: string;
   title: string;
-  intro: string;
+  intro: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
     <section id={id} className="scroll-mt-32 pb-6 pt-8">
       <h2 className="font-serif text-3xl font-medium">{title}</h2>
-      <p className="mt-3 max-w-xl text-base leading-relaxed text-ink-soft">
-        {intro}
-      </p>
+      <div className="mt-3 max-w-xl space-y-3 text-base leading-relaxed text-ink-soft">
+        {typeof intro === "string" ? <p>{intro}</p> : intro}
+      </div>
       <div className="mt-8 rounded-[18px] border border-line bg-white p-8">
         {children}
       </div>
@@ -157,7 +158,21 @@ export default async function BliMedPage({
           <Section
             id="medlem"
             title="Bli medlem"
-            intro="Som medlem støtter du arbeidet vårt og er med på å bestemme retningen. Medlemskap og frivillig arbeid er to ulike ting – du kan gjerne være begge deler."
+            intro={
+              <>
+                <p>
+                  Som medlem er du med på å gjøre Mangfoldshuset Vestland sterkere. Vi lager
+                  aktiviteter for alle i nærmiljøet – barn, unge, voksne og seniorer – og
+                  møteplassene våre er åpne uansett bakgrunn, språk og forutsetninger.
+                </p>
+                <p>
+                  Medlemskapet er et viktig bidrag til arbeidet vårt, og med det er du med på å
+                  bestemme retningen. Medlemskap og frivillig arbeid er to ulike ting – du kan
+                  gjerne være begge deler. Kontingenten er 100 kr per år for enkeltperson og
+                  150 kr for familie.
+                </p>
+              </>
+            }
           >
             {sendt === "medlem" ? (
               <Thanks text="Takk for at du melder deg inn! Betal kontingenten med Vipps til #595791, så aktiverer vi medlemskapet ditt." vippsLink={vippsLink} />
@@ -189,7 +204,17 @@ export default async function BliMedPage({
                   </div>
                   <div>
                     <label htmlFor="field-birth_date" className={label}>Fødselsdato</label>
-                    <input id="field-birth_date" type="date" name="birth_date" className={input} />
+                    <input id="field-birth_date" type="date" name="birth_date" required className={input} />
+                  </div>
+                  <div>
+                    <label htmlFor="field-gender" className={label}>Kjønn (valgfritt)</label>
+                    <select id="field-gender" name="gender" defaultValue="" className={input}>
+                      <option value="">Velg</option>
+                      <option value="kvinne">Kvinne</option>
+                      <option value="mann">Mann</option>
+                      <option value="annet">Annet</option>
+                      <option value="ukjent">Ønsker ikke å oppgi</option>
+                    </select>
                   </div>
                   <div>
                     <label htmlFor="field-phone" className={label}>Telefon</label>
@@ -208,15 +233,12 @@ export default async function BliMedPage({
                   <summary className="cursor-pointer text-sm font-medium text-ink">
                     Familiemedlemmer (kun for familiemedlemskap, opptil 5 personer til)
                   </summary>
-                  <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    {[2, 3, 4, 5, 6].map((n) => (
-                      <div key={n} className="contents">
-                        <input aria-label={`Person ${n}: navn og etternavn`} name={`fam_name_${n}`} placeholder={`Person ${n}: navn og etternavn`} className={input} />
-                        <input type="date" name={`fam_birth_${n}`} className={input} aria-label={`Person ${n}: fødselsdato`} />
-                      </div>
-                    ))}
-                  </div>
+                  <FamilyRows inputClass={input} />
                 </details>
+                <p className="text-xs leading-relaxed text-ink-soft">
+                  Vi spør om fødselsdato og kjønn fordi vi må rapportere antall medlemmer etter
+                  alder og kjønn til støtteordninger. Kjønn er valgfritt.
+                </p>
                 <div>
                   <label htmlFor="field-guardian" className={label}>Foresatt (hvis under 18 år)</label>
                   <input id="field-guardian" name="guardian" className={input} />

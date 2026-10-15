@@ -46,6 +46,7 @@ describe("membershipSchema", () => {
     last_name: "Nordmann",
     email: "kari@example.com",
     membership_type: "enkelt",
+    birth_date: "1990-05-01",
   };
 
   it("accepts a minimal valid submission", () => {

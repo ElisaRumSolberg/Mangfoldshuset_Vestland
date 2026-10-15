@@ -25,6 +25,7 @@ export async function submitMembership(formData: FormData) {
     email: formData.get("email"),
     membership_type: formData.get("membership_type"),
     birth_date: formData.get("birth_date") ?? "",
+    gender: formData.get("gender") ?? "",
     address: formData.get("address") ?? "",
     phone: formData.get("phone") ?? "",
     guardian: formData.get("guardian") ?? "",
@@ -40,7 +41,7 @@ export async function submitMembership(formData: FormData) {
   const family = familyMembersSchema.safeParse(
     membership_type === "familie"
       ? [2, 3, 4, 5, 6]
-          .map((n) => ({ name: str(`fam_name_${n}`), birth_date: str(`fam_birth_${n}`) }))
+          .map((n) => ({ name: str(`fam_name_${n}`), birth_date: str(`fam_birth_${n}`), gender: str(`fam_gender_${n}`) }))
           .filter((f) => f.name)
       : []);
   if (!family.success) return { error: "Kunne ikke sende skjemaet. Sjekk feltene og prøv igjen." };
@@ -52,7 +53,8 @@ export async function submitMembership(formData: FormData) {
       first_name,
       last_name,
       email,
-      birth_date: parsed.data.birth_date || null,
+      birth_date: parsed.data.birth_date,
+      gender: parsed.data.gender || null,
       address: parsed.data.address || null,
       phone: parsed.data.phone || null,
       guardian: parsed.data.guardian || null,

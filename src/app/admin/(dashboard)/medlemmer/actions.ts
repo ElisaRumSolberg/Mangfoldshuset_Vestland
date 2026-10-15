@@ -15,6 +15,16 @@ function plusOneYear(base: Date) {
   return d;
 }
 
+const GENDERS = ["kvinne", "mann", "annet", "ukjent"];
+
+function gender(v: FormDataEntryValue | null): string | null {
+  return typeof v === "string" && GENDERS.includes(v) ? v : null;
+}
+
+function dateOrNull(v: FormDataEntryValue | null): string | null {
+  return typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null;
+}
+
 export async function markPaid(id: string) {
   await requireOwner();
   const supabase = await createClient();
@@ -49,6 +59,7 @@ export async function addMember(formData: FormData) {
     email: formData.get("email") as string,
     phone: (formData.get("phone") as string) || null,
     birth_date: (formData.get("birth_date") as string) || null,
+    gender: gender(formData.get("gender")),
     membership_type: formData.get("membership_type") === "familie" ? "familie" : "enkelt",
     accepted_terms: true,
     paid_at: expires ? iso(new Date()) : null,
@@ -66,4 +77,48 @@ export async function deleteMember(id: string) {
   if (error) failed("/admin/medlemmer", "generell", error);
   revalidatePath("/admin/medlemmer");
   done("/admin/medlemmer", "slettet");
+}
+
+export async function updateMember(id: string, formData: FormData) {
+  await requireOwner();
+  const supabase = await createClient();
+  const back = `/admin/medlemmer/${id}`;
+
+  const text = (k: string) => {
+    const v = formData.get(k);
+    return typeof v === "string" && v.trim() ? v.trim() : null;
+  };
+  const first = text("first_name");
+  const last = text("last_name");
+  const email = text("email");
+  if (!first || !last || !email) failed(back, "mangler-felt");
+
+  const family = [1, 2, 3, 4, 5]
+    .map((n) => ({
+      name: text(`fam_name_${n}`),
+      birth_date: dateOrNull(formData.get(`fam_birth_${n}`)),
+      gender: gender(formData.get(`fam_gender_${n}`)),
+    }))
+    .filter((f) => f.name);
+
+  const { error, data } = await supabase
+    .from("members")
+    .update({
+      first_name: first,
+      last_name: last,
+      email,
+      phone: text("phone"),
+      address: text("address"),
+      birth_date: dateOrNull(formData.get("birth_date")),
+      gender: gender(formData.get("gender")),
+      membership_type: formData.get("membership_type") === "familie" ? "familie" : "enkelt",
+      family_members: family,
+    })
+    .eq("id", id)
+    .select();
+  if (error) failed(back, "generell", error);
+  if (!data || data.length === 0) failed(back, "ingen-endring");
+
+  revalidatePath("/admin/medlemmer");
+  done("/admin/medlemmer", "lagret");
 }

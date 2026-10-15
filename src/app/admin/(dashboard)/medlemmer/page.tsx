@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { addMember, deleteMember, markPaid } from "./actions";
 import DeleteButton from "../DeleteButton";
+import { ageOn, buildStats, type MemberStats } from "@/lib/member-stats";
 
 type Status = "ubetalt" | "aktiv" | "snart" | "utlopt";
 
@@ -31,16 +32,7 @@ const FILTERS: [string, string][] = [
 ];
 
 function ageOf(birth: string | null): number | null {
-  if (!birth) return null;
-  const b = new Date(birth);
-  if (Number.isNaN(b.getTime())) return null;
-  const now = new Date();
-  let age = now.getUTCFullYear() - b.getUTCFullYear();
-  const before =
-    now.getUTCMonth() < b.getUTCMonth() ||
-    (now.getUTCMonth() === b.getUTCMonth() && now.getUTCDate() < b.getUTCDate());
-  if (before) age -= 1;
-  return age >= 0 && age < 130 ? age : null;
+  return ageOn(birth, new Date().toISOString().slice(0, 10));
 }
 
 const field =
@@ -69,9 +61,10 @@ export default async function AdminMedlemmerPage({
       email: string;
       phone: string | null;
       birth_date: string | null;
+      gender: string | null;
       expires_at: string | null;
       membership_type: "enkelt" | "familie";
-      family_members: { name: string; birth_date: string | null }[];
+      family_members: { name: string; birth_date: string | null; gender?: string | null }[];
       status: Status;
       days: number | null;
     };
@@ -98,6 +91,7 @@ export default async function AdminMedlemmerPage({
       key: `${m.id}-main`,
       name: `${m.first_name} ${m.last_name}`,
       birth: m.birth_date,
+      gender: m.gender,
       relation: null as string | null,
       m,
     },
@@ -105,10 +99,67 @@ export default async function AdminMedlemmerPage({
       key: `${m.id}-fam-${i}`,
       name: f.name,
       birth: f.birth_date,
+      gender: f.gender ?? null,
       relation: `${m.first_name} ${m.last_name}`,
       m,
     })),
   ]);
+
+  const GENDER_LABEL: Record<string, string> = {
+    kvinne: "Kvinne",
+    mann: "Mann",
+    annet: "Annet",
+    ukjent: "Ønsker ikke å oppgi",
+  };
+  const genderText = (g: string | null | undefined) => (g && GENDER_LABEL[g] ? t(GENDER_LABEL[g]) : null);
+
+  // Statistikk: alle personer (hovedmedlem + familie), for betalende og for alle registrerte.
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const everyone = members.flatMap((m) => [
+    { birth: m.birth_date, gender: m.gender, status: m.status },
+    ...(m.family_members ?? []).map((f) => ({ birth: f.birth_date, gender: f.gender ?? null, status: m.status })),
+  ]);
+  const paidStats = buildStats(
+    everyone.filter((p) => p.status === "aktiv" || p.status === "snart"),
+    todayStr
+  );
+  const allStats = buildStats(everyone, todayStr);
+
+  const statsTable = (title: string, st: MemberStats) => (
+    <div className="overflow-x-auto">
+      <h3 className="font-semibold text-ink">{title}</h3>
+      <p className="mt-1 text-sm text-ink-soft">
+        {t("{n} personer totalt · under 26 år: {u} · 6–25 år: {a} · uten fødselsdato: {x}", {
+          n: st.total,
+          u: st.under26,
+          a: st.age6to25,
+          x: st.unknownAge,
+        })}
+      </p>
+      <table className="mt-2 w-full min-w-[320px] text-left text-sm">
+        <thead>
+          <tr className="border-b border-line text-ink-soft">
+            <th className="py-1.5 pr-3 font-medium">{t("Alder")}</th>
+            <th className="py-1.5 pr-3 font-medium">{t("Kvinner")}</th>
+            <th className="py-1.5 pr-3 font-medium">{t("Menn")}</th>
+            <th className="py-1.5 pr-3 font-medium">{t("Annet / ikke oppgitt")}</th>
+            <th className="py-1.5 font-medium">{t("Sum")}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {st.rows.map((r) => (
+            <tr key={r.key} className="border-b border-line/60">
+              <td className="py-1.5 pr-3">{r.key === "26+" ? t("26 år og over") : t("{g} år", { g: r.key })}</td>
+              <td className="py-1.5 pr-3">{r.kvinne}</td>
+              <td className="py-1.5 pr-3">{r.mann}</td>
+              <td className="py-1.5 pr-3">{r.annet}</td>
+              <td className="py-1.5 font-semibold">{r.total}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 
   return (
     <div>
@@ -123,6 +174,19 @@ export default async function AdminMedlemmerPage({
           unpaid: counts("ubetalt"),
         })}
       </p>
+
+      <details className="mt-6 rounded-2xl border border-line bg-cream p-5">
+        <summary className="cursor-pointer text-sm font-semibold text-ink">
+          {t("Statistikk etter alder og kjønn")}
+        </summary>
+        <div className="mt-4 grid grid-cols-1 gap-8 lg:grid-cols-2">
+          {statsTable(t("Betalende medlemmer (aktive og snart utløpende)"), paidStats)}
+          {statsTable(t("Alle registrerte"), allStats)}
+        </div>
+        <p className="mt-4 text-xs text-ink-soft">
+          {t("Teller hovedmedlem og alle familiemedlemmer. Personer uten fødselsdato er ikke med i aldersgruppene. Rediger medlemmet for å legge inn manglende opplysninger.")}
+        </p>
+      </details>
 
       {error && (
         <p className="mt-4 rounded-lg bg-[#F7E9E9] px-4 py-3 text-sm text-fig">{t("Kunne ikke hente medlemmer:")}{" "}{error.message}
@@ -147,6 +211,16 @@ export default async function AdminMedlemmerPage({
           <label>
             <span className="mb-1 block text-sm font-medium text-ink">{t("Fødselsdato (valgfritt)")}</span>
             <input name="birth_date" type="date" className={`${field} w-full`} />
+          </label>
+          <label>
+            <span className="mb-1 block text-sm font-medium text-ink">{t("Kjønn (valgfritt)")}</span>
+            <select name="gender" className={field} defaultValue="">
+              <option value="">{t("Ikke oppgitt")}</option>
+              <option value="kvinne">{t("Kvinne")}</option>
+              <option value="mann">{t("Mann")}</option>
+              <option value="annet">{t("Annet")}</option>
+              <option value="ukjent">{t("Ønsker ikke å oppgi")}</option>
+            </select>
           </label>
           <label className="text-sm text-ink-soft sm:col-span-2">{t("Medlemskap gjelder til (la stå tom hvis ikke betalt)")}
             <input name="expires_at" type="date" className={`${field} mt-1 block w-full`} />
@@ -247,6 +321,7 @@ export default async function AdminMedlemmerPage({
                         {r.birth
                           ? `${t("født {date}", { date: r.birth })}${age !== null ? ` (${t("{n} år", { n: age })})` : ""}`
                           : t("fødselsdato mangler")}
+                        {genderText(r.gender) ? ` · ${genderText(r.gender)}` : ""}
                         {!r.relation && r.m.phone ? ` · ${r.m.phone}` : ""}
                         {!r.relation ? ` · ${r.m.email}` : ""}
                       </p>
@@ -285,6 +360,7 @@ export default async function AdminMedlemmerPage({
                         ageOf(m.birth_date) !== null ? ` (${t("{n} år", { n: ageOf(m.birth_date)! })})` : ""
                       }`
                     : t("fødselsdato mangler")}
+                  {genderText(m.gender) ? ` · ${genderText(m.gender)}` : ""}
                 </p>
                 {m.family_members?.length > 0 && (
                   <div className="mt-1 text-sm text-ink-soft">
@@ -300,6 +376,7 @@ export default async function AdminMedlemmerPage({
                             {f.birth_date
                               ? ` · ${t("født {date}", { date: f.birth_date })}${age !== null ? ` (${t("{n} år", { n: age })})` : ""}`
                               : ` · ${t("fødselsdato mangler")}`}
+                            {genderText(f.gender) ? ` · ${genderText(f.gender)}` : ""}
                           </li>
                         );
                       })}
@@ -319,6 +396,12 @@ export default async function AdminMedlemmerPage({
                 </p>
               </div>
               <div className="flex items-center gap-2">
+                <Link
+                  href={`/admin/medlemmer/${m.id}`}
+                  className="min-h-11 inline-flex items-center rounded-full border border-line px-4 py-2 text-sm text-ink-soft hover:border-ink hover:text-ink"
+                >
+                  {t("Rediger")}
+                </Link>
                 <form action={markPaid.bind(null, m.id)}>
                   <button
                     type="submit"
