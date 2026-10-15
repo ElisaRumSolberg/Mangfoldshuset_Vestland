@@ -19,7 +19,7 @@ function form(values: Record<string, string>) {
   return data;
 }
 const contact = () => form({ name: "QA Ø Test", email: "qa@example.invalid", subject: "QA", message: "Synthetic message" });
-const member = () => form({ first_name: "QA", last_name: "Test", email: "qa@example.invalid", membership_type: "enkelt", birth_date: "1990-05-01", terms: "on" });
+const member = () => form({ first_name: "QA", last_name: "Test", email: "qa@example.invalid", membership_type: "enkelt", birth_date: "1990-05-01", gender: "kvinne", terms: "on" });
 const application = () => form({ type: "ide", name: "QA", email: "qa@example.invalid", ide: "Synthetic idea" });
 
 beforeEach(() => {

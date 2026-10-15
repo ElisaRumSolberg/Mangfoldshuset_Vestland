@@ -47,6 +47,7 @@ describe("membershipSchema", () => {
     email: "kari@example.com",
     membership_type: "enkelt",
     birth_date: "1990-05-01",
+    gender: "kvinne",
   };
 
   it("accepts a minimal valid submission", () => {

@@ -5,7 +5,7 @@ const email = z.string().trim().min(1, "E-post mangler").max(200).email("Ugyldig
 const phone = z.string().trim().regex(/^[+\d().\s-]{5,30}$/, "Ugyldig telefonnummer").optional().or(z.literal(""));
 const birthDateRequired = z.iso.date().refine(value => value <= new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date()), "Fødselsdato kan ikke være i fremtiden");
 export const GENDERS = ["kvinne", "mann", "annet", "ukjent"] as const;
-const gender = z.enum(GENDERS).optional().or(z.literal(""));
+const gender = z.enum(GENDERS);
 export const familyMembersSchema = z.array(z.object({ name: z.string().trim().min(1).max(200), birth_date: birthDateRequired, gender })).max(5);
 const shortText = (max: number) => z.string().trim().min(1).max(max);
 const longText = (max: number) => z.string().trim().min(1).max(max);
