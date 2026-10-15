@@ -26,12 +26,10 @@ const sections: { title: string; body: React.ReactNode }[] = [
     body: (
       <ul className="list-disc space-y-2 pl-5">
         <li>
-          <strong>Medlemsregister:</strong> navn, fødselsdato, kjønn (valgfritt),
-          adresse, e-post, telefon, eventuell foresatt, familiemedlemmer og
-          betalingsstatus. Brukes til å administrere medlemskap, sende påminnelser
-          om fornyelse og dokumentere medlemstall etter alder og kjønn overfor
-          offentlige støtteordninger. I rapportene oppgis bare antall, ikke
-          enkeltpersoner.
+          <strong>Medlemsregister:</strong> navn, fødselsdato, adresse, e-post,
+          telefon, eventuell foresatt, familiemedlemmer og betalingsstatus. Brukes
+          til å administrere medlemskap, sende påminnelser om fornyelse og
+          dokumentere medlemstall overfor offentlige støtteordninger.
         </li>
         <li>
           <strong>Kontaktskjema:</strong> navn, e-post, tema og melding. Brukes til

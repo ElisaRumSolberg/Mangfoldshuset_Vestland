@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HoneypotFields from "@/components/HoneypotFields";
 import FamilyRows from "@/components/FamilyRows";
+import { COLLECT_GENDER } from "@/lib/member-form-config";
 import { fetchSiteSettings } from "@/lib/site-settings";
 import { submitApplication, submitMembership } from "./actions";
 
@@ -206,16 +207,18 @@ export default async function BliMedPage({
                     <label htmlFor="field-birth_date" className={label}>Fødselsdato</label>
                     <input id="field-birth_date" type="date" name="birth_date" required className={input} />
                   </div>
-                  <div>
-                    <label htmlFor="field-gender" className={label}>Kjønn (valgfritt)</label>
-                    <select id="field-gender" name="gender" defaultValue="" className={input}>
-                      <option value="">Velg</option>
-                      <option value="kvinne">Kvinne</option>
-                      <option value="mann">Mann</option>
-                      <option value="annet">Annet</option>
-                      <option value="ukjent">Ønsker ikke å oppgi</option>
-                    </select>
-                  </div>
+                  {COLLECT_GENDER && (
+                    <div>
+                      <label htmlFor="field-gender" className={label}>Kjønn (valgfritt)</label>
+                      <select id="field-gender" name="gender" defaultValue="" className={input}>
+                        <option value="">Velg</option>
+                        <option value="kvinne">Kvinne</option>
+                        <option value="mann">Mann</option>
+                        <option value="annet">Annet</option>
+                        <option value="ukjent">Ønsker ikke å oppgi</option>
+                      </select>
+                    </div>
+                  )}
                   <div>
                     <label htmlFor="field-phone" className={label}>Telefon</label>
                     <input id="field-phone" name="phone" className={input} />
@@ -233,11 +236,12 @@ export default async function BliMedPage({
                   <summary className="cursor-pointer text-sm font-medium text-ink">
                     Familiemedlemmer (kun for familiemedlemskap, opptil 5 personer til)
                   </summary>
-                  <FamilyRows inputClass={input} />
+                  <FamilyRows inputClass={input} showGender={COLLECT_GENDER} />
                 </details>
                 <p className="text-xs leading-relaxed text-ink-soft">
-                  Vi spør om fødselsdato og kjønn fordi vi må rapportere antall medlemmer etter
-                  alder og kjønn til støtteordninger. Kjønn er valgfritt.
+                  {COLLECT_GENDER
+                    ? "Vi spør om fødselsdato og kjønn fordi vi må rapportere antall medlemmer etter alder og kjønn til støtteordninger. Kjønn er valgfritt."
+                    : "Vi spør om fødselsdato fordi vi må rapportere antall medlemmer etter alder til støtteordninger."}
                 </p>
                 <div>
                   <label htmlFor="field-guardian" className={label}>Foresatt (hvis under 18 år)</label>
