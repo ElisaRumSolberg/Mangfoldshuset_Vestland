@@ -86,6 +86,10 @@ export default async function HjelpPage() {
           nye passordet må være et annet enn det gamle.
         </p>
         <p>
+          <strong>Språk:</strong> Knappene NO og TR øverst til høyre bytter mellom norsk og
+          tyrkisk i admin. Nettsiden for besøkende er alltid på norsk.
+        </p>
+        <p>
           Du ser bare de delene du har tilgang til. «Redaktør» kan endre innhold. «Utvalg» kan
           bare redigere sitt eget utvalg.
         </p>
@@ -226,6 +230,29 @@ export default async function HjelpPage() {
           <li>
             <strong>Oversikt</strong> (første side) viser medlemmer som må følges opp, med
             knapper for å ringe eller sende e-post.
+          </li>
+          <li>
+            <strong>Søk</strong> finner medlemmer på navn, e-post, telefon eller navn på
+            familiemedlem.
+          </li>
+          <li>
+            <strong>Visning:</strong> «Medlemskap» viser ett kort per medlemskap (med
+            familiemedlemmer under). «Hver person for seg» viser alle personer hver for seg,
+            med alder og kjønn.
+          </li>
+          <li>
+            <strong>Rediger</strong> lar deg rette navn, kontaktinformasjon, fødselsdato, kjønn
+            og familiemedlemmer. Bruk den for eldre medlemmer som mangler fødselsdato eller
+            kjønn.
+          </li>
+          <li>
+            <strong>Statistikk etter alder og kjønn</strong> øverst viser antall i hver
+            aldersgruppe, hvor mange som er under 26 år og hvor mange som er 6–25 år. Brukes til
+            rapporter til støtteordninger.
+          </li>
+          <li>
+            Nye medlemmer som ikke har betalt får automatisk en påminnelse på e-post etter 3 og
+            14 dager.
           </li>
         </ul>
       </Section>

@@ -64,6 +64,10 @@ export default function HjelpTr() {
           seç. Yeni şifre eskisinden farklı olmalı.
         </p>
         <p>
+          <strong>Dil:</strong> Sağ üstteki NO ve TR düğmeleri yönetim panelini Norveççe veya
+          Türkçe yapar. Ziyaretçilerin gördüğü site her zaman Norveççedir.
+        </p>
+        <p>
           Sadece yetkin olan bölümleri görürsün. «Redaktør» içerik düzenleyebilir. «Utvalg» sadece
           kendi komitesini düzenleyebilir.
         </p>
@@ -207,6 +211,26 @@ export default function HjelpTr() {
           <li>
             <strong>Oversikt</strong> (ilk sayfa) takip edilmesi gereken üyeleri gösterir; ara veya
             e-posta gönder düğmeleri vardır.
+          </li>
+          <li>
+            <strong>Arama</strong> ad, e-posta, telefon veya aile üyesi adına göre üye bulur.
+          </li>
+          <li>
+            <strong>Görünüm:</strong> «Medlemskap» her üyelik için bir kart gösterir (aile üyeleri
+            altında). «Hver person for seg» herkesi tek tek, yaşı ve cinsiyetiyle gösterir.
+          </li>
+          <li>
+            <strong>Rediger</strong> ad, iletişim bilgileri, doğum tarihi, cinsiyet ve aile
+            üyelerini düzeltmeni sağlar. Doğum tarihi veya cinsiyeti eksik eski üyeler için
+            kullan.
+          </li>
+          <li>
+            Üstteki <strong>yaşa ve cinsiyete göre istatistik</strong> her yaş grubundaki sayıyı,
+            26 yaş altı ve 6–25 yaş arası kişi sayısını gösterir. Destek kurumlarına rapor için
+            kullanılır.
+          </li>
+          <li>
+            Ödeme yapmamış yeni üyelere 3. ve 14. günde otomatik e-posta hatırlatması gider.
           </li>
         </ul>
       </Section>
