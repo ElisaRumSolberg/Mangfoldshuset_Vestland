@@ -5,7 +5,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 // Read-only, serial browsing. No form submissions, authentication attempts,
 // API mutation, cron invocation, third-party analytics or member data queries.
 const routes = ["/", "/om-oss", "/aktiviteter", "/utvalg", "/nyheter", "/mangfoldsposten", "/kontakt", "/bli-med"];
-const output = process.env.QA_OUTPUT ?? "docs/qa";
+const output = process.env.QA_OUTPUT ?? "test-results/qa";
 for (const path of routes) {
   test(`public page ${path}`, async ({ page, baseURL }) => {
     let blockedWrites = 0;

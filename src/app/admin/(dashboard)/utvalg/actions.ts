@@ -25,7 +25,7 @@ function fields(formData: FormData) {
     description: formText(formData, "description") ?? "",
     activity_match: formText(formData, "activity_match"),
     external_link: formUrl(formData, "external_link"),
-    instagram_link: formText(formData, "instagram_link"),
+    instagram_link: formUrl(formData, "instagram_link"),
     contact: formText(formData, "contact"),
     active: formData.get("active") === "on",
     // Fargevelgeren har alltid en verdi; vi lagrer den bare når kutucuken er huket av.

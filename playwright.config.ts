@@ -5,7 +5,7 @@ export default defineConfig({
   workers: 1,
   timeout: 120_000,
   retries: 0,
-  reporter: [["list"], ["json", { outputFile: `${process.env.QA_OUTPUT ?? "docs/qa"}/browser-results.json` }]],
+  reporter: [["list"], ["json", { outputFile: `${process.env.QA_OUTPUT ?? "test-results/qa"}/browser-results.json` }]],
   use: {
     baseURL: process.env.QA_BASE_URL ?? "http://localhost:3300",
     browserName: "chromium",

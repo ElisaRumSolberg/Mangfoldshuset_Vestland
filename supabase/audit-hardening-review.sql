@@ -1,4 +1,4 @@
--- REVIEW/STAGING ONLY: not applied by this audit.
+-- APPLIED to production (Oct 2026). Current admin_role() definition.
 -- Before rollout, explicitly assign owner/editor/utvalg in app_metadata to
 -- legitimate administrators. Missing roles will NO LONGER grant owner access.
 -- Apply after the historical roles-rls-fix.sql and roles-rls-hotfix.sql files.

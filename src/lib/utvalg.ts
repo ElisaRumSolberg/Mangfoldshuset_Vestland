@@ -19,6 +19,11 @@ export type Utvalg = {
   accent: string | null;
 };
 
+/** Bare http(s)-adresser slippes gjennom, så en lenke aldri kan bli «javascript:». */
+function httpUrlOrNull(v: unknown): string | null {
+  return typeof v === "string" && /^https?:\/\//i.test(v) ? v : null;
+}
+
 export function toUtvalg(r: Record<string, unknown>): Utvalg {
   return {
     id: r.id as string,
@@ -27,7 +32,7 @@ export function toUtvalg(r: Record<string, unknown>): Utvalg {
     description: (r.description as string) ?? "",
     activity_match: (r.activity_match as string | null) ?? null,
     external_link: (r.external_link as string | null) ?? null,
-    instagram_link: (r.instagram_link as string | null) ?? null,
+    instagram_link: httpUrlOrNull(r.instagram_link),
     contact: (r.contact as string | null) ?? null,
     cover_images: (r.cover_images as string[] | null) ?? [],
     photos: (r.photos as string[] | null) ?? [],

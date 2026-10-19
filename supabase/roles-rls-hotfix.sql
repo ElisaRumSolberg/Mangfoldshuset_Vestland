@@ -1,4 +1,6 @@
--- AKUTT RETTELSE: admin_role() ga "owner" til HELT ANONYME forespørsler
+-- SUPERSEDED – KJØR IKKE. Bruk audit-hardening-review.sql. Denne gir «owner» når rolle mangler.
+--
+-- AKUTT RETTELSE (historisk): admin_role() ga "owner" til HELT ANONYME forespørsler
 -- (ingen innlogging i det hele tatt), fordi den bare sjekket om
 -- app_metadata->>'role' manglet — noe som også er tilfelle for den
 -- offentlige anon-nøkkelen uten sesjon. Dette gjorde at HVEM SOM HELST på
