@@ -1,5 +1,7 @@
 # Mangfoldshuset Vestland
 
+[![Tests](https://github.com/ElisaRumSolberg/Mangfoldshuset_Vestland/actions/workflows/test.yml/badge.svg)](https://github.com/ElisaRumSolberg/Mangfoldshuset_Vestland/actions/workflows/test.yml)
+
 Website and admin panel for **Mangfoldshuset Vestland**, a non-profit community organisation in Bergen, Norway. The site presents activities, committees and news to the public, takes membership applications, and gives volunteers an admin area to run everything without a developer.
 
 **Live:** <https://www.mangfoldshusetvestland.no>
