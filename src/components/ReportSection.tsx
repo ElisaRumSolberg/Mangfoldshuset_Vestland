@@ -48,6 +48,20 @@ export default function ReportSection({
     </p>
   );
 
+  const quotesList =
+    quotes.length > 0 ? (
+      <ul className="mt-5 flex flex-col gap-3">
+        {quotes.map((q, i) => (
+          <li
+            key={i}
+            className="rounded-xl border border-line bg-white px-5 py-3 font-serif text-base italic text-ink"
+          >
+            «{q}»
+          </li>
+        ))}
+      </ul>
+    ) : null;
+
   return (
     <section className="mt-14 border-t border-line pt-10">
       {hasReport && (
@@ -70,18 +84,7 @@ export default function ReportSection({
                   {summary}
                 </p>
               )}
-              {quotes.length > 0 && (
-                <ul className="mt-5 flex flex-col gap-3">
-                  {quotes.map((q, i) => (
-                    <li
-                      key={i}
-                      className="rounded-xl border border-line bg-white px-5 py-3 font-serif text-base italic text-ink"
-                    >
-                      «{q}»
-                    </li>
-                  ))}
-                </ul>
-              )}
+              {sidePhotos.length === 0 && quotesList}
             </div>
           </div>
           {sidePhotos.length > 0 && (
@@ -90,6 +93,7 @@ export default function ReportSection({
                 <ActivityMedia images={sidePhotos} title={title} className="aspect-[4/3] w-full lg:aspect-[5/4]" />
               </div>
               {consent}
+              {quotesList}
             </div>
           )}
           </div>
