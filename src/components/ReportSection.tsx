@@ -54,7 +54,7 @@ export default function ReportSection({
         <>
           <h2 className="font-serif text-2xl font-medium">{heading}</h2>
 
-          <div className={sidePhotos.length > 0 ? "mt-6 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_minmax(0,26rem)] lg:items-start" : ""}>
+          <div className={sidePhotos.length > 0 ? "mt-6 grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-start" : ""}>
           <div className={`mt-6 grid grid-cols-1 gap-8 ${sidePhotos.length > 0 ? "" : "md:grid-cols-[auto_1fr]"}`}>
             {participants !== null && (
               <div className="flex h-32 w-32 shrink-0 flex-col items-center justify-center rounded-full bg-green text-white">
@@ -87,7 +87,7 @@ export default function ReportSection({
           {sidePhotos.length > 0 && (
             <div>
               <div className="mt-6 overflow-hidden rounded-[18px] border border-line bg-cream-2 lg:mt-6">
-                <ActivityMedia images={sidePhotos} title={title} className="aspect-[4/3] w-full" />
+                <ActivityMedia images={sidePhotos} title={title} className="aspect-[4/3] w-full lg:aspect-[5/4]" />
               </div>
               {consent}
             </div>
