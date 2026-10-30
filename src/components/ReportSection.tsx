@@ -1,5 +1,6 @@
 import Link from "next/link";
 import PhotoGallery from "./PhotoGallery";
+import ActivityMedia from "./ActivityMedia";
 
 const CONTACT_EMAIL = "post@mangfoldshusetvestland.no";
 
@@ -11,6 +12,7 @@ export default function ReportSection({
   summary,
   feedback,
   photos,
+  sidePhotos = [],
   title,
 }: {
   heading: string;
@@ -19,6 +21,8 @@ export default function ReportSection({
   summary: string | null;
   feedback: string | null;
   photos: string[];
+  /** Bilder som glir forbi ved siden av oppsummeringen (i stedet for et galleri under). */
+  sidePhotos?: string[];
   title: string;
 }) {
   const quotes = (feedback ?? "")
@@ -27,7 +31,22 @@ export default function ReportSection({
     .filter(Boolean);
   const hasReport = participants !== null || !!summary || quotes.length > 0;
 
-  if (!hasReport && photos.length === 0) return null;
+  if (!hasReport && photos.length === 0 && sidePhotos.length === 0) return null;
+
+  const consent = (
+    <p className="mt-4 max-w-2xl text-xs leading-relaxed text-ink-soft">
+      Vi publiserer bare bilder med samtykke. Ønsker du at et bilde av deg eller barnet ditt
+      fjernes, send en e-post til{" "}
+      <a className="underline" href={`mailto:${CONTACT_EMAIL}`}>
+        {CONTACT_EMAIL}
+      </a>
+      , så fjerner vi det raskt. Les mer i{" "}
+      <Link className="underline" href="/personvern">
+        personvernerklæringen
+      </Link>
+      .
+    </p>
+  );
 
   return (
     <section className="mt-14 border-t border-line pt-10">
@@ -35,7 +54,8 @@ export default function ReportSection({
         <>
           <h2 className="font-serif text-2xl font-medium">{heading}</h2>
 
-          <div className="mt-6 grid grid-cols-1 gap-8 md:grid-cols-[auto_1fr]">
+          <div className={sidePhotos.length > 0 ? "mt-6 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_minmax(0,26rem)] lg:items-start" : ""}>
+          <div className={`mt-6 grid grid-cols-1 gap-8 ${sidePhotos.length > 0 ? "" : "md:grid-cols-[auto_1fr]"}`}>
             {participants !== null && (
               <div className="flex h-32 w-32 shrink-0 flex-col items-center justify-center rounded-full bg-green text-white">
                 <span className="font-serif text-3xl font-bold">{participants}</span>
@@ -64,6 +84,15 @@ export default function ReportSection({
               )}
             </div>
           </div>
+          {sidePhotos.length > 0 && (
+            <div>
+              <div className="mt-6 overflow-hidden rounded-[18px] border border-line bg-cream-2 lg:mt-6">
+                <ActivityMedia images={sidePhotos} title={title} className="aspect-[4/3] w-full" />
+              </div>
+              {consent}
+            </div>
+          )}
+          </div>
         </>
       )}
 
@@ -73,18 +102,7 @@ export default function ReportSection({
           <div className="mt-6">
             <PhotoGallery photos={photos} title={title} />
           </div>
-          <p className="mt-4 max-w-2xl text-xs leading-relaxed text-ink-soft">
-            Vi publiserer bare bilder med samtykke. Ønsker du at et bilde av deg eller barnet ditt
-            fjernes, send en e-post til{" "}
-            <a className="underline" href={`mailto:${CONTACT_EMAIL}`}>
-              {CONTACT_EMAIL}
-            </a>
-            , så fjerner vi det raskt. Les mer i{" "}
-            <Link className="underline" href="/personvern">
-              personvernerklæringen
-            </Link>
-            .
-          </p>
+          {consent}
         </div>
       )}
     </section>

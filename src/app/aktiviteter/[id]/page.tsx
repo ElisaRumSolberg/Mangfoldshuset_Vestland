@@ -43,10 +43,13 @@ export default async function ActivityPage({ params, searchParams }: Props) {
 
   const isPast = isActivityPast(a, todayOslo());
   const photos: string[] = a.photos ?? [];
-  const galleryImages: MediaImage[] = photos.map((src) => ({ src, contain: false }));
-  if (a.image_url && !photos.includes(a.image_url)) {
-    galleryImages.unshift({ src: a.image_url, contain: true });
-  }
+  // Har aktiviteten en plakat, vises bare plakaten øverst, og bildene glir forbi ved siden av
+  // oppsummeringen i «Slik gikk det». Uten plakat vises bildene øverst, som før.
+  const hasPoster = !!a.image_url;
+  const sidePhotos = hasPoster ? photos.filter((src) => src !== a.image_url) : [];
+  const galleryImages: MediaImage[] = hasPoster
+    ? [{ src: a.image_url as string, contain: true }]
+    : photos.map((src) => ({ src, contain: false }));
 
   return (
     <>
@@ -253,6 +256,7 @@ export default async function ActivityPage({ params, searchParams }: Props) {
           summary={a.summary ?? null}
           feedback={a.feedback ?? null}
           photos={[]}
+          sidePhotos={sidePhotos}
           title={a.title}
         />
       </main>
