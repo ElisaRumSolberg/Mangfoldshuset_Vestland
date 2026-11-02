@@ -50,4 +50,5 @@ export const activitySignupSchema = z.object({
   phone,
   participants: z.coerce.number().int().min(1).max(50),
   comment: z.string().trim().max(1000).optional().or(z.literal("")),
+  photo_consent: z.boolean().default(false),
 });

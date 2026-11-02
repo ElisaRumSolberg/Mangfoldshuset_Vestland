@@ -93,7 +93,7 @@ export default async function ActivityPage({ params, searchParams }: Props) {
               {a.event_time && (
                 <div>
                   <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Klokkeslett</dt>
-                  <dd className="mt-0.5 text-ink">{a.event_time}</dd>
+                  <dd className="mt-0.5 whitespace-pre-line text-ink">{a.event_time}</dd>
                 </div>
               )}
               <div>
@@ -238,6 +238,24 @@ export default async function ActivityPage({ params, searchParams }: Props) {
                   placeholder="Kommentar (valgfritt)"
                   className="rounded-lg border border-line bg-white px-3 py-2.5 text-sm outline-none focus:border-fig sm:col-span-2"
                 />
+                <label className="flex items-start gap-3 text-sm leading-relaxed text-ink-soft sm:col-span-2">
+                  <input
+                    type="checkbox"
+                    name="photo_consent"
+                    className="mt-1 h-5 w-5 shrink-0 accent-[#9C3B44]"
+                  />
+                  <span>
+                    <strong className="font-semibold text-ink">Bildesamtykke (valgfritt):</strong> Jeg
+                    samtykker til at det kan tas bilder av meg eller barnet mitt under arrangementet,
+                    og at bildene kan publiseres på nettsiden og i sosiale medier til Mangfoldshuset
+                    Vestland. For barn under 18 år gir foresatt samtykket. Du kan når som helst trekke
+                    samtykket tilbake ved å sende e-post til{" "}
+                    <a className="underline" href="mailto:post@mangfoldshusetvestland.no">
+                      post@mangfoldshusetvestland.no
+                    </a>
+                    . Krysser du ikke av, publiserer vi ikke bilder av deg.
+                  </span>
+                </label>
                 <button
                   type="submit"
                   className="rounded-full bg-fig px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-fig-dark sm:col-span-2 sm:w-fit"

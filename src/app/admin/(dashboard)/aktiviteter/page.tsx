@@ -11,7 +11,18 @@ export default async function AdminAktiviteterPage() {
   const { data: activities } = await supabase
     .from("activities")
     .select("*")
-    .order("event_date", { ascending: true });
+    .order("event_date", { ascending: false });
+
+  // Antall påmeldinger per aktivitet (nyeste aktiviteter øverst, med påmeldinger synlig i listen).
+  const { data: signupRows } = await supabase
+    .from("activity_signups")
+    .select("activity_id, participants");
+  const signups: Record<string, { count: number; people: number }> = {};
+  for (const r of signupRows ?? []) {
+    const s = (signups[r.activity_id] ??= { count: 0, people: 0 });
+    s.count += 1;
+    s.people += r.participants ?? 1;
+  }
 
   return (
     <div>
@@ -49,11 +60,15 @@ export default async function AdminAktiviteterPage() {
             className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
           />
         </div>
-        <label><span className="mb-1 block text-sm font-medium text-ink">{t("Klokkeslett (valgfritt)")}</span><input
+        <label><span className="mb-1 block text-sm font-medium text-ink">{t("Klokkeslett (valgfritt)")}</span>
+          <textarea
           name="event_time"
+          rows={2}
           placeholder="18.00–20.00"
           className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-        /></label>
+        />
+          <span className="mt-1 block text-xs text-ink-soft">{t("Flere tidspunkt? Skriv ett per linje.")}</span>
+        </label>
         <label><span className="mb-1 block text-sm font-medium text-ink">{t("Sted")}</span><input
           name="place"
           required
@@ -143,7 +158,7 @@ export default async function AdminAktiviteterPage() {
       </form>
 
       <div className="mt-8">
-        <AdminActivityList items={activities ?? []} deleteAction={deleteActivity} />
+        <AdminActivityList items={activities ?? []} signups={signups} deleteAction={deleteActivity} />
       </div>
     </div>
   );

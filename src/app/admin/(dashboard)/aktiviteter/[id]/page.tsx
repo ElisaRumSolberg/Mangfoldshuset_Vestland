@@ -77,12 +77,16 @@ export default async function EditActivityPage({
             className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
           />
         </div>
-        <label><span className="mb-1 block text-sm font-medium text-ink">{t("Klokkeslett (valgfritt)")}</span><input
+        <label><span className="mb-1 block text-sm font-medium text-ink">{t("Klokkeslett (valgfritt)")}</span>
+          <textarea
           name="event_time"
+          rows={2}
           defaultValue={activity.event_time ?? ""}
           placeholder="18.00–20.00"
           className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-        /></label>
+        />
+          <span className="mt-1 block text-xs text-ink-soft">{t("Flere tidspunkt? Skriv ett per linje.")}</span>
+        </label>
         <label><span className="mb-1 block text-sm font-medium text-ink">{t("Sted")}</span><input
           name="place"
           required
@@ -240,7 +244,7 @@ export default async function EditActivityPage({
         </button>
       </form>
 
-      <div className="mt-10">
+      <div id="pameldte" className="mt-10 scroll-mt-6">
         <h2 className="font-serif text-xl font-medium text-ink">{t("Påmeldte")}{" "}{signups && signups.length > 0 && t("({n} – {p} personer)", { n: signups.length, p: totalParticipants })}
         </h2>
         {signups && signups.length > 0 ? (
@@ -265,6 +269,15 @@ export default async function EditActivityPage({
                   {s.comment && (
                     <p className="mt-1 text-sm text-ink-soft">«{s.comment}»</p>
                   )}
+                  <p className="mt-1 text-sm">
+                    <span
+                      className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
+                        s.photo_consent ? "bg-[#EAF0E9] text-green-dark" : "bg-[#F5EAD5] text-[#93701F]"
+                      }`}
+                    >
+                      {s.photo_consent ? t("Bildesamtykke: ja") : t("Bildesamtykke: nei – ikke publiser bilder")}
+                    </span>
+                  </p>
                 </div>
                 <form action={deleteSignup.bind(null, id, s.id)}>
                   <DeleteButton what={t("påmeldingen fra {name}", { name: s.name })} />

@@ -20,6 +20,12 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        // Kort adresse til trykte plakater og lenker: mangfoldshusetvestland.no/min-historie
+        source: "/min-historie",
+        destination: "/aktiviteter/cc4d86bf-d97c-4e82-9d19-4819000d36cc",
+        permanent: false,
+      },
+      {
         // Mangfoldsposten flyttet ut av Nyheter til sin egen adresse.
         source: "/nyheter/mangfoldsposten",
         destination: "/mangfoldsposten",

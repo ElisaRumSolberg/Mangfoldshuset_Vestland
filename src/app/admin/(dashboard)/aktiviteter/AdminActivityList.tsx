@@ -15,15 +15,18 @@ type Item = {
   place: string;
   categories: string[] | null;
   featured: boolean | null;
+  registration_open: boolean | null;
 };
 
 const PAGE_SIZE = 10;
 
 export default function AdminActivityList({
   items,
+  signups = {},
   deleteAction,
 }: {
   items: Item[];
+  signups?: Record<string, { count: number; people: number }>;
   deleteAction: (id: string, formData: FormData) => Promise<void>;
 }) {
   const t = useT();
@@ -65,6 +68,18 @@ export default function AdminActivityList({
               <p className="text-sm text-ink-soft">
                 {a.event_date} · {a.place} · {(a.categories ?? []).join(", ")}
               </p>
+              {(a.registration_open || signups[a.id]) && (
+                <p className="mt-1 text-sm">
+                  <Link
+                    href={`/admin/aktiviteter/${a.id}#pameldte`}
+                    className="inline-flex min-h-9 items-center rounded-full bg-[#EAF0E9] px-3 font-semibold text-green-dark hover:opacity-80"
+                  >
+                    {signups[a.id]
+                      ? t("{n} påmeldte ({p} personer)", { n: signups[a.id].count, p: signups[a.id].people })
+                      : t("Påmelding åpen – ingen påmeldte ennå")}
+                  </Link>
+                </p>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-2">
