@@ -137,14 +137,24 @@ export default async function ProgramPage({ params, searchParams }: Props) {
                 <h2 className="font-serif text-xl font-medium">Ukens suppe</h2>
                 <ul className="mt-3 flex flex-col gap-4">
                   {menuRows.map((r) => (
-                    <li key={r.iso}>
-                      <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
-                        Uke {r.week} · {shortDate(r.iso)}
-                      </p>
-                      <p className="mt-0.5 text-lg font-semibold text-ink">{r.entry.name}</p>
-                      {r.entry.ingredients && (
-                        <p className="text-base text-ink-soft">Inneholder: {r.entry.ingredients}</p>
+                    <li key={r.iso} className="flex flex-col gap-3 sm:flex-row sm:items-start">
+                      {p.menu_image_url && p.menu_image_week === r.week && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={p.menu_image_url}
+                          alt={`${r.entry.name}, uke ${r.week}`}
+                          className="aspect-[3/2] w-full rounded-xl border border-line object-cover sm:w-48"
+                        />
                       )}
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
+                          Uke {r.week} · {shortDate(r.iso)}
+                        </p>
+                        <p className="mt-0.5 text-lg font-semibold text-ink">{r.entry.name}</p>
+                        {r.entry.ingredients && (
+                          <p className="text-base text-ink-soft">Inneholder: {r.entry.ingredients}</p>
+                        )}
+                      </div>
                     </li>
                   ))}
                 </ul>

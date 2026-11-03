@@ -76,6 +76,10 @@ export async function updateProgram(id: string, formData: FormData) {
   const imageUrl = formUrl(formData, "image_url");
   if (imageUrl) updates.image_url = imageUrl;
   else if (formData.get("remove_image") === "on") updates.image_url = null;
+  const menuImage = formUrl(formData, "menu_image_url");
+  if (menuImage) updates.menu_image_url = menuImage;
+  else if (formData.get("remove_menu_image") === "on") updates.menu_image_url = null;
+  updates.menu_image_week = formInt(formData, "menu_image_week");
 
   const { error, data } = await supabase
     .from("recurring_programs")

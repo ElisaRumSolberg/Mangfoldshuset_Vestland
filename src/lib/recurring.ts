@@ -33,6 +33,8 @@ export type Program = {
   price: string | null;
   registration_open: boolean;
   menu: string | null; // ukemeny: én linje per uke, f.eks. «45: Linsesuppe – røde linser, gulrot»
+  menu_image_url: string | null; // bilde av ukens rett …
+  menu_image_week: number | null; // … som bare vises i denne uken
 };
 
 const DAYS = ["søndag", "mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag"];
@@ -172,6 +174,8 @@ export function toProgram(r: Record<string, unknown>): Program {
     price: (r.price as string | null) ?? null,
     registration_open: (r.registration_open as boolean | null) ?? false,
     menu: (r.menu as string | null) ?? null,
+    menu_image_url: (r.menu_image_url as string | null) ?? null,
+    menu_image_week: (r.menu_image_week as number | null) ?? null,
   };
 }
 

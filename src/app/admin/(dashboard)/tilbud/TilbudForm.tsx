@@ -152,6 +152,31 @@ export default async function TilbudForm({
           className={field}
         />
       </div>
+      {program && (
+        <div className="sm:col-span-2">
+          <label className={label}>{t("Bilde av ukens rett (valgfritt – vises bare i den uken du velger)")}</label>
+          {program.menu_image_url && (
+            <div className="mb-2 flex items-center gap-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={program.menu_image_url} alt="" className="h-20 rounded-lg object-cover" />
+              <label className="flex items-center gap-2 text-sm text-fig">
+                <input type="checkbox" name="remove_menu_image" className="h-4 w-4 accent-fig" />{t("Fjern bildet")}
+              </label>
+            </div>
+          )}
+          <FileUpload name="menu_image_url" folder="tilbud" accept="image/*" />
+          <label className="mt-3 block text-sm font-medium text-ink">{t("Gjelder uke nr.")}</label>
+          <input
+            name="menu_image_week"
+            type="number"
+            min={1}
+            max={53}
+            defaultValue={program.menu_image_week ?? ""}
+            placeholder="45"
+            className={`${field} sm:w-32`}
+          />
+        </div>
+      )}
       <div className="sm:col-span-2">
         <label className={label}>{t("Ansvarlig (valgfritt – vises nederst på kortet)")}</label>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">

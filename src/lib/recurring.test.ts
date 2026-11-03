@@ -42,6 +42,8 @@ function makeProgram(overrides: Partial<Program> = {}): Program {
     highlights: null,
     price: null,
     menu: null,
+    menu_image_url: null,
+    menu_image_week: null,
     registration_open: false,
     ...overrides,
   };

@@ -189,6 +189,9 @@ export const TR: Record<string, string> = {
   "Åpne for påmelding – vis skjema på tilbudets side (påmelding per dato)":
     "Kayda açık – hizmet sayfasında kayıt formunu göster (tarih bazlı kayıt)",
   "Påmeldte (kommende samlinger)": "Kayıtlılar (yaklaşan buluşmalar)",
+  "Bilde av ukens rett (valgfritt – vises bare i den uken du velger)":
+    "Haftanın yemeğinin fotoğrafı (isteğe bağlı – sadece seçtiğin haftada gösterilir)",
+  "Gjelder uke nr.": "Hafta no.",
   "Ukemeny (valgfritt – f.eks. suppe i uken, én linje per uke)":
     "Haftalık menü (isteğe bağlı – örn. haftanın çorbası, her satıra bir hafta)",
   "Format: ukenummer: Rett – ingredienser. Vises på tilbudets side for de kommende ukene.":
