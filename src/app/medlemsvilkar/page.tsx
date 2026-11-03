@@ -23,10 +23,13 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "2. Medlemskontingent",
     body: (
       <p>
-        Kontingenten er 100 kr per år for enkeltmedlemskap og 150 kr per år
-        for familiemedlemskap (inntil 6 personer på samme adresse).
-        Kontingenten betales med Vipps, enten direkte på nettsiden når du
-        melder deg inn, eller til{" "}
+        Kontingenten er per person: 100 kr per år for medlemmer fra og med 16
+        år, og 25 kr per år for medlemmer til og med 15 år. Det finnes ingen
+        egen familiepris; en familie betaler for hvert medlem. Alderen regnes
+        ut fra fødselsdatoen din på betalingsdagen (ved automatisk fornyelse:
+        1. januar).
+        Kontingenten betales med Vipps, enten direkte på nettsiden (når denne
+        betalingsmåten er åpnet), eller til{" "}
         <span className="font-semibold text-ink">#595791</span>. Du kan også
         betale til bankkonto{" "}
         <span className="font-semibold text-ink">3207 31 01688</span>. Prisene
@@ -40,14 +43,41 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "3. Varighet og fornyelse",
     body: (
       <p>
-        Medlemskapet gjelder i ett år fra betalingsdato. Vi sender en
-        påminnelse i god tid før utløp. Medlemskapet fornyes ved ny
-        innbetaling av kontingent og fornyes ikke automatisk.
+        Medlemskapet gjelder for kalenderåret, fra 1. januar til 31. desember.
+        Melder du deg inn i løpet av året, betaler du full kontingent og er
+        medlem ut det året. Melder du deg inn fra og med 1. oktober, gjelder
+        medlemskapet ut neste kalenderår. Medlemskapet utløper 31. desember og
+        fornyes ved ny innbetaling, med mindre du har valgt automatisk
+        fornyelse (se punkt 4). Vi sender en påminnelse i god tid før utløp.
       </p>
     ),
   },
   {
-    title: "4. Medlemmenes rettigheter",
+    title: "4. Automatisk fornyelse (valgfritt)",
+    body: (
+      <>
+        <p>
+          Når du melder deg inn eller fornyer på nett, kan du velge automatisk
+          fornyelse. Det er helt frivillig. Da trekkes kontingenten for det
+          kommende året den 1. januar hvert år, med betalingsmåten du har
+          godkjent. Beløpet er kontingenten som gjelder for medlemmet på det
+          tidspunktet. Et barn som har fylt 16 år, betaler altså 100 kr.
+        </p>
+        <p className="mt-3">
+          Vi sender deg en e-post senest 15 dager før hvert trekk, altså innen
+          16. desember. E-posten viser beløp, dato og hvordan du sier opp
+          avtalen. Du kan si opp avtalen når som helst før trekket, i
+          Vipps-appen eller ved å sende e-post til{" "}
+          <a className="underline" href="mailto:post@mangfoldshusetvestland.no">
+            post@mangfoldshusetvestland.no
+          </a>
+          . Sier du opp, utløper medlemskapet 31. desember.
+        </p>
+      </>
+    ),
+  },
+  {
+    title: "5. Medlemmenes rettigheter",
     body: (
       <p>
         Medlemmer kan delta på foreningens aktiviteter, har møte- og
@@ -57,7 +87,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
     ),
   },
   {
-    title: "5. Utmelding og opphør",
+    title: "6. Utmelding og opphør",
     body: (
       <p>
         Medlemskapet opphører automatisk ved manglende fornyelse, eller ved
@@ -66,12 +96,12 @@ const sections: { title: string; body: React.ReactNode }[] = [
           post@mangfoldshusetvestland.no
         </a>
         . Innbetalt kontingent refunderes ikke ved utmelding i løpet av
-        medlemsåret, med unntak av når du bruker angreretten (se punkt 7).
+        medlemsåret, med unntak av når du bruker angreretten (se punkt 8).
       </p>
     ),
   },
   {
-    title: "6. Personopplysninger",
+    title: "7. Personopplysninger",
     body: (
       <p>
         Opplysningene du oppgir ved innmelding lagres i medlemsregisteret og
@@ -84,7 +114,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
     ),
   },
   {
-    title: "7. Angrerett og refusjon",
+    title: "8. Angrerett og refusjon",
     body: (
       <>
         <p>
@@ -101,13 +131,13 @@ const sections: { title: string; body: React.ReactNode }[] = [
           Vi refunderer hele kontingenten til samme betalingsmåte uten ugrunnet
           opphold, og senest 14 dager etter at vi mottok meldingen. Medlemskapet
           opphører da fra det tidspunktet du angret. Etter at angrefristen har
-          gått ut refunderes ikke kontingenten, se punkt 5.
+          gått ut refunderes ikke kontingenten, se punkt 6.
         </p>
       </>
     ),
   },
   {
-    title: "8. Klager",
+    title: "9. Klager",
     body: (
       <p>
         Er du misfornøyd med medlemskapet, betalingen eller en refusjon, send en
@@ -134,7 +164,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
     ),
   },
   {
-    title: "9. Endringer i vilkårene",
+    title: "10. Endringer i vilkårene",
     body: (
       <p>
         Styret kan endre disse vilkårene. Endringer kunngjøres på nettsiden og
@@ -143,7 +173,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
     ),
   },
   {
-    title: "10. Hvem vi er",
+    title: "11. Hvem vi er",
     body: (
       <p>
         Mangfoldshuset Vestland, organisasjonsnummer 914 732 999, Arne

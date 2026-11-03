@@ -402,7 +402,7 @@ export default async function UtvalgPage({ params }: Props) {
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-fig font-serif text-lg text-white">1</span>
                 <h3 className="mt-4 font-serif text-lg">Bli medlem</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-                  Fyll ut medlemsskjemaet. Medlemskap koster 100 kr for enkeltperson og 150 kr for familie per år.
+                  Fyll ut medlemsskjemaet. Medlemskap koster 100 kr per år fra og med 16 år og 25 kr per år til og med 15 år, per person.
                 </p>
                 <Link
                   href="/bli-med#medlem"

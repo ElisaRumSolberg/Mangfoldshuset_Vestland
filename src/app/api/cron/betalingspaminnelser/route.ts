@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getResendClient, isResendConfigured, NOTIFY_EMAIL } from "@/lib/resend";
 import { todayOslo } from "@/lib/recurring";
+import { membershipFee } from "@/lib/membership-fee";
 import {
   UNPAID_BASE,
   UNPAID_WINDOW_DAYS,
@@ -42,7 +43,8 @@ export async function GET(request: Request) {
     const milestone = nextUnpaidMilestone(daysSince, m.last_reminder_offset);
     if (milestone === null) continue;
 
-    const { subject, text } = unpaidMessage(m.first_name, m.membership_type);
+    const household = [{ birth_date: m.birth_date }, ...(Array.isArray(m.family_members) ? m.family_members : [])];
+    const { subject, text } = unpaidMessage(m.first_name, membershipFee(household, todayOslo()));
     const { error } = await resend.emails.send(
       { from, to: m.email, replyTo: NOTIFY_EMAIL, subject, text },
       { idempotencyKey: `unpaid-${m.id}-${milestone}` }

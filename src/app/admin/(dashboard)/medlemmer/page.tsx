@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { addMember, deleteMember, markPaid } from "./actions";
 import DeleteButton from "../DeleteButton";
+import { feeText, membershipFee } from "@/lib/membership-fee";
 import { ageOn, buildStats, type MemberStats } from "@/lib/member-stats";
 
 type Status = "ubetalt" | "aktiv" | "snart" | "utlopt";
@@ -204,8 +205,8 @@ export default async function AdminMedlemmerPage({
           <label>
             <span className="mb-1 block text-sm font-medium text-ink">{t("Type medlemskap")}</span>
             <select name="membership_type" className={field} defaultValue="enkelt">
-              <option value="enkelt">{t("Enkelt person (100 kr)")}</option>
-              <option value="familie">{t("Familie (150 kr)")}</option>
+              <option value="enkelt">{t("Enkelt person")}</option>
+              <option value="familie">{t("Familie (flere personer)")}</option>
             </select>
           </label>
           <label>
@@ -350,7 +351,7 @@ export default async function AdminMedlemmerPage({
                   </span>
                 </p>
                 <p className="text-sm text-ink-soft">
-                  {m.membership_type === "familie" ? t("Familie (150 kr)") : t("Enkelt (100 kr)")} ·{" "}
+                  {m.membership_type === "familie" ? t("Familie") : t("Enkelt")} ({feeText(membershipFee([{ birth_date: m.birth_date }, ...(m.family_members ?? [])], new Date().toISOString().slice(0, 10)))}) ·{" "}
                   {m.email}
                   {m.phone ? ` · ${m.phone}` : ""}
                 </p>

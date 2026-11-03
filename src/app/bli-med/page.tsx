@@ -168,8 +168,8 @@ export default async function BliMedPage({
                 <p>
                   Medlemskapet er et viktig bidrag til arbeidet vårt, og med det er du med på å
                   bestemme retningen. Medlemskap og frivillig arbeid er to ulike ting – du kan
-                  gjerne være begge deler. Kontingenten er 100 kr per år for enkeltperson og
-                  150 kr for familie.
+                  gjerne være begge deler. Kontingenten er per person: 100 kr per år fra og med
+                  16 år, og 25 kr per år til og med 15 år.
                 </p>
               </>
             }
@@ -185,11 +185,11 @@ export default async function BliMedPage({
                   <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:gap-6">
                     <label className="flex items-center gap-2 text-sm text-ink-soft">
                       <input type="radio" name="membership_type" value="enkelt" defaultChecked className="h-5 w-5 shrink-0 accent-[#9C3B44]" />
-                      Enkelt person (100 kr)
+                      Bare meg
                     </label>
                     <label className="flex items-center gap-2 text-sm text-ink-soft">
                       <input type="radio" name="membership_type" value="familie" className="h-5 w-5 shrink-0 accent-[#9C3B44]" />
-                      Familie (150 kr)
+                      Meg og flere i familien (hver betaler egen kontingent)
                     </label>
                   </div>
                 </fieldset>
@@ -231,7 +231,7 @@ export default async function BliMedPage({
                 </div>
                 <details className="rounded-lg border border-line bg-cream px-4 py-3">
                   <summary className="cursor-pointer text-sm font-medium text-ink">
-                    Familiemedlemmer (kun for familiemedlemskap, opptil 5 personer til)
+                    Flere i familien (kun hvis du valgte «Meg og flere i familien», opptil 5 personer til)
                   </summary>
                   <FamilyRows inputClass={input} />
                 </details>
@@ -260,13 +260,13 @@ export default async function BliMedPage({
                   ).
                 </label>
                 <p className="text-sm text-ink-soft">
-                  Medlemskontingent (enkelt 100 kr, familie 150 kr per år)
-                  betales med Vipps til{" "}
+                  Medlemskontingent per person (100 kr fra og med 16 år, 25 kr til og med 15 år,
+                  per år) betales med Vipps til{" "}
                   <span className="font-semibold text-ink">#595791</span> eller
                   bankkonto{" "}
                   <span className="font-semibold text-ink">3207 31 01688</span>.
-                  Vi jobber med å tilby automatisk fornyelse via Vipps – kommer
-                  senere.
+                  Vi jobber med betaling direkte på nettsiden og valgfri automatisk fornyelse
+                  1. januar – kommer senere.
                 </p>
                 <button type="submit" className={button}>
                   Meld meg inn

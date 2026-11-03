@@ -23,8 +23,10 @@ describe("nextUnpaidMilestone", () => {
 });
 
 describe("unpaidMessage", () => {
-  it("states the right amount per membership type", () => {
-    expect(unpaidMessage("Kari", "enkelt").text).toContain("100 kr");
-    expect(unpaidMessage("Kari", "familie").text).toContain("150 kr");
+  it("states the amount per person", () => {
+    expect(unpaidMessage("Kari", { total: 100, adults: 1, children: 0 }).text).toContain("100 kr per år");
+    expect(unpaidMessage("Kari", { total: 225, adults: 2, children: 1 }).text).toContain(
+      "225 kr (2 × 100 kr + 1 × 25 kr)",
+    );
   });
 });

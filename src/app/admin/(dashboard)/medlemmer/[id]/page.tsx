@@ -80,8 +80,8 @@ export default async function EditMemberPage({ params }: { params: Promise<{ id:
         <label>
           <span className={label}>{t("Type medlemskap")}</span>
           <select name="membership_type" defaultValue={m.membership_type ?? "enkelt"} className={field}>
-            <option value="enkelt">{t("Enkelt person (100 kr)")}</option>
-            <option value="familie">{t("Familie (150 kr)")}</option>
+            <option value="enkelt">{t("Enkelt person")}</option>
+            <option value="familie">{t("Familie (flere personer)")}</option>
           </select>
         </label>
 
