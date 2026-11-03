@@ -16,6 +16,17 @@ export default async function AdminTilbudPage() {
   const programs = (data ?? []).map(toProgram);
   const today = todayOslo();
 
+  const { data: signupRows } = await supabase
+    .from("program_signups")
+    .select("program_id, participants")
+    .gte("session_date", today);
+  const signups: Record<string, { count: number; people: number }> = {};
+  for (const s of signupRows ?? []) {
+    const e = (signups[s.program_id] ??= { count: 0, people: 0 });
+    e.count += 1;
+    e.people += s.participants ?? 1;
+  }
+
   return (
     <div>
       <h1 className="font-serif text-2xl font-medium text-ink">{t("Faste tilbud")}</h1>
@@ -52,6 +63,18 @@ export default async function AdminTilbudPage() {
                     {timeText(p) ? ` · ${timeText(p)!.replace("kl.", t("kl."))}` : ""}
                     {next ? ` · ${t("neste:")} ${shortDate(next)}` : ""}
                   </p>
+                  {(p.registration_open || signups[p.id]) && (
+                    <p className="mt-1 text-sm">
+                      <Link
+                        href={`/admin/tilbud/${p.id}#pameldte`}
+                        className="inline-flex min-h-9 items-center rounded-full bg-[#EAF0E9] px-3 font-semibold text-green-dark hover:opacity-80"
+                      >
+                        {signups[p.id]
+                          ? t("{n} påmeldte ({p} personer)", { n: signups[p.id].count, p: signups[p.id].people })
+                          : t("Påmelding åpen – ingen påmeldte ennå")}
+                      </Link>
+                    </p>
+                  )}
                 </div>
                 <div className="flex items-center gap-2">
                   <Link

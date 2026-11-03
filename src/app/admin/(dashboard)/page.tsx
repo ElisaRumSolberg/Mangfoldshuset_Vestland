@@ -7,7 +7,8 @@ export default async function AdminDashboard() {
   const t = await getT();
   const supabase = await createClient();
 
-  const todayMs = new Date(new Date().toISOString().slice(0, 10)).getTime();
+  const today = new Date().toISOString().slice(0, 10);
+  const todayMs = new Date(today).getTime();
   const limit = new Date(todayMs + 30 * 86400000).toISOString().slice(0, 10);
 
   const [
@@ -15,6 +16,8 @@ export default async function AdminDashboard() {
     participantCount,
     { count: memberCount },
     { data: followUp },
+    { data: actSignups },
+    { data: progSignups },
   ] = await Promise.all([
     supabase.from("activities").select("*", { count: "exact", head: true }),
     autoParticipants(supabase),
@@ -25,7 +28,34 @@ export default async function AdminDashboard() {
       .lte("expires_at", limit)
       .order("expires_at", { ascending: true })
       .limit(15),
+    supabase
+      .from("activity_signups")
+      .select("id, name, email, phone, participants, created_at, activity_id, activities!inner(title, event_date)")
+      .gte("activities.event_date", today)
+      .order("created_at", { ascending: false })
+      .limit(12),
+    supabase
+      .from("program_signups")
+      .select("id, name, email, phone, participants, created_at, program_id, session_date, recurring_programs!inner(title)")
+      .gte("session_date", today)
+      .order("created_at", { ascending: false })
+      .limit(12),
   ]);
+
+  type One<T> = T | T[] | null;
+  const first = <T,>(v: One<T>) => (Array.isArray(v) ? v[0] : v);
+  const newSignups = [
+    ...(actSignups ?? []).map((s) => {
+      const a = first(s.activities as One<{ title: string; event_date: string }>);
+      return { ...s, key: `a${s.id}`, title: a?.title ?? "", date: a?.event_date ?? "", href: `/admin/aktiviteter/${s.activity_id}#pameldte` };
+    }),
+    ...(progSignups ?? []).map((s) => {
+      const p = first(s.recurring_programs as One<{ title: string }>);
+      return { ...s, key: `p${s.id}`, title: p?.title ?? "", date: s.session_date as string, href: `/admin/tilbud/${s.program_id}#pameldte` };
+    }),
+  ]
+    .sort((x, y) => String(y.created_at).localeCompare(String(x.created_at)))
+    .slice(0, 12);
 
   const cards = [
     { href: "/admin/medlemmer", label: "Medlemmer", value: memberCount ?? 0 },
@@ -61,6 +91,35 @@ export default async function AdminDashboard() {
           </Link>
         ))}
       </div>
+
+      <section className="mt-10 rounded-2xl border border-line bg-cream p-6">
+        <h2 className="font-serif text-xl font-medium text-ink">{t("Nye påmeldinger")}</h2>
+        <p className="mt-1 text-sm text-ink-soft">{t("Påmeldinger til kommende aktiviteter og faste tilbud, nyeste først. Trykk for å se hele listen.")}
+        </p>
+        <div className="mt-5 flex flex-col divide-y divide-line">
+          {newSignups.length ? (
+            newSignups.map((s) => (
+              <Link key={s.key} href={s.href} className="flex flex-wrap items-center justify-between gap-2 py-3 hover:opacity-80">
+                <div>
+                  <p className="text-sm font-semibold text-ink">
+                    {s.name}{" "}
+                    <span className="font-normal text-ink-soft">
+                      · {s.participants} {s.participants === 1 ? t("person") : t("personer")}
+                    </span>
+                  </p>
+                  <p className="text-sm text-ink-soft">
+                    {s.title} · {s.date}
+                    {s.phone ? ` · ${s.phone}` : ""}
+                  </p>
+                </div>
+                <p className="text-xs text-ink-soft">{new Date(s.created_at).toLocaleString("nb-NO")}</p>
+              </Link>
+            ))
+          ) : (
+            <p className="py-3 text-sm text-ink-soft">{t("Ingen påmeldinger til kommende arrangementer ennå.")}</p>
+          )}
+        </div>
+      </section>
 
       <section className="mt-10 rounded-2xl border border-line bg-cream p-6">
         <div className="flex items-center justify-between">

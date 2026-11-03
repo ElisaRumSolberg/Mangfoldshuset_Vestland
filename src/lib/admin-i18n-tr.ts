@@ -180,6 +180,10 @@ export const TR: Record<string, string> = {
   "Bildesamtykke: ja": "Fotoğraf izni: evet",
   "Bildesamtykke: nei – ikke publiser bilder": "Fotoğraf izni: hayır – fotoğraf yayınlama",
   "{n} påmeldte ({p} personer)": "{n} kayıt ({p} kişi)",
+  "Nye påmeldinger": "Yeni kayıtlar",
+  "Påmeldinger til kommende aktiviteter og faste tilbud, nyeste først. Trykk for å se hele listen.":
+    "Yaklaşan etkinlik ve sabit programlara yapılan kayıtlar, en yenisi üstte. Tüm listeyi görmek için tıkla.",
+  "Ingen påmeldinger til kommende arrangementer ennå.": "Yaklaşan etkinlikler için henüz kayıt yok.",
   "Påmelding åpen – ingen påmeldte ennå": "Kayıt açık – henüz kayıt yok",
   "({n} – {p} personer)": "({n} kayıt – {p} kişi)",
   person: "kişi",
