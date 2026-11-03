@@ -37,6 +37,8 @@ function fields(formData: FormData) {
     active: formData.get("active") === "on",
     featured: formData.get("featured") === "on",
     show_on_homepage: formData.get("show_on_homepage") === "on",
+    price: text(formData, "price"),
+    registration_open: formData.get("registration_open") === "on",
   };
 }
 
@@ -86,6 +88,16 @@ export async function updateProgram(id: string, formData: FormData) {
 
   refresh();
   done("/admin/tilbud", "lagret");
+}
+
+export async function deleteProgramSignup(programId: string, signupId: string) {
+  await requireEditor();
+  const supabase = await createClient();
+  const { error } = await supabase.from("program_signups").delete().eq("id", signupId);
+  const back = `/admin/tilbud/${programId}`;
+  if (error) failed(back, "generell", error);
+  revalidatePath(back);
+  done(back, "slettet");
 }
 
 export async function deleteProgram(id: string) {

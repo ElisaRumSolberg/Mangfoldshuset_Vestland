@@ -5,6 +5,9 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ReportSection from "@/components/ReportSection";
 import ActivityMedia from "@/components/ActivityMedia";
+import SubmissionForm from "@/components/SubmissionForm";
+import HoneypotFields from "@/components/HoneypotFields";
+import { signUpForProgram } from "./actions";
 import { formatHighlightDate, parseHighlights } from "@/lib/highlights";
 import {
   nextOccurrences,
@@ -18,7 +21,10 @@ import {
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
 
-type Props = { params: Promise<{ id: string }> };
+type Props = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ meldt?: string }>;
+};
 
 async function getProgram(id: string): Promise<Program | null> {
   if (!isSupabaseConfigured()) return null;
@@ -42,13 +48,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function ProgramPage({ params }: Props) {
+export default async function ProgramPage({ params, searchParams }: Props) {
   const { id } = await params;
+  const { meldt } = await searchParams;
   const p = await getProgram(id);
   if (!p) notFound();
 
   const today = todayOslo();
   const next = nextOccurrences(p, today, 5);
+  const signupDates = p.registration_open ? nextOccurrences(p, today, 8) : [];
   const time = timeText(p);
   const skipped = p.skipped_dates.filter((d) => d >= today).sort();
   const startsLater = p.start_date && p.start_date > today;
@@ -79,6 +87,22 @@ export default async function ProgramPage({ params }: Props) {
           {time ? ` · ${time}` : ""}
         </p>
         <p className="text-base text-ink-soft">{p.place}</p>
+        {(p.price || p.registration_open) && (
+          <dl className="mt-4 flex flex-wrap gap-x-8 gap-y-2 text-base">
+            {p.price && (
+              <div>
+                <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Pris</dt>
+                <dd className="mt-0.5 text-ink">{p.price}</dd>
+              </div>
+            )}
+            {p.registration_open && (
+              <div>
+                <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Påmelding</dt>
+                <dd className="mt-0.5 text-ink">Påmelding kreves – se skjema nedenfor</dd>
+              </div>
+            )}
+          </dl>
+        )}
         {p.note && (
           <p className="mt-3 w-fit rounded-full bg-cream-2 px-3 py-1 text-sm font-semibold text-green-dark">
             {p.note}
@@ -156,6 +180,103 @@ export default async function ProgramPage({ params }: Props) {
             </a>
           )}
         </div>
+
+        {p.registration_open && signupDates.length > 0 && (
+          <section className="mt-10 rounded-[18px] border border-line bg-cream p-6 sm:p-8">
+            <h2 className="font-serif text-2xl font-medium">Meld deg på</h2>
+            {meldt === "1" ? (
+              <div className="mt-4 rounded-xl bg-[#EAF0E9] px-6 py-8 text-center">
+                <p className="font-serif text-xl text-green-dark">Takk!</p>
+                <p className="mt-1 text-sm text-ink-soft">
+                  Du er nå påmeldt. Vi gleder oss til å se deg!
+                </p>
+              </div>
+            ) : (
+              <SubmissionForm
+                action={signUpForProgram.bind(null, p.id)}
+                className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2"
+              >
+                <HoneypotFields />
+                <label className="sm:col-span-2">
+                  <span className="mb-1 block text-sm font-medium text-ink">Hvilken dag vil du komme?</span>
+                  <select
+                    name="session_date"
+                    required
+                    className="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-sm capitalize outline-none focus:border-fig"
+                  >
+                    {signupDates.map((d) => (
+                      <option key={d} value={d}>
+                        {shortDate(d)}
+                        {time ? ` · ${time}` : ""}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <input
+                  name="name"
+                  required
+                  aria-label="Navn"
+                  placeholder="Navn"
+                  className="rounded-lg border border-line bg-white px-3 py-2.5 text-sm outline-none focus:border-fig"
+                />
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  aria-label="E-post"
+                  placeholder="E-post"
+                  className="rounded-lg border border-line bg-white px-3 py-2.5 text-sm outline-none focus:border-fig"
+                />
+                <input
+                  name="phone"
+                  aria-label="Telefon (valgfritt)"
+                  placeholder="Telefon (valgfritt)"
+                  className="rounded-lg border border-line bg-white px-3 py-2.5 text-sm outline-none focus:border-fig"
+                />
+                <input
+                  type="number"
+                  name="participants"
+                  min={1}
+                  defaultValue={1}
+                  aria-label="Antall deltakere"
+                  placeholder="Antall deltakere"
+                  className="rounded-lg border border-line bg-white px-3 py-2.5 text-sm outline-none focus:border-fig"
+                />
+                <textarea
+                  name="comment"
+                  rows={2}
+                  aria-label="Kommentar (valgfritt)"
+                  placeholder="Kommentar (valgfritt)"
+                  className="rounded-lg border border-line bg-white px-3 py-2.5 text-sm outline-none focus:border-fig sm:col-span-2"
+                />
+                <label className="flex items-start gap-3 text-sm leading-relaxed text-ink-soft sm:col-span-2">
+                  <input
+                    type="checkbox"
+                    name="photo_consent"
+                    className="mt-1 h-5 w-5 shrink-0 accent-[#9C3B44]"
+                  />
+                  <span>
+                    <strong className="font-semibold text-ink">Bildesamtykke (valgfritt):</strong> Jeg
+                    samtykker til at det kan tas bilder av meg eller barnet mitt under arrangementet,
+                    og at bildene kan publiseres på nettsiden og i sosiale medier til Mangfoldshuset
+                    Vestland. For barn under 18 år gir foresatt samtykket. Du kan når som helst trekke
+                    samtykket tilbake ved å sende e-post til{" "}
+                    <a className="underline" href="mailto:post@mangfoldshusetvestland.no">
+                      post@mangfoldshusetvestland.no
+                    </a>
+                    . Krysser du ikke av, publiserer vi ikke bilder av deg.
+                  </span>
+                </label>
+                <button
+                  type="submit"
+                  className="rounded-full bg-fig px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-fig-dark sm:col-span-2 sm:w-fit"
+                >
+                  Meld meg på
+                </button>
+              </SubmissionForm>
+            )}
+          </section>
+        )}
 
         {highlights.length > 0 && (
           <section className="mt-14 border-t border-line pt-10">

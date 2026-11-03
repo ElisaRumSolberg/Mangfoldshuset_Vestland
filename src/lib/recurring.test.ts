@@ -38,6 +38,8 @@ function makeProgram(overrides: Partial<Program> = {}): Program {
     show_on_homepage: false,
     homepage_image_urls: [],
     highlights: null,
+    price: null,
+    registration_open: false,
     ...overrides,
   };
 }

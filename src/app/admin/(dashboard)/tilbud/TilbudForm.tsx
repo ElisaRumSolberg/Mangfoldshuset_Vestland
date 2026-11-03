@@ -133,6 +133,15 @@ export default async function TilbudForm({
         />
       </div>
       <div className="sm:col-span-2">
+        <label className={label}>{t("Pris (valgfritt)")}</label>
+        <input
+          name="price"
+          defaultValue={program?.price ?? ""}
+          placeholder={t("Gratis for medlemmer · 30 kr for ikke-medlemmer")}
+          className={field}
+        />
+      </div>
+      <div className="sm:col-span-2">
         <label className={label}>{t("Ansvarlig (valgfritt – vises nederst på kortet)")}</label>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <input
@@ -275,6 +284,15 @@ export default async function TilbudForm({
           defaultChecked={program?.featured ?? false}
           className="h-4 w-4 accent-fig"
         />{t("Fremhevet – vis øverst (til du fjerner haken)")}
+      </label>
+
+      <label className="flex items-center gap-2 text-sm text-ink sm:col-span-2">
+        <input
+          name="registration_open"
+          type="checkbox"
+          defaultChecked={program?.registration_open ?? false}
+          className="h-4 w-4 accent-fig"
+        />{t("Åpne for påmelding – vis skjema på tilbudets side (påmelding per dato)")}
       </label>
 
       <label className="flex items-center gap-2 text-sm text-ink sm:col-span-2">

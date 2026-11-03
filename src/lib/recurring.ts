@@ -30,6 +30,8 @@ export type Program = {
   show_on_homepage: boolean;
   homepage_image_urls: string[];
   highlights: string | null;
+  price: string | null;
+  registration_open: boolean;
 };
 
 const DAYS = ["søndag", "mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag"];
@@ -138,6 +140,8 @@ export function toProgram(r: Record<string, unknown>): Program {
     show_on_homepage: (r.show_on_homepage as boolean | null) ?? false,
     homepage_image_urls: (r.homepage_image_urls as string[] | null) ?? [],
     highlights: (r.highlights as string | null) ?? null,
+    price: (r.price as string | null) ?? null,
+    registration_open: (r.registration_open as boolean | null) ?? false,
   };
 }
 

@@ -186,6 +186,10 @@ export const TR: Record<string, string> = {
   personer: "kişi",
   "påmeldingen fra {name}": "{name} kişisinin kaydı",
   "Ingen påmeldte ennå.": "Henüz kayıt yok.",
+  "Åpne for påmelding – vis skjema på tilbudets side (påmelding per dato)":
+    "Kayda açık – hizmet sayfasında kayıt formunu göster (tarih bazlı kayıt)",
+  "Påmeldte (kommende samlinger)": "Kayıtlılar (yaklaşan buluşmalar)",
+  "Gratis for medlemmer · 30 kr for ikke-medlemmer": "Üyelere ücretsiz · üye olmayanlara 30 kr",
   "Påmeldinger og bilder for aktiviteten forsvinner også.":
     "Etkinliğin kayıtları ve fotoğrafları da silinir.",
   "Slik gikk det (fylles ut etter arrangementet)": "Nasıl geçti (etkinlikten sonra doldurulur)",
