@@ -25,10 +25,14 @@ const sections: { title: string; body: React.ReactNode }[] = [
       <p>
         Kontingenten er 100 kr per år for enkeltmedlemskap og 150 kr per år
         for familiemedlemskap (inntil 6 personer på samme adresse).
-        Kontingenten betales med Vipps til{" "}
-        <span className="font-semibold text-ink">#595791</span> eller til
-        bankkonto <span className="font-semibold text-ink">3207 31 01688</span>.
-        Medlemskapet aktiveres når kontingenten er registrert mottatt.
+        Kontingenten betales med Vipps, enten direkte på nettsiden når du
+        melder deg inn, eller til{" "}
+        <span className="font-semibold text-ink">#595791</span>. Du kan også
+        betale til bankkonto{" "}
+        <span className="font-semibold text-ink">3207 31 01688</span>. Prisene
+        er oppgitt i norske kroner og er den totale prisen; det kommer ingen
+        tilleggsgebyrer. Medlemskapet aktiveres når kontingenten er registrert
+        mottatt.
       </p>
     ),
   },
@@ -62,7 +66,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
           post@mangfoldshusetvestland.no
         </a>
         . Innbetalt kontingent refunderes ikke ved utmelding i løpet av
-        medlemsåret.
+        medlemsåret, med unntak av når du bruker angreretten (se punkt 7).
       </p>
     ),
   },
@@ -80,11 +84,74 @@ const sections: { title: string; body: React.ReactNode }[] = [
     ),
   },
   {
-    title: "7. Endringer i vilkårene",
+    title: "7. Angrerett og refusjon",
+    body: (
+      <>
+        <p>
+          Når du melder deg inn og betaler på nett, har du som forbruker 14
+          dagers angrerett regnet fra dagen du betalte. Du bruker angreretten
+          ved å sende en e-post til{" "}
+          <a className="underline" href="mailto:post@mangfoldshusetvestland.no">
+            post@mangfoldshusetvestland.no
+          </a>{" "}
+          innen fristen, med navnet ditt og e-postadressen du meldte deg inn
+          med.
+        </p>
+        <p className="mt-3">
+          Vi refunderer hele kontingenten til samme betalingsmåte uten ugrunnet
+          opphold, og senest 14 dager etter at vi mottok meldingen. Medlemskapet
+          opphører da fra det tidspunktet du angret. Etter at angrefristen har
+          gått ut refunderes ikke kontingenten, se punkt 5.
+        </p>
+      </>
+    ),
+  },
+  {
+    title: "8. Klager",
+    body: (
+      <p>
+        Er du misfornøyd med medlemskapet, betalingen eller en refusjon, send en
+        e-post til{" "}
+        <a className="underline" href="mailto:post@mangfoldshusetvestland.no">
+          post@mangfoldshusetvestland.no
+        </a>{" "}
+        eller ring oss på{" "}
+        <a className="underline" href="tel:40567853">
+          405 67 853
+        </a>
+        . Vi svarer så raskt vi kan, normalt innen 14 dager. Hvis vi ikke blir
+        enige, kan du ta kontakt med{" "}
+        <a
+          className="underline"
+          href="https://www.forbrukerradet.no"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Forbrukerrådet
+        </a>{" "}
+        for veiledning.
+      </p>
+    ),
+  },
+  {
+    title: "9. Endringer i vilkårene",
     body: (
       <p>
         Styret kan endre disse vilkårene. Endringer kunngjøres på nettsiden og
         gjelder fra kunngjøringstidspunktet, med mindre annet er bestemt.
+      </p>
+    ),
+  },
+  {
+    title: "10. Hvem vi er",
+    body: (
+      <p>
+        Mangfoldshuset Vestland, organisasjonsnummer 914 732 999, Arne
+        Abrahamsens vei 1, Bergen. E-post:{" "}
+        <a className="underline" href="mailto:post@mangfoldshusetvestland.no">
+          post@mangfoldshusetvestland.no
+        </a>
+        , telefon 405 67 853.
       </p>
     ),
   },
@@ -96,7 +163,7 @@ export default function MedlemsvilkarPage() {
       <Navbar />
       <main className="mx-auto max-w-3xl px-6 py-20">
         <h1 className="font-serif text-4xl font-medium">Medlemsvilkår</h1>
-        <p className="mt-3 text-sm text-ink-soft">Sist oppdatert: oktober 2026</p>
+        <p className="mt-3 text-sm text-ink-soft">Sist oppdatert: november 2026</p>
 
         <div className="mt-10 flex flex-col gap-10">
           {sections.map((s) => (
