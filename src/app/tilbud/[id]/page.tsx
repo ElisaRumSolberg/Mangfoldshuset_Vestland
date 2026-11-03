@@ -110,6 +110,14 @@ export default async function ProgramPage({ params, searchParams }: Props) {
             )}
           </dl>
         )}
+        {p.registration_open && signupDates.length > 0 && (
+          <a
+            href="#pamelding"
+            className="mt-4 inline-flex min-h-11 items-center rounded-full bg-fig px-6 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
+          >
+            Meld deg på ↓
+          </a>
+        )}
         {forMembers && (
           <p className="mt-3 text-base text-ink-soft">
             Ikke medlem ennå?{" "}
@@ -213,7 +221,7 @@ export default async function ProgramPage({ params, searchParams }: Props) {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`Åpne plakat: ${p.title}`}
-              className="self-start"
+              className="order-first self-start md:order-none"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -226,7 +234,7 @@ export default async function ProgramPage({ params, searchParams }: Props) {
         </div>
 
         {p.registration_open && signupDates.length > 0 && (
-          <section className="mt-10 rounded-[18px] border border-line bg-cream p-6 sm:p-8">
+          <section id="pamelding" className="mt-10 scroll-mt-6 rounded-[18px] border border-line bg-cream p-6 sm:p-8">
             <h2 className="font-serif text-2xl font-medium">Meld deg på</h2>
             {meldt === "1" ? (
               <div className="mt-4 rounded-xl bg-[#EAF0E9] px-6 py-8 text-center">
