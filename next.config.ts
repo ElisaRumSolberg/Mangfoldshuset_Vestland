@@ -26,8 +26,8 @@ const nextConfig: NextConfig = {
         permanent: false,
       },
       {
-        // Kort adresse til plakaten: mangfoldshusetvestland.no/torsdagssuppe
-        source: "/torsdagssuppe",
+        // Kort adresse til plakaten: mangfoldshusetvestland.no/torsdagssuppe (og /suppe)
+        source: "/:slug(torsdagssuppe|suppe)",
         destination: "/tilbud/590c279d-d79a-4b50-9d03-6dd8c311a828",
         permanent: false,
       },
