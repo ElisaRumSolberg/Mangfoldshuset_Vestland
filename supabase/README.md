@@ -8,7 +8,7 @@ All files are idempotent and can be run more than once in **Supabase → SQL Edi
 2. `storage.sql` – the `images` bucket
 3. `media.sql` – videos and magazine issues
 4. `site-settings.sql`, `site-settings-vipps.sql` – editable site images and Vipps link
-5. `members.sql`, `members-gender.sql` – membership register
+5. `members.sql`, `members-gender.sql`, `members-household.sql` – membership register (one row per person, `household_id` links people who joined together)
 6. `contact.sql`, `applications.sql`, `newsletter.sql`, `paamelding.sql` – public forms
 7. `tilbud*.sql`, `utvalg.sql` – recurring programmes and committees
 8. `aktivitet*.sql`, `aktiviteter-*.sql`, `activities-price.sql`, `external-link.sql`, `forsidebilder-flere.sql` – activity extras

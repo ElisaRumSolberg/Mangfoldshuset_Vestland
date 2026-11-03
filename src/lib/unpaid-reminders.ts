@@ -2,7 +2,7 @@
 // Siste sendte milepæl lagres i members.last_reminder_offset som UNPAID_BASE + dager,
 // så den aldri kan forveksles med utløpspåminnelsene (som bruker -15…30).
 
-import { feeText, type FeeSummary } from "@/lib/membership-fee";
+import { FEE_ADULT } from "@/lib/membership-fee";
 
 export const UNPAID_MILESTONES = [3, 14] as const;
 export const UNPAID_BASE = 1000;
@@ -22,10 +22,17 @@ export function nextUnpaidMilestone(daysSinceSignup: number, stored: number | nu
   return null;
 }
 
-export function unpaidMessage(firstName: string, fee: FeeSummary) {
-  const amount = feeText(fee);
+/** Én e-post per husstand: hver person som ikke har betalt, med eget beløp. */
+export function unpaidMessage(firstName: string, people: { name: string; fee: number }[]) {
+  const pay = "Betal med Vipps til #595791 eller til bankkonto 3207 31 01688";
+  const body =
+    people.length > 1
+      ? `Medlemskapet aktiveres for hver person når kontingenten er betalt. Hver person betaler for seg, per år:\n${people
+          .map((p) => `- ${p.name}: ${p.fee} kr`)
+          .join("\n")}\n\n${pay}, og skriv navnet på den du betaler for.`
+      : `Medlemskapet aktiveres når kontingenten er betalt: ${people[0]?.fee ?? FEE_ADULT} kr per år. ${pay}.`;
   return {
     subject: "Fullfør medlemskapet ditt i Mangfoldshuset Vestland",
-    text: `Hei ${firstName}!\n\nTakk for at du meldte deg inn i Mangfoldshuset Vestland. Medlemskapet aktiveres når kontingenten er betalt: ${amount} per år. Betal med Vipps til #595791 eller til bankkonto 3207 31 01688.\n\nHar du allerede betalt, ser vi det snart, og du kan se bort fra denne e-posten.\n\nMangfoldshuset Vestland`,
+    text: `Hei ${firstName}!\n\nTakk for at du meldte deg inn i Mangfoldshuset Vestland. ${body}\n\nHar du allerede betalt, ser vi det snart, og du kan se bort fra denne e-posten.\n\nMangfoldshuset Vestland`,
   };
 }

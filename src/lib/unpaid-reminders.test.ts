@@ -23,10 +23,16 @@ describe("nextUnpaidMilestone", () => {
 });
 
 describe("unpaidMessage", () => {
-  it("states the amount per person", () => {
-    expect(unpaidMessage("Kari", { total: 100, adults: 1, children: 0 }).text).toContain("100 kr per år");
-    expect(unpaidMessage("Kari", { total: 225, adults: 2, children: 1 }).text).toContain(
-      "225 kr (2 × 100 kr + 1 × 25 kr)",
-    );
+  it("states the amount for a single person", () => {
+    expect(unpaidMessage("Kari", [{ name: "Kari Test", fee: 100 }]).text).toContain("100 kr per år");
+  });
+  it("lists each person with their own amount for a household", () => {
+    const { text } = unpaidMessage("Kari", [
+      { name: "Kari Test", fee: 100 },
+      { name: "Liv Test", fee: 25 },
+    ]);
+    expect(text).toContain("- Kari Test: 100 kr");
+    expect(text).toContain("- Liv Test: 25 kr");
+    expect(text).toContain("Hver person betaler for seg");
   });
 });

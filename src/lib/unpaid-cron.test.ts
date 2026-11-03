@@ -54,6 +54,22 @@ it("reminds only members unpaid for 3+ days, with a stable idempotency key", asy
   expect(mocks.send.mock.calls.some((c) => c[0].to === "c@example.invalid")).toBe(false);
 });
 
+it("sends one email per household with each person's own amount", async () => {
+  mocks.candidates.mockResolvedValue({
+    data: [
+      { id: "h1", household_id: "H", first_name: "Kari", last_name: "Test", email: "kari@example.invalid", birth_date: "1985-01-01", family_members: [], created_at: "2026-10-10T10:00:00Z", last_reminder_offset: null },
+      { id: "h2", household_id: "H", first_name: "Liv", last_name: "Test", email: "kari@example.invalid", birth_date: "2018-01-01", family_members: [], created_at: "2026-10-10T10:00:00Z", last_reminder_offset: null },
+    ],
+    error: null,
+  });
+  expect((await (await GET(req())).json())).toEqual({ reminded: 1 });
+  const mails = mocks.send.mock.calls.filter((c) => c[0].to === "kari@example.invalid");
+  expect(mails).toHaveLength(1);
+  expect(mails[0][0].text).toContain("- Kari Test: 100 kr");
+  expect(mails[0][0].text).toContain("- Liv Test: 25 kr");
+  expect(mocks.update).toHaveBeenCalledTimes(2);
+});
+
 it("reports database failure", async () => {
   mocks.candidates.mockResolvedValue({ error: { message: "x" } });
   expect((await GET(req())).status).toBe(503);

@@ -175,7 +175,7 @@ export default async function BliMedPage({
             }
           >
             {sendt === "medlem" ? (
-              <Thanks text="Takk for at du melder deg inn! Betal kontingenten med Vipps til #595791, så aktiverer vi medlemskapet ditt." vippsLink={vippsLink} />
+              <Thanks text="Takk for at du melder deg inn! Betal kontingenten med Vipps til #595791, så aktiverer vi medlemskapet ditt. Melder du inn flere, betaler hver person for seg." vippsLink={vippsLink} />
             ) : (
               <SubmissionForm action={submitMembership} className="flex flex-col gap-5">
                 <HoneypotFields />

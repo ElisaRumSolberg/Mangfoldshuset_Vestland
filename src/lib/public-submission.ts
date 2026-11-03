@@ -4,7 +4,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 /** A success response must mean the submission was actually stored. */
 export async function savePublicSubmission(
   table: "members" | "applications" | "contact_messages" | "activity_signups" | "program_signups",
-  record: Record<string, unknown>,
+  record: Record<string, unknown> | Record<string, unknown>[],
 ): Promise<boolean> {
   if (!isSupabaseConfigured()) return false;
   try {

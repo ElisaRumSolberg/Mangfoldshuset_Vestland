@@ -1,6 +1,10 @@
 "use server";
 
+import { randomUUID } from "node:crypto";
 import { redirect } from "next/navigation";
+import { splitName } from "@/lib/household";
+import { ageOn, feeText, membershipFee } from "@/lib/membership-fee";
+import { todayOslo } from "@/lib/recurring";
 import { savePublicSubmission, notifyAfterSave } from "@/lib/public-submission";
 import { getResendClient, isResendConfigured, NOTIFY_EMAIL } from "@/lib/resend";
 import { applicationSchema, membershipSchema, familyMembersSchema } from "@/lib/validation";
@@ -45,23 +49,45 @@ export async function submitMembership(formData: FormData) {
           .filter((f) => f.name)
       : []);
   if (!family.success) return { error: "Kunne ikke sende skjemaet. Sjekk feltene og prøv igjen." };
-  const family_members = family.data;
 
-  const saved = await savePublicSubmission("members", {
-      membership_type,
-      family_members,
+  // Hver person er sitt eget medlem med egen betaling; household_id knytter dem sammen.
+  const household_id = randomUUID();
+  const today = todayOslo();
+  const common = {
+    membership_type,
+    email,
+    address: parsed.data.address || null,
+    phone: parsed.data.phone || null,
+    accepted_terms: formData.get("terms") === "on",
+    household_id,
+    family_members: [],
+  };
+  const records = [
+    {
+      ...common,
       first_name,
       last_name,
-      email,
       birth_date: parsed.data.birth_date,
       gender: parsed.data.gender,
-      address: parsed.data.address || null,
-      phone: parsed.data.phone || null,
       guardian: parsed.data.guardian || null,
       comment: parsed.data.comment || null,
-      accepted_terms: formData.get("terms") === "on",
-    });
+    },
+    ...family.data.map((f) => {
+      const under18 = !!f.birth_date && ageOn(f.birth_date, today) < 18;
+      return {
+        ...common,
+        ...splitName(f.name, last_name),
+        birth_date: f.birth_date,
+        gender: f.gender,
+        guardian: under18 ? `${first_name} ${last_name}` : null,
+        comment: null,
+      };
+    }),
+  ];
+
+  const saved = await savePublicSubmission("members", records);
   if (!saved) return { error: "Kunne ikke sende skjemaet. Sjekk feltene og prøv igjen." };
+  const fee = membershipFee(records, today);
 
   if (isResendConfigured()) {
     await notifyAfterSave(() => getResendClient().emails.send({
@@ -69,7 +95,7 @@ export async function submitMembership(formData: FormData) {
       to: NOTIFY_EMAIL,
       replyTo: email,
       subject: `Ny medlemssøknad: ${first_name} ${last_name}`,
-      text: `${first_name} ${last_name} (${email}) har meldt seg inn. Se admin → Medlemmer.`,
+      text: `${first_name} ${last_name} (${email}) har meldt seg inn${records.length > 1 ? ` sammen med ${records.length - 1} til i familien` : ""}. Kontingent: ${feeText(fee)}. Hver person betaler for seg. Se admin → Medlemmer.`,
     }));
   }
 
