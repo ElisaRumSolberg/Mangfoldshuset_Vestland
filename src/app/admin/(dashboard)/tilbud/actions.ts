@@ -38,6 +38,7 @@ function fields(formData: FormData) {
     featured: formData.get("featured") === "on",
     show_on_homepage: formData.get("show_on_homepage") === "on",
     price: text(formData, "price"),
+    menu: text(formData, "menu"),
     registration_open: formData.get("registration_open") === "on",
   };
 }

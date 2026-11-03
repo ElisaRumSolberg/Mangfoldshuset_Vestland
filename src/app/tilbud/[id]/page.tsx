@@ -10,7 +10,9 @@ import HoneypotFields from "@/components/HoneypotFields";
 import { signUpForProgram } from "./actions";
 import { formatHighlightDate, parseHighlights } from "@/lib/highlights";
 import {
+  isoWeek,
   nextOccurrences,
+  parseMenu,
   shortDate,
   timeText,
   todayOslo,
@@ -57,6 +59,11 @@ export default async function ProgramPage({ params, searchParams }: Props) {
   const today = todayOslo();
   const next = nextOccurrences(p, today, 5);
   const signupDates = p.registration_open ? nextOccurrences(p, today, 8) : [];
+  const menu = parseMenu(p.menu);
+  const menuRows = nextOccurrences(p, today, 8)
+    .map((iso) => ({ iso, week: isoWeek(iso), entry: menu.find((m) => m.week === isoWeek(iso)) }))
+    .filter((r): r is { iso: string; week: number; entry: (typeof menu)[number] } => !!r.entry);
+  const forMembers = !!p.price && /medlem/i.test(p.price);
   const time = timeText(p);
   const skipped = p.skipped_dates.filter((d) => d >= today).sort();
   const startsLater = p.start_date && p.start_date > today;
@@ -103,6 +110,14 @@ export default async function ProgramPage({ params, searchParams }: Props) {
             )}
           </dl>
         )}
+        {forMembers && (
+          <p className="mt-3 text-base text-ink-soft">
+            Ikke medlem ennå?{" "}
+            <Link href="/bli-med#medlem" className="font-semibold text-green-dark underline">
+              Bli medlem her
+            </Link>
+          </p>
+        )}
         {p.note && (
           <p className="mt-3 w-fit rounded-full bg-cream-2 px-3 py-1 text-sm font-semibold text-green-dark">
             {p.note}
@@ -115,6 +130,25 @@ export default async function ProgramPage({ params, searchParams }: Props) {
               <p className="whitespace-pre-line text-lg leading-relaxed text-ink-soft">
                 {p.description}
               </p>
+            )}
+
+            {menuRows.length > 0 && (
+              <div className="mt-8 rounded-2xl border border-line bg-white p-6">
+                <h2 className="font-serif text-xl font-medium">Ukens suppe</h2>
+                <ul className="mt-3 flex flex-col gap-4">
+                  {menuRows.map((r) => (
+                    <li key={r.iso}>
+                      <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
+                        Uke {r.week} · {shortDate(r.iso)}
+                      </p>
+                      <p className="mt-0.5 text-lg font-semibold text-ink">{r.entry.name}</p>
+                      {r.entry.ingredients && (
+                        <p className="text-base text-ink-soft">Inneholder: {r.entry.ingredients}</p>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
 
             <div className="mt-8 rounded-2xl border border-line bg-white p-6">

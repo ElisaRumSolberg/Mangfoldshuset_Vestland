@@ -189,6 +189,12 @@ export const TR: Record<string, string> = {
   "Åpne for påmelding – vis skjema på tilbudets side (påmelding per dato)":
     "Kayda açık – hizmet sayfasında kayıt formunu göster (tarih bazlı kayıt)",
   "Påmeldte (kommende samlinger)": "Kayıtlılar (yaklaşan buluşmalar)",
+  "Ukemeny (valgfritt – f.eks. suppe i uken, én linje per uke)":
+    "Haftalık menü (isteğe bağlı – örn. haftanın çorbası, her satıra bir hafta)",
+  "Format: ukenummer: Rett – ingredienser. Vises på tilbudets side for de kommende ukene.":
+    "Biçim: hafta numarası: Yemek – malzemeler. Hizmet sayfasında yaklaşan haftalar için gösterilir.",
+  "45: Linsesuppe – røde linser, gulrot, løk, potet, tomatpuré, sitron":
+    "45: Linsesuppe – røde linser, gulrot, løk, potet, tomatpuré, sitron",
   "Gratis for medlemmer · 30 kr for ikke-medlemmer": "Üyelere ücretsiz · üye olmayanlara 30 kr",
   "Påmeldinger og bilder for aktiviteten forsvinner også.":
     "Etkinliğin kayıtları ve fotoğrafları da silinir.",

@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
+  isoWeek,
   nextOccurrences,
+  parseMenu,
   shortDate,
   sortUpcoming,
   timeText,
@@ -39,6 +41,7 @@ function makeProgram(overrides: Partial<Program> = {}): Program {
     homepage_image_urls: [],
     highlights: null,
     price: null,
+    menu: null,
     registration_open: false,
     ...overrides,
   };
@@ -143,5 +146,25 @@ describe("sortUpcoming", () => {
     ];
     const order = sortUpcoming(items).map((i) => i.label);
     expect(order).toEqual(["featured", "single", "recurring-earlier", "recurring-later"]);
+  });
+});
+
+describe("ukemeny", () => {
+  it("regner ISO-uke for torsdager", () => {
+    expect(isoWeek("2026-11-05")).toBe(45);
+    expect(isoWeek("2026-11-12")).toBe(46);
+    expect(isoWeek("2026-12-31")).toBe(53);
+    expect(isoWeek("2027-01-07")).toBe(1);
+  });
+
+  it("leser én rett per linje med ingredienser", () => {
+    const menu = parseMenu(
+      ["45: Linsesuppe – røde linser, gulrot, løk", "Uke 46 - Tomatsuppe", "rot", "99: for høy uke"].join("\n")
+    );
+    expect(menu).toEqual([
+      { week: 45, name: "Linsesuppe", ingredients: "røde linser, gulrot, løk" },
+      { week: 46, name: "Tomatsuppe", ingredients: null },
+    ]);
+    expect(parseMenu(null)).toEqual([]);
   });
 });

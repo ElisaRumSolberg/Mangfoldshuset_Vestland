@@ -142,6 +142,17 @@ export default async function TilbudForm({
         />
       </div>
       <div className="sm:col-span-2">
+        <label className={label}>{t("Ukemeny (valgfritt – f.eks. suppe i uken, én linje per uke)")}</label>
+        <p className="mb-1 text-xs text-ink-soft">{t("Format: ukenummer: Rett – ingredienser. Vises på tilbudets side for de kommende ukene.")}</p>
+        <textarea
+          name="menu"
+          rows={4}
+          defaultValue={program?.menu ?? ""}
+          placeholder={t("45: Linsesuppe – røde linser, gulrot, løk, potet, tomatpuré, sitron")}
+          className={field}
+        />
+      </div>
+      <div className="sm:col-span-2">
         <label className={label}>{t("Ansvarlig (valgfritt – vises nederst på kortet)")}</label>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <input

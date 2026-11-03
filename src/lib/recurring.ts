@@ -32,6 +32,7 @@ export type Program = {
   highlights: string | null;
   price: string | null;
   registration_open: boolean;
+  menu: string | null; // ukemeny: én linje per uke, f.eks. «45: Linsesuppe – røde linser, gulrot»
 };
 
 const DAYS = ["søndag", "mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag"];
@@ -95,6 +96,34 @@ export function nextOccurrences(p: Program, from: string, count: number, horizon
   return out;
 }
 
+/** ISO-ukenummer (mandag–søndag, uke 1 har årets første torsdag) for en dato ÅÅÅÅ-MM-DD. */
+export function isoWeek(iso: string): number {
+  const d = utcDate(iso);
+  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+  const jan1 = Date.UTC(d.getUTCFullYear(), 0, 1);
+  return Math.ceil(((d.getTime() - jan1) / 86400000 + 1) / 7);
+}
+
+export type MenuEntry = { week: number; name: string; ingredients: string | null };
+
+/**
+ * Ukemeny fra fritekst, én linje per uke: «45: Linsesuppe – røde linser, gulrot, løk».
+ * «Uke 45 – …» og «45) …» godtas også. Linjer som ikke passer, hoppes over.
+ */
+export function parseMenu(text: string | null): MenuEntry[] {
+  const out: MenuEntry[] = [];
+  for (const line of (text ?? "").split(/\r?\n/)) {
+    const m = line.trim().match(/^(?:uke\s*)?(\d{1,2})\s*[:.)–—-]\s*(.+)$/i);
+    if (!m) continue;
+    const week = Number(m[1]);
+    if (week < 1 || week > 53) continue;
+    const [name, ...rest] = m[2].split(/\s+[–—-]\s+/);
+    if (!name.trim()) continue;
+    out.push({ week, name: name.trim(), ingredients: rest.join(" – ").trim() || null });
+  }
+  return out;
+}
+
 function fmtTime(t: string) {
   return t.slice(0, 5).replace(":", ".");
 }
@@ -142,6 +171,7 @@ export function toProgram(r: Record<string, unknown>): Program {
     highlights: (r.highlights as string | null) ?? null,
     price: (r.price as string | null) ?? null,
     registration_open: (r.registration_open as boolean | null) ?? false,
+    menu: (r.menu as string | null) ?? null,
   };
 }
 
