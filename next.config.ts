@@ -26,6 +26,12 @@ const nextConfig: NextConfig = {
         permanent: false,
       },
       {
+        // Kort adresse til plakaten: mangfoldshusetvestland.no/torsdagssuppe
+        source: "/torsdagssuppe",
+        destination: "/tilbud/590c279d-d79a-4b50-9d03-6dd8c311a828",
+        permanent: false,
+      },
+      {
         // Mangfoldsposten flyttet ut av Nyheter til sin egen adresse.
         source: "/nyheter/mangfoldsposten",
         destination: "/mangfoldsposten",
