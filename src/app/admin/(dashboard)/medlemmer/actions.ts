@@ -10,6 +10,7 @@ import { isMethod } from "@/lib/payments-report";
 import { todayOslo } from "@/lib/recurring";
 import { notifyAfterSave } from "@/lib/public-submission";
 import { getResendClient, isResendConfigured } from "@/lib/resend";
+import { receiptMessage } from "@/lib/receipt-email";
 
 function iso(d: Date) {
   return d.toISOString().slice(0, 10);
@@ -65,16 +66,39 @@ export async function markPaid(id: string, formData: FormData) {
   }
   if (isResendConfigured() && m.email) {
     const site = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.mangfoldshusetvestland.no";
+    const mail = receiptMessage({ first_name: m.first_name, expires_at: yearEnd(covers), pay_token: m.pay_token }, site);
     await notifyAfterSave(() => getResendClient().emails.send({
       from: "Mangfoldshuset Vestland <post@mangfoldshusetvestland.no>",
       to: m.email,
-      subject: "Betalingen din er registrert",
-      text: `Hei ${m.first_name}!\n\nVi har registrert betalingen din. Medlemskapet ditt gjelder ut ${covers}.\n\nPå din egen side kan du se medlemskapet ditt og legge til flere i familien. Hver person har sin egen betaling, og foresatte betaler for barn under 18 år:\n${site}/bli-med/medlem/${m.pay_token}\n\nMangfoldshuset Vestland`,
+      ...mail,
     }));
   }
   revalidatePath("/admin/medlemmer");
   revalidatePath("/admin/betalinger");
   done("/admin/medlemmer", "betalt");
+}
+
+/** Sender kvitteringen på nytt, f.eks. når medlemmet sier de ikke fikk beskjed om betalingen. */
+export async function sendReceipt(id: string) {
+  await requireOwner();
+  const supabase = await createClient();
+  const { data: m } = await supabase
+    .from("members")
+    .select("first_name, email, expires_at, pay_token")
+    .eq("id", id)
+    .single();
+  // Kvittering gir bare mening for et medlemskap som er betalt og ikke utløpt.
+  if (!m || !m.email || !m.expires_at || m.expires_at < todayOslo() || !isResendConfigured()) {
+    failed("/admin/medlemmer", "generell");
+  }
+  const site = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.mangfoldshusetvestland.no";
+  const { error } = await getResendClient().emails.send({
+    from: "Mangfoldshuset Vestland <post@mangfoldshusetvestland.no>",
+    to: m!.email,
+    ...receiptMessage({ first_name: m!.first_name, expires_at: m!.expires_at, pay_token: m!.pay_token }, site),
+  });
+  if (error) failed("/admin/medlemmer", "generell");
+  done("/admin/medlemmer", "kvittering");
 }
 
 export async function addMember(formData: FormData) {

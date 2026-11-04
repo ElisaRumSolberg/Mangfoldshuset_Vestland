@@ -91,6 +91,8 @@ export const TR: Record<string, string> = {
   "Dette medlemmet har allerede betalt for denne perioden. Ingen ny betaling ble registrert.":
     "Bu üye bu dönem için zaten ödemiş. Yeni bir ödeme kaydedilmedi.",
   "Forny medlemskap": "Üyeliği yenile",
+  "Send kvittering": "Makbuz gönder",
+  "Kvitteringen er sendt på e-post til medlemmet.": "Makbuz üyeye e-postayla gönderildi.",
   "Betalinger": "Ödemeler",
   "Betalende medlemmer": "Ödeyen üyeler",
   "Sum innbetalt": "Toplam ödenen",

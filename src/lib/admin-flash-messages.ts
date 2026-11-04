@@ -5,6 +5,7 @@ export const FLASH_OK = {
   lagret: "Lagret. Endringen er nå på nettsiden.",
   "lagt-til": "Lagt til.",
   slettet: "Slettet.",
+  kvittering: "Kvitteringen er sendt på e-post til medlemmet.",
   betalt: "Registrert som betalt. Betalingen står i oversikten Betalinger, og medlemskapet gjelder ut medlemsåret.",
 } as const;
 

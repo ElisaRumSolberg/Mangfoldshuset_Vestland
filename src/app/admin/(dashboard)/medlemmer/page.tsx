@@ -1,7 +1,7 @@
 import { getT } from "@/lib/admin-i18n-server";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { addMember, deleteMember, markPaid } from "./actions";
+import { addMember, deleteMember, markPaid, sendReceipt } from "./actions";
 import DeleteButton from "../DeleteButton";
 import { feeText, membershipFee } from "@/lib/membership-fee";
 import { ageOn, buildStats, type MemberStats } from "@/lib/member-stats";
@@ -421,6 +421,16 @@ export default async function AdminMedlemmerPage({
                     {m.expires_at ? t("Forny medlemskap") : t("Marker betalt")}
                   </button>
                 </form>
+                {(m.status === "aktiv" || m.status === "snart") && (
+                  <form action={sendReceipt.bind(null, m.id)}>
+                    <button
+                      type="submit"
+                      className="rounded-full border border-line px-4 py-2 text-sm text-ink-soft transition-colors hover:border-ink hover:text-ink"
+                    >
+                      {t("Send kvittering")}
+                    </button>
+                  </form>
+                )}
                 <form action={deleteMember.bind(null, m.id)}>
                   <DeleteButton what={`${m.first_name} ${m.last_name}`} extra={t("Medlemmet og eventuelle familiemedlemmer fjernes fra medlemslisten.")} />
                 </form>
