@@ -5,7 +5,7 @@ export const FLASH_OK = {
   lagret: "Lagret. Endringen er nå på nettsiden.",
   "lagt-til": "Lagt til.",
   slettet: "Slettet.",
-  betalt: "Registrert som betalt. Medlemskapet gjelder nå ett år fra utløpsdatoen.",
+  betalt: "Registrert som betalt. Betalingen står i oversikten Betalinger, og medlemskapet gjelder ut medlemsåret.",
 } as const;
 
 export const FLASH_ERR = {
@@ -17,6 +17,8 @@ export const FLASH_ERR = {
   "mangler-navn": "Skriv inn et navn før du lagrer.",
   "mangler-pdf":
     "Du må laste opp en PDF-fil først. Vent til det står at filen er lastet opp, og trykk deretter «Legg til».",
+  "allerede-betalt":
+    "Dette medlemmet har allerede betalt for denne perioden. Ingen ny betaling ble registrert.",
   "mangler-felt": "Noen obligatoriske felt manglet. Fyll ut feltene som er merket med stjerne (*).",
 } as const;
 

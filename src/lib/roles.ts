@@ -20,6 +20,7 @@ const OWNER_ONLY_EXACT = ["/admin"];
 /** Sider (og alt under dem) kun "owner" har tilgang til. */
 const OWNER_ONLY_PREFIXES = [
   "/admin/medlemmer",
+  "/admin/betalinger",
   "/admin/statistikk",
   "/admin/skjema",
   "/admin/meldinger",

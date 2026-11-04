@@ -11,6 +11,7 @@ import { redirect } from "next/navigation";
 const links = [
   { href: "/admin", label: "Oversikt", ownerOnly: true },
   { href: "/admin/medlemmer", label: "Medlemmer", ownerOnly: true },
+  { href: "/admin/betalinger", label: "Betalinger", ownerOnly: true },
   { href: "/admin/innhold", label: "Innhold", ownerOnly: false },
   { href: "/admin/aktiviteter", label: "Aktiviteter", ownerOnly: false },
   { href: "/admin/tilbud", label: "Faste tilbud", ownerOnly: false },
@@ -36,7 +37,7 @@ const groups = [
       "/admin/innhold",
     ],
   },
-  { label: "Folk", hrefs: ["/admin/medlemmer", "/admin/meldinger", "/admin/skjema"] },
+  { label: "Folk", hrefs: ["/admin/medlemmer", "/admin/betalinger", "/admin/meldinger", "/admin/skjema"] },
   { label: "Annet", hrefs: ["/admin/statistikk", "/admin/hjelp"] },
 ];
 

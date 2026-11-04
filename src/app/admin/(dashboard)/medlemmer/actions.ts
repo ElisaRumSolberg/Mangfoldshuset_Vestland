@@ -4,15 +4,13 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { done, failed } from "@/lib/admin-flash";
 import { requireOwner } from "@/lib/auth-guard";
+import { feeForPerson } from "@/lib/membership-fee";
+import { coverageYear, yearEnd } from "@/lib/membership-year";
+import { isMethod } from "@/lib/payments-report";
+import { todayOslo } from "@/lib/recurring";
 
 function iso(d: Date) {
   return d.toISOString().slice(0, 10);
-}
-
-function plusOneYear(base: Date) {
-  const d = new Date(base);
-  d.setUTCFullYear(d.getUTCFullYear() + 1);
-  return d;
 }
 
 const GENDERS = ["kvinne", "mann", "annet", "ukjent"];
@@ -25,26 +23,46 @@ function dateOrNull(v: FormDataEntryValue | null): string | null {
   return typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null;
 }
 
-export async function markPaid(id: string) {
+/** Registrerer én betaling for ett medlem: en rad i betalingsoversikten og nytt utløp (31. desember). */
+export async function markPaid(id: string, formData: FormData) {
   await requireOwner();
   const supabase = await createClient();
   const { data: m } = await supabase
     .from("members")
-    .select("expires_at")
+    .select("expires_at, birth_date")
     .eq("id", id)
     .single();
   if (!m) failed("/admin/medlemmer", "generell");
 
-  const today = new Date(iso(new Date()));
-  const current = m.expires_at ? new Date(m.expires_at) : null;
-  const base = current && current > today ? current : today;
+  const today = todayOslo();
+  const covers = coverageYear(today, m.expires_at);
+  // Maks ett år frem i tid, så et dobbeltklikk ikke betaler flere år.
+  if (covers > Number(today.slice(0, 4)) + 1) failed("/admin/medlemmer", "allerede-betalt");
+
+  const method = formData.get("method");
+  const { data: payment, error: payError } = await supabase
+    .from("member_payments")
+    .insert({
+      member_id: id,
+      covers_year: covers,
+      amount: feeForPerson(m.birth_date, today),
+      method: isMethod(method) ? method : "bank",
+      paid_at: today,
+    })
+    .select("id")
+    .single();
+  if (payError || !payment) failed("/admin/medlemmer", payError?.code === "23505" ? "allerede-betalt" : "generell", payError ?? undefined);
 
   const { error } = await supabase
     .from("members")
-    .update({ paid_at: iso(today), expires_at: iso(plusOneYear(base)) })
+    .update({ paid_at: today, expires_at: yearEnd(covers) })
     .eq("id", id);
-  if (error) failed("/admin/medlemmer", "generell", error);
+  if (error) {
+    await supabase.from("member_payments").delete().eq("id", payment!.id);
+    failed("/admin/medlemmer", "generell", error);
+  }
   revalidatePath("/admin/medlemmer");
+  revalidatePath("/admin/betalinger");
   done("/admin/medlemmer", "betalt");
 }
 
@@ -53,7 +71,7 @@ export async function addMember(formData: FormData) {
   const supabase = await createClient();
   const expires = (formData.get("expires_at") as string) || null;
 
-  const { error } = await supabase.from("members").insert({
+  const { data: created, error } = await supabase.from("members").insert({
     first_name: formData.get("first_name") as string,
     last_name: formData.get("last_name") as string,
     email: formData.get("email") as string,
@@ -64,9 +82,21 @@ export async function addMember(formData: FormData) {
     accepted_terms: true,
     paid_at: expires ? iso(new Date()) : null,
     expires_at: expires,
-  });
+  }).select("id").single();
   if (error) failed("/admin/medlemmer", "generell", error);
+  if (expires && created) {
+    // Et eksisterende medlem som legges inn som betalt, skal også stå i betalingsoversikten.
+    await supabase.from("member_payments").insert({
+      member_id: created.id,
+      covers_year: Number(expires.slice(0, 4)),
+      amount: feeForPerson((formData.get("birth_date") as string) || null, todayOslo()),
+      method: "ukjent",
+      reference: "Lagt inn manuelt som eksisterende medlem",
+      paid_at: todayOslo(),
+    });
+  }
   revalidatePath("/admin/medlemmer");
+  revalidatePath("/admin/betalinger");
   done("/admin/medlemmer", "lagt-til");
 }
 

@@ -403,12 +403,22 @@ export default async function AdminMedlemmerPage({
                 >
                   {t("Rediger")}
                 </Link>
-                <form action={markPaid.bind(null, m.id)}>
+                <form action={markPaid.bind(null, m.id)} className="flex items-center gap-2">
+                  <select
+                    name="method"
+                    aria-label={t("Betalt med")}
+                    defaultValue="vipps"
+                    className="rounded-full border border-line bg-white px-3 py-2 text-sm text-ink-soft"
+                  >
+                    <option value="vipps">Vipps</option>
+                    <option value="bank">{t("Bank")}</option>
+                    <option value="kontant">{t("Kontant")}</option>
+                  </select>
                   <button
                     type="submit"
                     className="rounded-full bg-[#EAF0E9] px-4 py-2 text-sm font-semibold text-green-dark hover:opacity-80"
                   >
-                    {m.expires_at ? t("Forny (+1 år)") : t("Marker betalt")}
+                    {m.expires_at ? t("Forny medlemskap") : t("Marker betalt")}
                   </button>
                 </form>
                 <form action={deleteMember.bind(null, m.id)}>

@@ -86,8 +86,30 @@ export const TR: Record<string, string> = {
   "Lagret. Endringen er nå på nettsiden.": "Kaydedildi. Değişiklik artık sitede.",
   "Lagt til.": "Eklendi.",
   "Slettet.": "Silindi.",
-  "Registrert som betalt. Medlemskapet gjelder nå ett år fra utløpsdatoen.":
-    "Ödeme kaydedildi. Üyelik bitiş tarihinden itibaren bir yıl daha geçerli.",
+  "Registrert som betalt. Betalingen står i oversikten Betalinger, og medlemskapet gjelder ut medlemsåret.":
+    "Ödeme kaydedildi. Ödeme, Betalinger sayfasında görünür ve üyelik üyelik yılının sonuna kadar geçerlidir.",
+  "Dette medlemmet har allerede betalt for denne perioden. Ingen ny betaling ble registrert.":
+    "Bu üye bu dönem için zaten ödemiş. Yeni bir ödeme kaydedilmedi.",
+  "Forny medlemskap": "Üyeliği yenile",
+  "Betalinger": "Ödemeler",
+  "Betalende medlemmer": "Ödeyen üyeler",
+  "Sum innbetalt": "Toplam ödenen",
+  "Under 26 år": "26 yaş altı",
+  "6–25 år": "6–25 yaş",
+  "Slettet medlem": "Silinmiş üye",
+  "Kunne ikke hente betalinger:": "Ödemeler alınamadı:",
+  "Kjør": "Çalıştır",
+  "Hvert medlem har sin egen betaling, også barn. Oversikten viser hvem som har betalt i året du velger, og kan lastes ned til søknader.": "Her üyenin, çocuklar dahil, kendi ödemesi vardır. Bu sayfa seçtiğin yılda kimin ödediğini gösterir ve başvurular için indirilebilir.",
+  "Last ned CSV for {year}": "{year} için CSV indir",
+  "Betalende medlemmer etter alder og kjønn": "Yaş ve cinsiyete göre ödeyen üyeler",
+  "Alder regnet per {date}. Uten fødselsdato: {x}.": "Yaş {date} tarihine göre hesaplandı. Doğum tarihi olmayan: {x}.",
+  "Ingen betalinger registrert i {year}.": "{year} için kayıtlı ödeme yok.",
+  "betalingen fra {name}": "{name} adlı kişinin ödemesi",
+  "Medlemmet står da som ikke betalt for denne perioden, med mindre det finnes en tidligere betaling.": "Daha önceki bir ödeme yoksa üye bu dönem için ödenmemiş görünür.",
+  "dekker {y}": "{y} yılını kapsar",
+  "Betalt med": "Ödeme yöntemi",
+  "Bank": "Banka",
+  "Kontant": "Nakit",
   "Noe gikk galt, og endringen ble ikke lagret. Prøv igjen. Skjer det flere ganger, kontakt den som har ansvar for nettsiden.":
     "Bir şeyler ters gitti ve değişiklik kaydedilmedi. Tekrar dene. Tekrar olursa siteden sorumlu kişiye haber ver.",
   "Endringen ble ikke lagret. Du har kanskje ikke tilgang til å endre dette. Prøv å logge ut og inn igjen.":
