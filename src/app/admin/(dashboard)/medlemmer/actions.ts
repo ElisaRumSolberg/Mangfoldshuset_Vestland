@@ -8,6 +8,8 @@ import { feeForPerson } from "@/lib/membership-fee";
 import { coverageYear, yearEnd } from "@/lib/membership-year";
 import { isMethod } from "@/lib/payments-report";
 import { todayOslo } from "@/lib/recurring";
+import { notifyAfterSave } from "@/lib/public-submission";
+import { getResendClient, isResendConfigured } from "@/lib/resend";
 
 function iso(d: Date) {
   return d.toISOString().slice(0, 10);
@@ -29,7 +31,7 @@ export async function markPaid(id: string, formData: FormData) {
   const supabase = await createClient();
   const { data: m } = await supabase
     .from("members")
-    .select("expires_at, birth_date")
+    .select("expires_at, birth_date, first_name, email, pay_token")
     .eq("id", id)
     .single();
   if (!m) failed("/admin/medlemmer", "generell");
@@ -60,6 +62,15 @@ export async function markPaid(id: string, formData: FormData) {
   if (error) {
     await supabase.from("member_payments").delete().eq("id", payment!.id);
     failed("/admin/medlemmer", "generell", error);
+  }
+  if (isResendConfigured() && m.email) {
+    const site = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.mangfoldshusetvestland.no";
+    await notifyAfterSave(() => getResendClient().emails.send({
+      from: "Mangfoldshuset Vestland <post@mangfoldshusetvestland.no>",
+      to: m.email,
+      subject: "Betalingen din er registrert",
+      text: `Hei ${m.first_name}!\n\nVi har registrert betalingen din. Medlemskapet ditt gjelder ut ${covers}.\n\nPå din egen side kan du se medlemskapet ditt og legge til flere i familien. Hver person har sin egen betaling, og foresatte betaler for barn under 18 år:\n${site}/bli-med/medlem/${m.pay_token}\n\nMangfoldshuset Vestland`,
+    }));
   }
   revalidatePath("/admin/medlemmer");
   revalidatePath("/admin/betalinger");

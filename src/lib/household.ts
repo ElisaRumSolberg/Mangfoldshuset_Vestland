@@ -1,3 +1,6 @@
+/** Flest personer i én husstand (hovedmedlem og de som legges til). */
+export const MAX_HOUSEHOLD = 10;
+
 /** Deler «Fornavn Mellomnavn Etternavn» i fornavn og etternavn. Ett enkelt navn får hovedmedlemmets etternavn. */
 export function splitName(full: string, fallbackLast: string): { first_name: string; last_name: string } {
   const parts = full.trim().split(/\s+/).filter(Boolean);

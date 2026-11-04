@@ -2,12 +2,11 @@
 
 import { randomUUID } from "node:crypto";
 import { redirect } from "next/navigation";
-import { splitName } from "@/lib/household";
-import { ageOn, feeText, membershipFee } from "@/lib/membership-fee";
+import { feeForPerson } from "@/lib/membership-fee";
 import { todayOslo } from "@/lib/recurring";
 import { savePublicSubmission, notifyAfterSave } from "@/lib/public-submission";
 import { getResendClient, isResendConfigured, NOTIFY_EMAIL } from "@/lib/resend";
-import { applicationSchema, membershipSchema, familyMembersSchema } from "@/lib/validation";
+import { applicationSchema, membershipSchema } from "@/lib/validation";
 import { isRateLimited, looksLikeBot } from "@/lib/spam-guard";
 
 const TYPES = ["frivillig", "ide", "samarbeid"] as const;
@@ -27,9 +26,7 @@ export async function submitMembership(formData: FormData) {
     first_name: formData.get("first_name"),
     last_name: formData.get("last_name"),
     email: formData.get("email"),
-    membership_type: [2, 3, 4, 5, 6].some((n) => typeof formData.get(`fam_name_${n}`) === "string" && (formData.get(`fam_name_${n}`) as string).trim())
-      ? "familie"
-      : "enkelt",
+    membership_type: "enkelt",
     birth_date: formData.get("birth_date") ?? "",
     gender: formData.get("gender") ?? "",
     address: formData.get("address") ?? "",
@@ -41,67 +38,51 @@ export async function submitMembership(formData: FormData) {
 
   if (await isRateLimited("members", parsed.data.email)) return { error: "For mange innsendinger. Vent litt og prøv igjen." };
 
-  const str = (k: string) => typeof formData.get(k) === "string" ? (formData.get(k) as string).trim() : "";
-  const { first_name, last_name, email, membership_type } = parsed.data;
-
-  const family = familyMembersSchema.safeParse(
-    membership_type === "familie"
-      ? [2, 3, 4, 5, 6]
-          .map((n) => ({ name: str(`fam_name_${n}`), birth_date: str(`fam_birth_${n}`), gender: str(`fam_gender_${n}`) }))
-          .filter((f) => f.name)
-      : []);
-  if (!family.success) return { error: "Kunne ikke sende skjemaet. Sjekk feltene og prøv igjen." };
-
-  // Hver person er sitt eget medlem med egen betaling; household_id knytter dem sammen.
+  // Man melder seg inn selv og betaler for seg selv. Flere kan legges til først etter at
+  // egen betaling er registrert (se /bli-med/medlem/[token]). household_id knytter dem sammen.
+  const { first_name, last_name, email } = parsed.data;
   const household_id = randomUUID();
-  const today = todayOslo();
-  const common = {
-    membership_type,
+  const pay_token = randomUUID();
+  const fee = feeForPerson(parsed.data.birth_date, todayOslo());
+
+  const saved = await savePublicSubmission("members", {
+    membership_type: "enkelt",
+    family_members: [],
+    household_id,
+    pay_token,
+    first_name,
+    last_name,
     email,
+    birth_date: parsed.data.birth_date,
+    gender: parsed.data.gender,
     address: parsed.data.address || null,
     phone: parsed.data.phone || null,
+    guardian: parsed.data.guardian || null,
+    comment: parsed.data.comment || null,
     accepted_terms: formData.get("terms") === "on",
-    household_id,
-    family_members: [],
-  };
-  const records = [
-    {
-      ...common,
-      first_name,
-      last_name,
-      birth_date: parsed.data.birth_date,
-      gender: parsed.data.gender,
-      guardian: parsed.data.guardian || null,
-      comment: parsed.data.comment || null,
-    },
-    ...family.data.map((f) => {
-      const under18 = !!f.birth_date && ageOn(f.birth_date, today) < 18;
-      return {
-        ...common,
-        ...splitName(f.name, last_name),
-        birth_date: f.birth_date,
-        gender: f.gender,
-        guardian: under18 ? `${first_name} ${last_name}` : null,
-        comment: null,
-      };
-    }),
-  ];
-
-  const saved = await savePublicSubmission("members", records);
+  });
   if (!saved) return { error: "Kunne ikke sende skjemaet. Sjekk feltene og prøv igjen." };
-  const fee = membershipFee(records, today);
 
   if (isResendConfigured()) {
+    const site = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.mangfoldshusetvestland.no";
+    const from = "Mangfoldshuset Vestland <post@mangfoldshusetvestland.no>";
     await notifyAfterSave(() => getResendClient().emails.send({
-      from: "Mangfoldshuset Vestland <post@mangfoldshusetvestland.no>",
+      from,
       to: NOTIFY_EMAIL,
       replyTo: email,
       subject: `Ny medlemssøknad: ${first_name} ${last_name}`,
-      text: `${first_name} ${last_name} (${email}) har meldt seg inn${records.length > 1 ? ` sammen med ${records.length - 1} til i familien` : ""}. Kontingent: ${feeText(fee)}. Hver person betaler for seg. Se admin → Medlemmer.`,
+      text: `${first_name} ${last_name} (${email}) har meldt seg inn. Kontingent: ${fee} kr. Se admin → Medlemmer.`,
+    }));
+    await notifyAfterSave(() => getResendClient().emails.send({
+      from,
+      to: email,
+      replyTo: NOTIFY_EMAIL,
+      subject: "Velkommen som medlem – betal kontingenten din",
+      text: `Hei ${first_name}!\n\nTakk for at du meldte deg inn i Mangfoldshuset Vestland. Medlemskapet aktiveres når kontingenten er betalt: ${fee} kr per år.\n\nBetal med Vipps til #595791 eller til bankkonto 3207 31 01688, og skriv navnet ditt.\n\nDu betaler for deg selv. Når betalingen er registrert, kan du legge til flere i familien på din egen side. Hver person har sin egen betaling, og foresatte betaler for barn under 18 år:\n${site}/bli-med/medlem/${pay_token}\n\nMangfoldshuset Vestland`,
     }));
   }
 
-  redirect(`/bli-med?sendt=medlem&h=${household_id}#medlem`);
+  redirect(`/bli-med/medlem/${pay_token}?ny=1`);
 }
 
 export async function submitApplication(formData: FormData) {

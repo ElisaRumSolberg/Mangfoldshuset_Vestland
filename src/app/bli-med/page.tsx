@@ -4,12 +4,8 @@ import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HoneypotFields from "@/components/HoneypotFields";
-import FamilyRows from "@/components/FamilyRows";
 import { fetchSiteSettings } from "@/lib/site-settings";
 import BirthDateInput from "@/components/BirthDateInput";
-import { createAdminClient } from "@/lib/supabase/admin";
-import { ageOn, feeForPerson } from "@/lib/membership-fee";
-import { todayOslo } from "@/lib/recurring";
 import { submitApplication, submitMembership } from "./actions";
 
 export const metadata: Metadata = {
@@ -142,84 +138,19 @@ function Check() {
 }
 
 const STEPS = [
-  ["1", "Fyll ut skjemaet", "Skriv inn deg selv og eventuelt flere i familien."],
-  ["2", "Betal for hver person", "Hver person betaler sin egen kontingent."],
-  ["3", "Du er medlem", "Vi aktiverer medlemskapet når betalingen er mottatt."],
+  ["1", "Meld deg inn", "Fyll ut skjemaet for deg selv."],
+  ["2", "Betal for deg selv", "Hver person har sin egen betaling. Foresatte betaler for barn."],
+  ["3", "Legg til flere", "Når du har betalt, kan du legge til flere i familien."],
 ] as const;
-
-type ThanksPerson = { id: string; first_name: string; last_name: string; birth_date: string | null; paid_at: string | null };
-
-/** Etter innmelding: ett kort per person, med eget beløp og egen betaling. */
-function MemberThanks({ people, vippsLink }: { people: ThanksPerson[]; vippsLink?: string | null }) {
-  const today = todayOslo();
-  return (
-    <div>
-      <div className="rounded-xl bg-[#EAF0E9] px-6 py-6 text-center">
-        <p className="font-serif text-2xl text-green-dark">Takk for at du melder deg inn!</p>
-        <p className="mt-1 text-sm text-ink-soft">
-          {people.length > 1
-            ? "Hver person er eget medlem og betaler for seg. Medlemskapet aktiveres når betalingen er mottatt."
-            : "Medlemskapet aktiveres når betalingen er mottatt."}
-        </p>
-      </div>
-      <ul className="mt-5 flex flex-col gap-3">
-        {people.map((p) => {
-          const fee = feeForPerson(p.birth_date, today);
-          const child = !!p.birth_date && ageOn(p.birth_date, today) < 16;
-          return (
-            <li key={p.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-cream px-5 py-4">
-              <div>
-                <p className="font-semibold text-ink">
-                  {p.first_name} {p.last_name}
-                </p>
-                <p className="text-sm text-ink-soft">
-                  {child ? "0–15 år" : "Fra og med 16 år"} · <span className="font-semibold text-ink">{fee} kr</span> per år
-                </p>
-              </div>
-              {p.paid_at ? (
-                <span className="rounded-full bg-[#EAF0E9] px-4 py-2 text-sm font-semibold text-green-dark">Betalt</span>
-              ) : vippsLink ? (
-                <VippsButton href={vippsLink} />
-              ) : (
-                <span className="rounded-full bg-[#F5EAD5] px-4 py-2 text-sm font-semibold text-[#93701F]">Ikke betalt</span>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-      <p className="mt-5 text-sm leading-relaxed text-ink-soft">
-        Betal med Vipps til <span className="font-semibold text-ink">#595791</span> eller til bankkonto{" "}
-        <span className="font-semibold text-ink">3207 31 01688</span>, og skriv navnet på den du betaler for.
-        Betaling direkte på nettsiden kommer snart.
-      </p>
-    </div>
-  );
-}
-
-async function loadHousehold(id: string | undefined): Promise<ThanksPerson[]> {
-  if (!id || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) return [];
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return [];
-  try {
-    const { data } = await createAdminClient()
-      .from("members")
-      .select("id, first_name, last_name, birth_date, paid_at")
-      .eq("household_id", id)
-      .order("created_at", { ascending: true });
-    return (data ?? []) as ThanksPerson[];
-  } catch {
-    return [];
-  }
-}
 
 export default async function BliMedPage({
   searchParams,
 }: {
-  searchParams: Promise<{ sendt?: string; feil?: string; h?: string }>;
+  searchParams: Promise<{ sendt?: string; feil?: string }>;
 }) {
-  const { sendt, feil, h } = await searchParams;
+  const { sendt, feil } = await searchParams;
   const settings = await fetchSiteSettings();
   const vippsLink = settings.vipps_link;
-  const household = sendt === "medlem" ? await loadHousehold(h) : [];
 
   return (
     <>
@@ -242,14 +173,22 @@ export default async function BliMedPage({
           <Section
             id="medlem"
             title="Bli medlem"
-            intro="Som medlem er du med på å gjøre Mangfoldshuset Vestland sterkere og på å bestemme retningen."
+            intro={
+              <>
+                <p>
+                  Mangfoldshuset Vestland er først og fremst en aktivitetsrettet forening, men vi trenger alltid
+                  flere medlemmer som vil være med på å styrke mangfoldet i nærmiljøet.
+                </p>
+                <p>
+                  Et medlemskap er et verdifullt bidrag til arbeidet vårt med å arrangere aktiviteter for alle –
+                  uansett alder, bakgrunn og forutsetninger. Sammen bidrar vi til inkludering, fellesskap og sosial
+                  utjevning.
+                </p>
+              </>
+            }
           >
             {sendt === "medlem" ? (
-              household.length > 0 ? (
-                <MemberThanks people={household} vippsLink={vippsLink} />
-              ) : (
-                <Thanks text="Takk for at du melder deg inn! Betal kontingenten med Vipps til #595791, så aktiverer vi medlemskapet ditt. Melder du inn flere, betaler hver person for seg." vippsLink={vippsLink} />
-              )
+              <Thanks text="Takk for at du melder deg inn! Betal kontingenten med Vipps til #595791, så aktiverer vi medlemskapet ditt. Når du har betalt, kan du legge til flere i familien." vippsLink={vippsLink} />
             ) : (
               <>
                 <ol className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -269,11 +208,15 @@ export default async function BliMedPage({
                 <hr className="my-8 border-line" />
 
                 <h3 className="font-serif text-2xl font-medium text-ink">Hva koster det?</h3>
-                <p className="mt-1 text-sm text-ink-soft">Per person, per år. Hver person betaler for seg.</p>
+                <p className="mt-1 text-sm text-ink-soft">
+                  Per person, per år. Du melder deg inn og betaler for deg selv. Først når du har betalt, kan du
+                  legge til flere, og de betaler hver for seg. Er medlemmet under 18 år, betaler foresatt.
+                </p>
                 <dl className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="rounded-2xl border border-line bg-[#F7E9E9] px-6 py-5">
                     <dt className="text-sm font-semibold text-fig">0–15 år</dt>
                     <dd className="mt-1 font-serif text-4xl text-ink">25 kr</dd>
+                    <dd className="mt-1 text-sm text-ink-soft">Foresatt betaler for barnet</dd>
                   </div>
                   <div className="rounded-2xl border border-line bg-[#EAF0E9] px-6 py-5">
                     <dt className="text-sm font-semibold text-green-dark">Fra og med 16 år</dt>
@@ -370,12 +313,10 @@ export default async function BliMedPage({
                     og kjønn til støtteordninger. Du kan velge «Ønsker ikke å oppgi» på kjønn.
                   </p>
 
-                  <details className="rounded-lg border border-line bg-cream px-4 py-3">
-                    <summary className="cursor-pointer text-sm font-semibold text-ink">
-                      Vil du melde inn flere i familien? Legg dem til her (opptil 5 personer til)
-                    </summary>
-                    <FamilyRows inputClass={input} />
-                  </details>
+                  <p className="rounded-lg bg-[#EAF0E9] px-4 py-3 text-sm leading-relaxed text-ink-soft">
+                    Du melder deg inn og betaler for deg selv. Når betalingen din er registrert, kan du legge til flere
+                    i familien på din egen medlemsside. Hver person har sin egen betaling.
+                  </p>
 
                   <div>
                     <label htmlFor="field-comment" className={label}>Kommentar (valgfritt)</label>

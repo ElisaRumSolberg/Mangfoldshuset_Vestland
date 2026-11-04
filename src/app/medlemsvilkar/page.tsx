@@ -25,7 +25,14 @@ const sections: { title: string; body: React.ReactNode }[] = [
       <p>
         Kontingenten er per person: 100 kr per år for medlemmer fra og med 16
         år, og 25 kr per år for medlemmer til og med 15 år. Det finnes ingen
-        egen familiepris; en familie betaler for hvert medlem. Alderen regnes
+        egen familiepris; en familie betaler for hvert medlem. Du melder deg
+        inn og betaler for deg selv. Først når din egen betaling er registrert,
+        kan du legge til andre personer, for eksempel familiemedlemmer. Hver av
+        dem er eget medlem og må betale før vedkommende kan legge til flere.
+        Hvert medlem har
+        sin egen betaling. Er medlemmet under 18 år, betaler foresatt
+        kontingenten for barnet, og barnet er likevel eget medlem med egen
+        betaling. Alderen regnes
         ut fra fødselsdatoen din på betalingsdagen (ved automatisk fornyelse:
         1. januar).
         Kontingenten betales med Vipps, enten direkte på nettsiden (når denne

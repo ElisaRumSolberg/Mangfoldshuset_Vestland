@@ -27,7 +27,7 @@ export function unpaidMessage(firstName: string, people: { name: string; fee: nu
   const pay = "Betal med Vipps til #595791 eller til bankkonto 3207 31 01688";
   const body =
     people.length > 1
-      ? `Medlemskapet aktiveres for hver person når kontingenten er betalt. Hver person betaler for seg, per år:\n${people
+      ? `Medlemskapet aktiveres for hver person når kontingenten er betalt. Hver person har sin egen betaling, per år. Foresatte betaler for barn under 18 år:\n${people
           .map((p) => `- ${p.name}: ${p.fee} kr`)
           .join("\n")}\n\n${pay}, og skriv navnet på den du betaler for.`
       : `Medlemskapet aktiveres når kontingenten er betalt: ${people[0]?.fee ?? FEE_ADULT} kr per år. ${pay}.`;

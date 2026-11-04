@@ -11,7 +11,7 @@ import { splitName } from "@/lib/household";
 function form(extra: Record<string, string> = {}) {
   const f = new FormData();
   Object.entries({
-    first_name: "Kari", last_name: "Nordmann", email: "kari@example.invalid", membership_type: "familie",
+    first_name: "Kari", last_name: "Nordmann", email: "kari@example.invalid",
     birth_date: "1985-05-01", gender: "kvinne", terms: "on", ...extra,
   }).forEach(([k, v]) => f.set(k, v));
   return f;
@@ -23,34 +23,41 @@ beforeEach(() => {
   mocks.send.mockResolvedValue({ error: null });
 });
 
-it("stores every person as their own member row in the same household", async () => {
-  const f = form({
-    fam_name_2: "Ola Nordmann", fam_birth_2: "1983-02-02", fam_gender_2: "mann",
-    fam_name_3: "Liv", fam_birth_3: "2015-09-09", fam_gender_3: "kvinne",
-  });
-  await expect(submitMembership(f)).rejects.toThrow("?sendt=medlem");
-  const rows = mocks.save.mock.calls[0][1];
-  expect(mocks.save.mock.calls[0][0]).toBe("members");
-  expect(rows).toHaveLength(3);
-  expect(new Set(rows.map((r: { household_id: string }) => r.household_id)).size).toBe(1);
-  expect(rows.map((r: { first_name: string; last_name: string }) => `${r.first_name} ${r.last_name}`))
-    .toEqual(["Kari Nordmann", "Ola Nordmann", "Liv Nordmann"]);
-  expect(rows.every((r: { family_members: unknown[] }) => r.family_members.length === 0)).toBe(true);
-  expect(rows.every((r: { email: string }) => r.email === "kari@example.invalid")).toBe(true);
-  // barn under 18 får hovedmedlemmet som foresatt
-  expect(rows[2].guardian).toBe("Kari Nordmann");
-  expect(rows[1].guardian).toBeNull();
-  expect(mocks.send.mock.calls[0][0].text).toContain("225 kr (2 × 100 kr + 1 × 25 kr)");
+it("signs up only the person themselves, even if family fields are sent", async () => {
+  const f = form({ fam_name_2: "Ola Nordmann", fam_birth_2: "1983-02-02", fam_gender_2: "mann" });
+  await expect(submitMembership(f)).rejects.toThrow("REDIRECT:/bli-med/medlem/");
+  const row = mocks.save.mock.calls[0][1];
+  expect(Array.isArray(row)).toBe(false);
+  expect(row).toMatchObject({ first_name: "Kari", last_name: "Nordmann", membership_type: "enkelt", family_members: [] });
+  expect(row.household_id).toMatch(/^[0-9a-f-]{36}$/);
+  expect(row.pay_token).toMatch(/^[0-9a-f-]{36}$/);
 });
 
-it("stores a single member as one row", async () => {
-  await expect(submitMembership(form({ membership_type: "enkelt" }))).rejects.toThrow("?sendt=medlem");
-  expect(mocks.save.mock.calls[0][1]).toHaveLength(1);
+it("sends the member a personal link to their own page and notifies the organisation", async () => {
+  let redirectedTo = "";
+  try {
+    await submitMembership(form());
+  } catch (e) {
+    redirectedTo = String((e as Error).message);
+  }
+  const token = mocks.save.mock.calls[0][1].pay_token;
+  expect(redirectedTo).toBe(`REDIRECT:/bli-med/medlem/${token}?ny=1`);
+  const mails = mocks.send.mock.calls.map((c) => c[0]);
+  const toMember = mails.find((m) => m.to === "kari@example.invalid");
+  expect(toMember.text).toContain(`/bli-med/medlem/${token}`);
+  expect(toMember.text).toContain("100 kr per år");
+  expect(mails.some((m) => m.to === "qa@example.invalid")).toBe(true);
 });
 
-it("does not send a mail when nothing was saved", async () => {
+it("tells a child member the child rate", async () => {
+  await expect(submitMembership(form({ birth_date: "2015-09-09", guardian: "Kari Nordmann" }))).rejects.toThrow("REDIRECT:/bli-med/medlem/");
+  const toMember = mocks.send.mock.calls.map((c) => c[0]).find((m) => m.to === "kari@example.invalid");
+  expect(toMember.text).toContain("25 kr per år");
+});
+
+it("does not send mail or redirect when nothing was saved", async () => {
   mocks.save.mockResolvedValue(false);
-  await expect(submitMembership(form({ membership_type: "enkelt" }))).resolves.toEqual({ error: expect.any(String) });
+  await expect(submitMembership(form())).resolves.toEqual({ error: expect.any(String) });
   expect(mocks.send).not.toHaveBeenCalled();
 });
 

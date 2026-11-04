@@ -39,7 +39,7 @@ describe("QA-01 explicit authorization", () => {
 describe("QA-02 persistence before success", () => {
   const cases = [
     ["contact", sendContactMessage, contact, "/kontakt?feil=1", "/kontakt?sendt=takk"],
-    ["membership", submitMembership, member, "/bli-med?feil=medlem#medlem", "/bli-med?sendt=medlem&h="],
+    ["membership", submitMembership, member, "/bli-med?feil=medlem#medlem", "/bli-med/medlem/"],
     ["application", submitApplication, application, "/bli-med?feil=ide#ide", "/bli-med?sendt=ide#ide"],
   ] as const;
   for (const [label, action, data, , success] of cases) {
@@ -62,7 +62,7 @@ describe("QA-02 persistence before success", () => {
     it(`${label}: successful persistence sends notification and confirms`, async () => {
       await expect(action(data())).rejects.toThrow(`REDIRECT:${success}`);
       expect(mocks.insert).toHaveBeenCalledOnce();
-      expect(mocks.send).toHaveBeenCalledOnce();
+      expect(mocks.send).toHaveBeenCalledTimes(label === "membership" ? 2 : 1); // medlem: varsel til foreningen og velkomst til medlemmet
     });
     it(`${label}: mail outage after persistence does not encourage duplicate submission`, async () => {
       mocks.send.mockRejectedValue(new Error("mail unavailable"));

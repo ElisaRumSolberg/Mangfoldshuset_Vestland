@@ -33,6 +33,6 @@ describe("unpaidMessage", () => {
     ]);
     expect(text).toContain("- Kari Test: 100 kr");
     expect(text).toContain("- Liv Test: 25 kr");
-    expect(text).toContain("Hver person betaler for seg");
+    expect(text).toContain("Hver person har sin egen betaling");
   });
 });
