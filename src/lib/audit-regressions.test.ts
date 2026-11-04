@@ -39,7 +39,7 @@ describe("QA-01 explicit authorization", () => {
 describe("QA-02 persistence before success", () => {
   const cases = [
     ["contact", sendContactMessage, contact, "/kontakt?feil=1", "/kontakt?sendt=takk"],
-    ["membership", submitMembership, member, "/bli-med?feil=medlem#medlem", "/bli-med?sendt=medlem#medlem"],
+    ["membership", submitMembership, member, "/bli-med?feil=medlem#medlem", "/bli-med?sendt=medlem&h="],
     ["application", submitApplication, application, "/bli-med?feil=ide#ide", "/bli-med?sendt=ide#ide"],
   ] as const;
   for (const [label, action, data, , success] of cases) {

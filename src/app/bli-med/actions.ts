@@ -27,7 +27,9 @@ export async function submitMembership(formData: FormData) {
     first_name: formData.get("first_name"),
     last_name: formData.get("last_name"),
     email: formData.get("email"),
-    membership_type: formData.get("membership_type"),
+    membership_type: [2, 3, 4, 5, 6].some((n) => typeof formData.get(`fam_name_${n}`) === "string" && (formData.get(`fam_name_${n}`) as string).trim())
+      ? "familie"
+      : "enkelt",
     birth_date: formData.get("birth_date") ?? "",
     gender: formData.get("gender") ?? "",
     address: formData.get("address") ?? "",
@@ -99,7 +101,7 @@ export async function submitMembership(formData: FormData) {
     }));
   }
 
-  redirect("/bli-med?sendt=medlem#medlem");
+  redirect(`/bli-med?sendt=medlem&h=${household_id}#medlem`);
 }
 
 export async function submitApplication(formData: FormData) {

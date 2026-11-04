@@ -6,6 +6,10 @@ import Footer from "@/components/Footer";
 import HoneypotFields from "@/components/HoneypotFields";
 import FamilyRows from "@/components/FamilyRows";
 import { fetchSiteSettings } from "@/lib/site-settings";
+import BirthDateInput from "@/components/BirthDateInput";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { ageOn, feeForPerson } from "@/lib/membership-fee";
+import { todayOslo } from "@/lib/recurring";
 import { submitApplication, submitMembership } from "./actions";
 
 export const metadata: Metadata = {
@@ -128,14 +132,94 @@ function Contact({ prefix }: { prefix: string }) {
   );
 }
 
+function Check() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="mt-0.5 shrink-0 text-green-dark">
+      <circle cx="12" cy="12" r="10" fill="#EAF0E9" />
+      <path d="M7.5 12.5l3 3 6-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+const STEPS = [
+  ["1", "Fyll ut skjemaet", "Skriv inn deg selv og eventuelt flere i familien."],
+  ["2", "Betal for hver person", "Hver person betaler sin egen kontingent."],
+  ["3", "Du er medlem", "Vi aktiverer medlemskapet når betalingen er mottatt."],
+] as const;
+
+type ThanksPerson = { id: string; first_name: string; last_name: string; birth_date: string | null; paid_at: string | null };
+
+/** Etter innmelding: ett kort per person, med eget beløp og egen betaling. */
+function MemberThanks({ people, vippsLink }: { people: ThanksPerson[]; vippsLink?: string | null }) {
+  const today = todayOslo();
+  return (
+    <div>
+      <div className="rounded-xl bg-[#EAF0E9] px-6 py-6 text-center">
+        <p className="font-serif text-2xl text-green-dark">Takk for at du melder deg inn!</p>
+        <p className="mt-1 text-sm text-ink-soft">
+          {people.length > 1
+            ? "Hver person er eget medlem og betaler for seg. Medlemskapet aktiveres når betalingen er mottatt."
+            : "Medlemskapet aktiveres når betalingen er mottatt."}
+        </p>
+      </div>
+      <ul className="mt-5 flex flex-col gap-3">
+        {people.map((p) => {
+          const fee = feeForPerson(p.birth_date, today);
+          const child = !!p.birth_date && ageOn(p.birth_date, today) < 16;
+          return (
+            <li key={p.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-cream px-5 py-4">
+              <div>
+                <p className="font-semibold text-ink">
+                  {p.first_name} {p.last_name}
+                </p>
+                <p className="text-sm text-ink-soft">
+                  {child ? "0–15 år" : "Fra og med 16 år"} · <span className="font-semibold text-ink">{fee} kr</span> per år
+                </p>
+              </div>
+              {p.paid_at ? (
+                <span className="rounded-full bg-[#EAF0E9] px-4 py-2 text-sm font-semibold text-green-dark">Betalt</span>
+              ) : vippsLink ? (
+                <VippsButton href={vippsLink} />
+              ) : (
+                <span className="rounded-full bg-[#F5EAD5] px-4 py-2 text-sm font-semibold text-[#93701F]">Ikke betalt</span>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+      <p className="mt-5 text-sm leading-relaxed text-ink-soft">
+        Betal med Vipps til <span className="font-semibold text-ink">#595791</span> eller til bankkonto{" "}
+        <span className="font-semibold text-ink">3207 31 01688</span>, og skriv navnet på den du betaler for.
+        Betaling direkte på nettsiden kommer snart.
+      </p>
+    </div>
+  );
+}
+
+async function loadHousehold(id: string | undefined): Promise<ThanksPerson[]> {
+  if (!id || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) return [];
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return [];
+  try {
+    const { data } = await createAdminClient()
+      .from("members")
+      .select("id, first_name, last_name, birth_date, paid_at")
+      .eq("household_id", id)
+      .order("created_at", { ascending: true });
+    return (data ?? []) as ThanksPerson[];
+  } catch {
+    return [];
+  }
+}
+
 export default async function BliMedPage({
   searchParams,
 }: {
-  searchParams: Promise<{ sendt?: string; feil?: string }>;
+  searchParams: Promise<{ sendt?: string; feil?: string; h?: string }>;
 }) {
-  const { sendt, feil } = await searchParams;
+  const { sendt, feil, h } = await searchParams;
   const settings = await fetchSiteSettings();
   const vippsLink = settings.vipps_link;
+  const household = sendt === "medlem" ? await loadHousehold(h) : [];
 
   return (
     <>
@@ -158,120 +242,162 @@ export default async function BliMedPage({
           <Section
             id="medlem"
             title="Bli medlem"
-            intro={
-              <>
-                <p>
-                  Som medlem er du med på å gjøre Mangfoldshuset Vestland sterkere. Vi lager
-                  aktiviteter for alle i nærmiljøet – barn, unge, voksne og seniorer – og
-                  møteplassene våre er åpne uansett bakgrunn, språk og forutsetninger.
-                </p>
-                <p>
-                  Medlemskapet er et viktig bidrag til arbeidet vårt, og med det er du med på å
-                  bestemme retningen. Medlemskap og frivillig arbeid er to ulike ting – du kan
-                  gjerne være begge deler. Kontingenten er per person: 100 kr per år fra og med
-                  16 år, og 25 kr per år til og med 15 år.
-                </p>
-              </>
-            }
+            intro="Som medlem er du med på å gjøre Mangfoldshuset Vestland sterkere og på å bestemme retningen."
           >
             {sendt === "medlem" ? (
-              <Thanks text="Takk for at du melder deg inn! Betal kontingenten med Vipps til #595791, så aktiverer vi medlemskapet ditt. Melder du inn flere, betaler hver person for seg." vippsLink={vippsLink} />
+              household.length > 0 ? (
+                <MemberThanks people={household} vippsLink={vippsLink} />
+              ) : (
+                <Thanks text="Takk for at du melder deg inn! Betal kontingenten med Vipps til #595791, så aktiverer vi medlemskapet ditt. Melder du inn flere, betaler hver person for seg." vippsLink={vippsLink} />
+              )
             ) : (
-              <SubmissionForm action={submitMembership} className="flex flex-col gap-5">
-                <HoneypotFields />
-                {feil === "medlem" && <ErrorNotice />}
-                <fieldset>
-                  <legend className={label}>Medlemskap</legend>
-                  <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:gap-6">
-                    <label className="flex items-center gap-2 text-sm text-ink-soft">
-                      <input type="radio" name="membership_type" value="enkelt" defaultChecked className="h-5 w-5 shrink-0 accent-[#9C3B44]" />
-                      Bare meg
-                    </label>
-                    <label className="flex items-center gap-2 text-sm text-ink-soft">
-                      <input type="radio" name="membership_type" value="familie" className="h-5 w-5 shrink-0 accent-[#9C3B44]" />
-                      Meg og flere i familien (hver betaler egen kontingent)
-                    </label>
+              <>
+                <ol className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  {STEPS.map(([n, title, text]) => (
+                    <li key={n} className="flex gap-3">
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-fig font-serif text-lg text-white">
+                        {n}
+                      </span>
+                      <div>
+                        <p className="font-semibold text-ink">{title}</p>
+                        <p className="text-sm leading-relaxed text-ink-soft">{text}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+
+                <hr className="my-8 border-line" />
+
+                <h3 className="font-serif text-2xl font-medium text-ink">Hva koster det?</h3>
+                <p className="mt-1 text-sm text-ink-soft">Per person, per år. Hver person betaler for seg.</p>
+                <dl className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="rounded-2xl border border-line bg-[#F7E9E9] px-6 py-5">
+                    <dt className="text-sm font-semibold text-fig">0–15 år</dt>
+                    <dd className="mt-1 font-serif text-4xl text-ink">25 kr</dd>
                   </div>
-                </fieldset>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div>
-                    <label htmlFor="field-first_name" className={label}>Fornavn</label>
-                    <input id="field-first_name" name="first_name" required className={input} />
+                  <div className="rounded-2xl border border-line bg-[#EAF0E9] px-6 py-5">
+                    <dt className="text-sm font-semibold text-green-dark">Fra og med 16 år</dt>
+                    <dd className="mt-1 font-serif text-4xl text-ink">100 kr</dd>
                   </div>
-                  <div>
-                    <label htmlFor="field-last_name" className={label}>Etternavn</label>
-                    <input id="field-last_name" name="last_name" required className={input} />
-                  </div>
-                  <div>
-                    <label htmlFor="field-birth_date" className={label}>Fødselsdato</label>
-                    <input id="field-birth_date" type="date" name="birth_date" required className={input} />
-                  </div>
-                  <div>
-                    <label htmlFor="field-gender" className={label}>Kjønn</label>
-                    <select id="field-gender" name="gender" required defaultValue="" className={input}>
-                      <option value="">Velg</option>
-                      <option value="kvinne">Kvinne</option>
-                      <option value="mann">Mann</option>
-                      <option value="annet">Annet</option>
-                      <option value="ukjent">Ønsker ikke å oppgi</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label htmlFor="field-phone" className={label}>Telefon</label>
-                    <input id="field-phone" name="phone" className={input} />
-                  </div>
-                  <div>
-                    <label htmlFor="field-email" className={label}>E-post</label>
-                    <input id="field-email" type="email" name="email" required className={input} />
-                  </div>
-                  <div>
-                    <label htmlFor="field-address" className={label}>Adresse</label>
-                    <input id="field-address" name="address" className={input} />
-                  </div>
+                </dl>
+
+                <h3 className="mt-8 font-serif text-2xl font-medium text-ink">Dette får du</h3>
+                <ul className="mt-3 flex flex-col gap-2.5 text-base text-ink-soft">
+                  {[
+                    "Delta på foreningens aktiviteter",
+                    "Møte- og stemmerett på årsmøtet",
+                    "Foreslå og engasjere deg i aktiviteter, kurs og prosjekter",
+                    "Støtte et inkluderende nærmiljø for barn, unge, voksne og seniorer",
+                  ].map((t) => (
+                    <li key={t} className="flex gap-2.5">
+                      <Check />
+                      <span>{t}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-6 divide-y divide-line rounded-xl border border-line bg-cream text-sm text-ink-soft">
+                  <details className="group px-5 py-3">
+                    <summary className="cursor-pointer font-semibold text-ink">Varighet og fornyelse</summary>
+                    <ul className="mt-2 list-disc space-y-1 pl-5">
+                      <li>Medlemskapet gjelder kalenderåret, 1. januar–31. desember.</li>
+                      <li>Melder du deg inn fra og med 1. oktober, gjelder det ut neste år.</li>
+                      <li>Du velger selv om det skal fornyes automatisk 1. januar (kommer snart). Du får e-post 15 dager før.</li>
+                    </ul>
+                  </details>
+                  <details className="group px-5 py-3">
+                    <summary className="cursor-pointer font-semibold text-ink">Oppsigelse og angrerett</summary>
+                    <ul className="mt-2 list-disc space-y-1 pl-5">
+                      <li>Du kan når som helst si opp automatisk fornyelse, i Vipps-appen eller på e-post.</li>
+                      <li>Betaler du på nett, har du 14 dagers angrerett fra betalingsdagen og får hele kontingenten tilbake.</li>
+                    </ul>
+                  </details>
+                  <p className="px-5 py-3">
+                    <a href="/medlemsvilkar" className="font-semibold text-green-dark underline">
+                      Les alle medlemsvilkårene
+                    </a>
+                  </p>
                 </div>
-                <details className="rounded-lg border border-line bg-cream px-4 py-3">
-                  <summary className="cursor-pointer text-sm font-medium text-ink">
-                    Flere i familien (kun hvis du valgte «Meg og flere i familien», opptil 5 personer til)
-                  </summary>
-                  <FamilyRows inputClass={input} />
-                </details>
-                <p className="text-xs leading-relaxed text-ink-soft">
-                  Vi spør om fødselsdato og kjønn fordi vi må rapportere antall medlemmer etter alder
-                  og kjønn til støtteordninger. Du kan velge «Ønsker ikke å oppgi» på kjønn.
-                </p>
-                <div>
-                  <label htmlFor="field-guardian" className={label}>Foresatt (hvis under 18 år)</label>
-                  <input id="field-guardian" name="guardian" className={input} />
-                </div>
-                <div>
-                  <label htmlFor="field-comment" className={label}>Kommentar</label>
-                  <textarea id="field-comment" name="comment" rows={2} className={input} />
-                </div>
-                <label className="block text-sm leading-relaxed text-ink-soft">
-                  <input type="checkbox" name="terms" required className="mr-2 h-5 w-5 shrink-0 align-middle accent-[#9C3B44]" />
-                  Jeg godtar{" "}
-                  <a href="/medlemsvilkar" target="_blank" rel="noopener noreferrer" className="underline">
-                    medlemsvilkårene
-                  </a>{" "}
-                  og at opplysningene lagres i medlemsregisteret (se{" "}
-                  <a href="/personvern" target="_blank" rel="noopener noreferrer" className="underline">
-                    personvern
-                  </a>
-                  ).
-                </label>
-                <p className="text-sm text-ink-soft">
-                  Medlemskontingent per person (100 kr fra og med 16 år, 25 kr til og med 15 år,
-                  per år) betales med Vipps til{" "}
-                  <span className="font-semibold text-ink">#595791</span> eller
-                  bankkonto{" "}
-                  <span className="font-semibold text-ink">3207 31 01688</span>.
-                  Vi jobber med betaling direkte på nettsiden og valgfri automatisk fornyelse
-                  1. januar – kommer senere.
-                </p>
-                <button type="submit" className={button}>
-                  Meld meg inn
-                </button>
-              </SubmissionForm>
+
+                <hr className="my-8 border-line" />
+
+                <SubmissionForm action={submitMembership} className="flex flex-col gap-5">
+                  <HoneypotFields />
+                  {feil === "medlem" && <ErrorNotice />}
+                  <h3 className="font-serif text-2xl font-medium text-ink">Dine opplysninger</h3>
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                      <label htmlFor="field-first_name" className={label}>Fornavn</label>
+                      <input id="field-first_name" name="first_name" required className={input} />
+                    </div>
+                    <div>
+                      <label htmlFor="field-last_name" className={label}>Etternavn</label>
+                      <input id="field-last_name" name="last_name" required className={input} />
+                    </div>
+                    <div>
+                      <label htmlFor="field-birth_date" className={label}>Fødselsdato</label>
+                      <BirthDateInput id="field-birth_date" name="birth_date" className={input} />
+                    </div>
+                    <div>
+                      <label htmlFor="field-gender" className={label}>Kjønn</label>
+                      <select id="field-gender" name="gender" required defaultValue="" className={input}>
+                        <option value="">Velg</option>
+                        <option value="kvinne">Kvinne</option>
+                        <option value="mann">Mann</option>
+                        <option value="annet">Annet</option>
+                        <option value="ukjent">Ønsker ikke å oppgi</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label htmlFor="field-email" className={label}>E-post</label>
+                      <input id="field-email" type="email" name="email" required className={input} />
+                    </div>
+                    <div>
+                      <label htmlFor="field-phone" className={label}>Telefon</label>
+                      <input id="field-phone" name="phone" className={input} />
+                    </div>
+                    <div className="sm:col-span-2">
+                      <label htmlFor="field-address" className={label}>Adresse</label>
+                      <input id="field-address" name="address" className={input} />
+                    </div>
+                    <div className="sm:col-span-2">
+                      <label htmlFor="field-guardian" className={label}>Foresatt (bare hvis du er under 18 år)</label>
+                      <input id="field-guardian" name="guardian" className={input} />
+                    </div>
+                  </div>
+                  <p className="text-xs leading-relaxed text-ink-soft">
+                    Vi spør om fødselsdato og kjønn fordi vi må rapportere antall medlemmer etter alder
+                    og kjønn til støtteordninger. Du kan velge «Ønsker ikke å oppgi» på kjønn.
+                  </p>
+
+                  <details className="rounded-lg border border-line bg-cream px-4 py-3">
+                    <summary className="cursor-pointer text-sm font-semibold text-ink">
+                      Vil du melde inn flere i familien? Legg dem til her (opptil 5 personer til)
+                    </summary>
+                    <FamilyRows inputClass={input} />
+                  </details>
+
+                  <div>
+                    <label htmlFor="field-comment" className={label}>Kommentar (valgfritt)</label>
+                    <textarea id="field-comment" name="comment" rows={2} className={input} />
+                  </div>
+                  <label className="block text-sm leading-relaxed text-ink-soft">
+                    <input type="checkbox" name="terms" required className="mr-2 h-5 w-5 shrink-0 align-middle accent-[#9C3B44]" />
+                    Jeg godtar{" "}
+                    <a href="/medlemsvilkar" target="_blank" rel="noopener noreferrer" className="underline">
+                      medlemsvilkårene
+                    </a>{" "}
+                    og at opplysningene lagres i medlemsregisteret (se{" "}
+                    <a href="/personvern" target="_blank" rel="noopener noreferrer" className="underline">
+                      personvern
+                    </a>
+                    ).
+                  </label>
+                  <button type="submit" className={button}>
+                    Meld meg inn
+                  </button>
+                </SubmissionForm>
+              </>
             )}
           </Section>
 
