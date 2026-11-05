@@ -6,8 +6,8 @@ import { todayOslo } from "@/lib/recurring";
 // Dager til utløp (positivt = før, negativt = etter utløp).
 const MILESTONES = [30, 21, 15, 10, 5, 3, 1, -3, -7, -15];
 
-function message(firstName: string, expires: string, offset: number) {
-  const vipps = "Betal medlemskontingent med Vipps til #595791.";
+function message(firstName: string, expires: string, offset: number, link: string) {
+  const vipps = `Betal medlemskontingent med Vipps til #595791. Din medlemsside: ${link}`;
   if (offset > 0) {
     return {
       subject: `Medlemskapet ditt utløper om ${offset} ${offset === 1 ? "dag" : "dager"}`,
@@ -34,6 +34,7 @@ export async function GET(request: Request) {
   const resend = getResendClient();
   const from = process.env.RESEND_FROM ?? "Mangfoldshuset Vestland <post@mangfoldshusetvestland.no>";
 
+  const site = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.mangfoldshusetvestland.no";
   const todayMs = new Date(`${todayOslo()}T00:00:00Z`).getTime();
   const day = 86400000;
   const iso = (ms: number) => new Date(ms).toISOString().slice(0, 10);
@@ -52,7 +53,7 @@ export async function GET(request: Request) {
     if (!MILESTONES.includes(offset)) continue;
     if (m.last_reminder_for === m.expires_at && m.last_reminder_offset === offset) continue;
 
-    const { subject, text } = message(m.first_name, m.expires_at, offset);
+    const { subject, text } = message(m.first_name, m.expires_at, offset, `${site}/bli-med/medlem/${m.pay_token}`);
     const { error } = await resend.emails.send({
       from,
       to: m.email,

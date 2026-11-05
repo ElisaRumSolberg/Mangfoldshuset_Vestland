@@ -39,6 +39,7 @@ export async function GET(request: Request) {
 
   // En e-post per husstand: personer som meldte seg inn sammen deler e-postadresse og påminnelse,
   // men hver person har sitt eget beløp og sin egen betaling.
+  const site = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.mangfoldshusetvestland.no";
   const households = new Map<string, NonNullable<typeof candidates>>();
   for (const m of candidates ?? []) {
     const key = String(m.household_id ?? m.id);
@@ -59,6 +60,7 @@ export async function GET(request: Request) {
     const milestone = Math.max(...due.map((x) => x.milestone));
     const people = due.map(({ m }) => ({
       name: `${m.first_name} ${m.last_name}`,
+      link: m.pay_token ? `${site}/bli-med/medlem/${m.pay_token}` : undefined,
       fee: membershipFee([{ birth_date: m.birth_date }, ...(Array.isArray(m.family_members) ? m.family_members : [])], todayOslo()).total,
     }));
     const { subject, text } = unpaidMessage(lead.m.first_name, people);

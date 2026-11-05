@@ -188,7 +188,7 @@ export default async function BliMedPage({
             }
           >
             {sendt === "medlem" ? (
-              <Thanks text="Takk for at du melder deg inn! Betal kontingenten med Vipps til #595791, så aktiverer vi medlemskapet ditt. Når du har betalt, kan du legge til flere i familien." vippsLink={vippsLink} />
+              <Thanks text="Takk! Vi har sendt en e-post til adressen du oppga, med lenke til din medlemsside. Der ser du betalingsstatus og hvordan du betaler eller fornyer." vippsLink={vippsLink} />
             ) : (
               <>
                 <ol className="grid grid-cols-1 gap-4 sm:grid-cols-3">

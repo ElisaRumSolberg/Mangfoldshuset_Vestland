@@ -143,7 +143,9 @@ export default async function MemberPage({
                 Betalt – medlem til {me.expires_at}
               </span>
             ) : (
-              <span className="rounded-full bg-[#F5EAD5] px-4 py-2 text-sm font-semibold text-[#93701F]">Ikke betalt ennå</span>
+              <span className="rounded-full bg-[#F5EAD5] px-4 py-2 text-sm font-semibold text-[#93701F]">
+                {me.expires_at ? `Utløpt ${me.expires_at} – fornyes ved betaling` : "Ikke betalt ennå"}
+              </span>
             )}
           </div>
 

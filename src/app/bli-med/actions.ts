@@ -3,6 +3,8 @@
 import { randomUUID } from "node:crypto";
 import { redirect } from "next/navigation";
 import { feeForPerson } from "@/lib/membership-fee";
+import { findExistingMember } from "@/lib/member-lookup";
+import { existingMemberMessage } from "@/lib/receipt-email";
 import { todayOslo } from "@/lib/recurring";
 import { savePublicSubmission, notifyAfterSave } from "@/lib/public-submission";
 import { getResendClient, isResendConfigured, NOTIFY_EMAIL } from "@/lib/resend";
@@ -37,6 +39,30 @@ export async function submitMembership(formData: FormData) {
   if (!parsed.success) return { error: "Kunne ikke sende skjemaet. Sjekk feltene og prøv igjen." };
 
   if (await isRateLimited("members", parsed.data.email)) return { error: "For mange innsendinger. Vent litt og prøv igjen." };
+
+  // Melder en som allerede er medlem seg inn igjen (f.eks. for å fornye), lager vi ikke en ny rad,
+  // for da telles personen dobbelt. Lenken til medlemssiden sendes til e-postadressen i stedet.
+  const existing = await findExistingMember({ email: parsed.data.email, first_name: parsed.data.first_name, last_name: parsed.data.last_name, birth_date: parsed.data.birth_date });
+  if (existing) {
+    if (isResendConfigured()) {
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.mangfoldshusetvestland.no";
+      const today = todayOslo();
+      const mail = existingMemberMessage(existing, feeForPerson(existing.birth_date, today), today, siteUrl);
+      await notifyAfterSave(() => getResendClient().emails.send({
+        from: "Mangfoldshuset Vestland <post@mangfoldshusetvestland.no>",
+        to: parsed.data.email,
+        replyTo: NOTIFY_EMAIL,
+        ...mail,
+      }));
+      await notifyAfterSave(() => getResendClient().emails.send({
+        from: "Mangfoldshuset Vestland <post@mangfoldshusetvestland.no>",
+        to: NOTIFY_EMAIL,
+        subject: `Medlem meldte seg inn på nytt: ${existing.first_name} ${existing.last_name}`,
+        text: `${existing.first_name} ${existing.last_name} er allerede registrert. Det ble ikke laget en ny rad. Vi har sendt personen en lenke til medlemssiden sin.`,
+      }));
+    }
+    redirect("/bli-med?sendt=medlem#medlem");
+  }
 
   // Man melder seg inn selv og betaler for seg selv. Flere kan legges til først etter at
   // egen betaling er registrert (se /bli-med/medlem/[token]). household_id knytter dem sammen.
