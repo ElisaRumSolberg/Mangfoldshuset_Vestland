@@ -195,12 +195,12 @@ describe("automatiske tall for faste tilbud", () => {
     expect(scheduledSessions(weekly({ end_date: "2026-10-15" }), "2026-11-05")).toBe(3);
   });
 
-  it("scales weekly sessions with the weeks per year, but not monthly ones", () => {
+  it("scales both weekly and monthly sessions with the weeks per year", () => {
     const p = weekly({ start_date: "2025-01-02", weeks_per_year: 26 });
     const scheduled = scheduledSessions(p, "2025-12-31");
     expect(heldSessions(p, "2025-12-31")).toBe(Math.round(scheduled / 2));
     const monthly = makeProgram({ frequency: "monthly", weekday: 0, nth: -1, start_date: "2026-01-01", weeks_per_year: 20 });
-    expect(heldSessions(monthly, "2026-06-30")).toBe(scheduledSessions(monthly, "2026-06-30"));
+    expect(heldSessions(monthly, "2026-06-30")).toBe(Math.round((scheduledSessions(monthly, "2026-06-30") * 20) / 52));
   });
 
   it("computes participants so far automatically when average and first date are set", () => {

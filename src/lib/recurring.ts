@@ -270,12 +270,11 @@ export function scheduledSessions(p: Program, today: string): number {
 }
 
 /**
- * Anslått antall samlinger som er holdt. Et ukentlig tilbud samles bare en del av årets uker
- * (f.eks. 32 av 52, ikke i ferier), så antall planlagte datoer skaleres med uker_i_året / 52.
+ * Anslått antall samlinger som er holdt. Et tilbud samles bare en del av året (f.eks. 32 av 52 uker,
+ * ikke i ferier), så antall planlagte datoer, både ukentlige og månedlige, skaleres med uker_i_året / 52.
  */
 export function heldSessions(p: Program, today: string): number {
-  const scheduled = scheduledSessions(p, today);
-  return p.frequency === "weekly" ? Math.round((scheduled * p.weeks_per_year) / 52) : scheduled;
+  return Math.round((scheduledSessions(p, today) * p.weeks_per_year) / 52);
 }
 
 /** Deltakere hittil: automatisk (gjennomsnitt × samlinger) når gjennomsnitt og første dato er satt, ellers det som er skrevet inn. */
