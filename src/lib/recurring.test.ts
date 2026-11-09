@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
+  heldSessions,
   isoWeek,
+  programParticipants,
+  programVolunteerHours,
+  scheduledSessions,
   nextOccurrences,
   parseMenu,
   shortDate,
@@ -42,6 +46,10 @@ function makeProgram(overrides: Partial<Program> = {}): Program {
     highlights: null,
     price: null,
     menu: null,
+    avg_participants: null,
+    weeks_per_year: 32,
+    volunteers_per_session: null,
+    hours_per_volunteer: null,
     menu_image_url: null,
     menu_image_week: null,
     registration_open: false,
@@ -168,5 +176,50 @@ describe("ukemeny", () => {
       { week: 46, name: "Tomatsuppe", ingredients: null },
     ]);
     expect(parseMenu(null)).toEqual([]);
+  });
+});
+
+describe("automatiske tall for faste tilbud", () => {
+  const weekly = (o: Partial<Program> = {}) =>
+    makeProgram({ frequency: "weekly", weekday: 4, start_date: "2026-10-01", ...o });
+
+  it("counts the scheduled Thursdays from the first date up to today", () => {
+    // torsdager 1., 8., 15., 22., 29. oktober og 5. november
+    expect(scheduledSessions(weekly(), "2026-11-05")).toBe(6);
+    expect(scheduledSessions(weekly(), "2026-09-30")).toBe(0);
+    expect(scheduledSessions(weekly({ start_date: null }), "2026-11-05")).toBe(0);
+  });
+
+  it("skips cancelled dates and stops at the end date", () => {
+    expect(scheduledSessions(weekly({ skipped_dates: ["2026-10-15"] }), "2026-11-05")).toBe(5);
+    expect(scheduledSessions(weekly({ end_date: "2026-10-15" }), "2026-11-05")).toBe(3);
+  });
+
+  it("scales weekly sessions with the weeks per year, but not monthly ones", () => {
+    const p = weekly({ start_date: "2025-01-02", weeks_per_year: 26 });
+    const scheduled = scheduledSessions(p, "2025-12-31");
+    expect(heldSessions(p, "2025-12-31")).toBe(Math.round(scheduled / 2));
+    const monthly = makeProgram({ frequency: "monthly", weekday: 0, nth: -1, start_date: "2026-01-01", weeks_per_year: 20 });
+    expect(heldSessions(monthly, "2026-06-30")).toBe(scheduledSessions(monthly, "2026-06-30"));
+  });
+
+  it("computes participants so far automatically when average and first date are set", () => {
+    const p = weekly({ avg_participants: 13, start_date: "2023-10-05", weeks_per_year: 32 });
+    const r = programParticipants(p, "2026-11-05");
+    expect(r.auto).toBe(true);
+    expect(r.value).toBe(heldSessions(p, "2026-11-05") * 13);
+    expect(r.value).toBeGreaterThan(1000);
+    expect(r.value).toBeLessThan(1700);
+  });
+
+  it("falls back to the typed total when there is no average", () => {
+    expect(programParticipants(weekly({ participants: 250 }), "2026-11-05")).toEqual({ value: 250, auto: false });
+    expect(programParticipants(weekly({ avg_participants: 10, start_date: null, participants: 7 }), "2026-11-05")).toEqual({ value: 7, auto: false });
+  });
+
+  it("computes volunteer hours from sessions, volunteers and hours each", () => {
+    const p = weekly({ volunteers_per_session: 3, hours_per_volunteer: 4, weeks_per_year: 52 });
+    expect(programVolunteerHours(p, "2026-11-05")).toBe(6 * 3 * 4);
+    expect(programVolunteerHours(weekly({ volunteers_per_session: 3 }), "2026-11-05")).toBe(0);
   });
 });

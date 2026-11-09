@@ -1,7 +1,8 @@
 import AnimatedNumber from "./AnimatedNumber";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
-import { autoParticipants } from "@/lib/stats";
+import { autoActivities, autoParticipants, autoVolunteerHours } from "@/lib/stats";
+import { todayOslo } from "@/lib/recurring";
 
 const fallback = [
   { key: "activities", target: null as number | null, suffix: "", label: "Aktiviteter i år", color: "#9C3B44" },
@@ -24,6 +25,20 @@ export default async function ImpactCounters({
         const row = data.find((d) => d.key === f.key);
         return row ? { ...f, target: row.value, label: row.label } : f;
       });
+    }
+
+    // Aktiviteter i år regnes ut automatisk: holdte arrangementer + hvert aktive faste tilbud.
+    const acts = await autoActivities(supabase, todayOslo());
+    if (acts.total > 0) {
+      counters = counters.map((c) => (c.key === "activities" ? { ...c, target: acts.total } : c));
+    }
+
+    // Frivillige timer fra faste tilbud og aktiviteter legges til det som er skrevet inn for hånd.
+    const hours = await autoVolunteerHours(supabase, todayOslo());
+    if (hours > 0) {
+      counters = counters.map((c) =>
+        c.key === "volunteer_hours" ? { ...c, target: (c.target ?? 0) + hours } : c
+      );
     }
 
     // Deltakere registrert på aktiviteter og faste tilbud legges til automatisk.

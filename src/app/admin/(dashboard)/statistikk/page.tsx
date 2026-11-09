@@ -1,7 +1,8 @@
 import { getT } from "@/lib/admin-i18n-server";
 import { createClient } from "@/lib/supabase/server";
 import { updateStats } from "./actions";
-import { autoParticipants } from "@/lib/stats";
+import { autoActivities, autoParticipants, autoVolunteerHours } from "@/lib/stats";
+import { todayOslo } from "@/lib/recurring";
 
 export default async function AdminStatistikkPage() {
   const t = await getT();
@@ -9,6 +10,8 @@ export default async function AdminStatistikkPage() {
   const { data: stats } = await supabase.from("impact_stats").select("*");
 
   const auto = await autoParticipants(supabase);
+  const acts = await autoActivities(supabase, todayOslo());
+  const autoHours = await autoVolunteerHours(supabase, todayOslo());
 
   const get = (key: string) =>
     stats?.find((s) => s.key === key)?.value ?? 0;
@@ -24,16 +27,11 @@ export default async function AdminStatistikkPage() {
         className="mt-8 flex max-w-sm flex-col gap-4 rounded-2xl border border-line bg-cream p-6"
       >
         <div>
-          <label className="mb-1 block text-sm font-medium text-ink">{t("Aktiviteter i år")}
-          </label>
-          <p className="mb-1.5 text-xs text-ink-soft">{t("Antall arrangementer dere har gjennomført i år.")}
+          <p className="mb-1 text-sm font-medium text-ink">{t("Aktiviteter i år")}</p>
+          <p className="rounded-lg bg-white px-3 py-2 font-serif text-2xl text-ink">{acts.total}</p>
+          <p className="mt-1.5 text-xs text-ink-soft">
+            {t("Regnes ut automatisk: {e} arrangementer hittil i år + {p} faste tilbud (hvert teller som én aktivitet).", { e: acts.events, p: acts.programs })}
           </p>
-          <input
-            name="activities"
-            type="number"
-            defaultValue={get("activities")}
-            className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
-          />
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium text-ink">{t("Deltakere før nettsiden / utenfor rapportene")}
@@ -50,7 +48,7 @@ export default async function AdminStatistikkPage() {
         <div>
           <label className="mb-1 block text-sm font-medium text-ink">{t("Frivillige timer")}
           </label>
-          <p className="mb-1.5 text-xs text-ink-soft">{t("Samlet antall timer frivillige har brukt.")}
+          <p className="mb-1.5 text-xs text-ink-soft">{t("Timer før nettsiden / utenfor registreringene.")}
           </p>
           <input
             name="volunteer_hours"
@@ -58,6 +56,8 @@ export default async function AdminStatistikkPage() {
             defaultValue={get("volunteer_hours")}
             className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
           />
+          <p className="mt-1.5 text-xs text-ink-soft">{t("I tillegg regnes timer fra faste tilbud og aktiviteter ut automatisk (")}{autoHours}{t("). Forsiden viser totalt")}{" "}<strong>{get("volunteer_hours") + autoHours}</strong>.
+          </p>
         </div>
         <button
           type="submit"

@@ -165,6 +165,18 @@ export default async function EditActivityPage({
           </div>
         </div>
 
+        <div className="sm:col-span-2">
+          <label className="mb-1 block text-sm font-medium text-ink">{t("Frivillige timer til sammen (valgfritt)")}</label>
+          <input
+            name="volunteer_hours"
+            type="number"
+            min={0}
+            defaultValue={activity.volunteer_hours ?? ""}
+            className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig sm:w-48"
+          />
+          <p className="mt-1 text-xs text-ink-soft">{t("Legges automatisk til «Frivillige timer» på forsiden.")}</p>
+        </div>
+
         <ReportFields
           heading={t("Slik gikk det (fylles ut etter arrangementet)")}
           participantsLabel={t("Antall deltakere")}

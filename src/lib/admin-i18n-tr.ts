@@ -482,6 +482,20 @@ export const TR: Record<string, string> = {
   "Tallene i «Samfunnsinnsats»-feltet på forsiden. Deltakere regnes ut automatisk fra aktivitetene dine; her legger du bare til det som ikke er registrert andre steder.":
     "Ana sayfadaki «Samfunnsinnsats» bölümündeki sayılar. Katılımcılar etkinliklerinden otomatik hesaplanır; burada sadece başka yerde kayıtlı olmayanları eklersin.",
   "Aktiviteter i år": "Bu yılki etkinlikler",
+  "Timer før nettsiden / utenfor registreringene.": "Site öncesi / kayıtların dışındaki saatler.",
+  "I tillegg regnes timer fra faste tilbud og aktiviteter ut automatisk (": "Ayrıca sabit programlardan ve etkinliklerden saatler otomatik hesaplanır (",
+  "Første dato (oppstart – brukes til å regne ut antall samlinger)": "İlk tarih (başlangıç – buluşma sayısını hesaplamak için kullanılır)",
+  "Automatiske tall til forsiden (valgfritt)": "Ana sayfa için otomatik rakamlar (isteğe bağlı)",
+  "Fyller du inn gjennomsnittet og første dato, regnes «deltakere hittil» og frivillige timer ut automatisk og øker for hver samling.":
+    "Ortalamayı ve ilk tarihi girersen «şimdiye kadarki katılımcı» ve gönüllü saatleri otomatik hesaplanır ve her buluşmada artar.",
+  "Deltakere i snitt per gang": "Her seferde ortalama katılımcı",
+  "Uker i året de samles": "Yılda kaç hafta toplanılıyor",
+  "Frivillige per gang": "Her seferde gönüllü sayısı",
+  "Timer per frivillig per gang (inkl. forberedelser)": "Gönüllü başına her seferde saat (hazırlık dahil)",
+  "Frivillige timer til sammen (valgfritt)": "Toplam gönüllü saati (isteğe bağlı)",
+  "Legges automatisk til «Frivillige timer» på forsiden.": "Ana sayfadaki «Frivillige timer» değerine otomatik eklenir.",
+  "Regnes ut automatisk: {e} arrangementer hittil i år + {p} faste tilbud (hvert teller som én aktivitet).":
+    "Otomatik hesaplanır: bu yıl şimdiye kadar {e} etkinlik + {p} sabit program (her biri bir etkinlik sayılır).",
   "Antall arrangementer dere har gjennomført i år.": "Bu yıl gerçekleştirdiğiniz etkinlik sayısı.",
   "Deltakere før nettsiden / utenfor rapportene": "Siteden önceki / raporların dışındaki katılımcılar",
   "I tillegg summeres deltakere fra aktiviteter og faste tilbud automatisk (":

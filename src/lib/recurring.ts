@@ -33,6 +33,10 @@ export type Program = {
   price: string | null;
   registration_open: boolean;
   menu: string | null; // ukemeny: én linje per uke, f.eks. «45: Linsesuppe – røde linser, gulrot»
+  avg_participants: number | null; // gjennomsnittlig antall deltakere per gang (gir automatisk «deltakere hittil»)
+  weeks_per_year: number; // hvor mange uker i året det samles (ukentlige tilbud)
+  volunteers_per_session: number | null; // frivillige per gang
+  hours_per_volunteer: number | null; // timer per frivillig per gang (inkl. forberedelser)
   menu_image_url: string | null; // bilde av ukens rett …
   menu_image_week: number | null; // … som bare vises i denne uken
 };
@@ -68,7 +72,7 @@ function addDays(iso: string, n: number) {
   return dt.toISOString().slice(0, 10);
 }
 
-function occursOn(p: Program, iso: string): boolean {
+export function occursOn(p: Program, iso: string): boolean {
   const dt = utcDate(iso);
   if (dt.getUTCDay() !== p.weekday) return false;
 
@@ -174,6 +178,10 @@ export function toProgram(r: Record<string, unknown>): Program {
     price: (r.price as string | null) ?? null,
     registration_open: (r.registration_open as boolean | null) ?? false,
     menu: (r.menu as string | null) ?? null,
+    avg_participants: (r.avg_participants as number | null) ?? null,
+    weeks_per_year: (r.weeks_per_year as number | null) ?? 32,
+    volunteers_per_session: (r.volunteers_per_session as number | null) ?? null,
+    hours_per_volunteer: r.hours_per_volunteer === null || r.hours_per_volunteer === undefined ? null : Number(r.hours_per_volunteer),
     menu_image_url: (r.menu_image_url as string | null) ?? null,
     menu_image_week: (r.menu_image_week as number | null) ?? null,
   };
@@ -248,4 +256,38 @@ export function sortUpcoming<T extends { iso: string; featured?: boolean; recurr
 ): T[] {
   const rank = (x: T) => (x.featured ? 0 : x.recurring ? 2 : 1);
   return [...items].sort((a, b) => rank(a) - rank(b) || a.iso.localeCompare(b.iso));
+}
+
+/** Antall planlagte datoer fra første dato til og med `today` (avlyste datoer og sluttdato tas hensyn til). */
+export function scheduledSessions(p: Program, today: string): number {
+  if (!p.start_date || p.start_date > today) return 0;
+  const to = p.end_date && p.end_date < today ? p.end_date : today;
+  let n = 0;
+  for (let iso = p.start_date; iso <= to; iso = addDays(iso, 1)) {
+    if (occursOn(p, iso)) n += 1;
+  }
+  return n;
+}
+
+/**
+ * Anslått antall samlinger som er holdt. Et ukentlig tilbud samles bare en del av årets uker
+ * (f.eks. 32 av 52, ikke i ferier), så antall planlagte datoer skaleres med uker_i_året / 52.
+ */
+export function heldSessions(p: Program, today: string): number {
+  const scheduled = scheduledSessions(p, today);
+  return p.frequency === "weekly" ? Math.round((scheduled * p.weeks_per_year) / 52) : scheduled;
+}
+
+/** Deltakere hittil: automatisk (gjennomsnitt × samlinger) når gjennomsnitt og første dato er satt, ellers det som er skrevet inn. */
+export function programParticipants(p: Program, today: string): { value: number | null; auto: boolean } {
+  if (p.avg_participants !== null && p.start_date) {
+    return { value: heldSessions(p, today) * p.avg_participants, auto: true };
+  }
+  return { value: p.participants, auto: false };
+}
+
+/** Frivillige timer hittil: samlinger × frivillige per gang × timer per frivillig. */
+export function programVolunteerHours(p: Program, today: string): number {
+  if (p.volunteers_per_session === null || p.hours_per_volunteer === null || !p.start_date) return 0;
+  return Math.round(heldSessions(p, today) * p.volunteers_per_session * p.hours_per_volunteer);
 }

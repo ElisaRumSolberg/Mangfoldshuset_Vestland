@@ -94,7 +94,7 @@ export default async function TilbudForm({
       </div>
 
       <div>
-        <label className={label}>{t("Første dato (valgfritt, f.eks. oppstart)")}</label>
+        <label className={label}>{t("Første dato (oppstart – brukes til å regne ut antall samlinger)")}</label>
         <input
           name="start_date"
           type="date"
@@ -111,6 +111,29 @@ export default async function TilbudForm({
           className={field}
         />
       </div>
+
+      <fieldset className="grid grid-cols-1 gap-3 rounded-xl border border-line bg-white p-4 sm:col-span-2 sm:grid-cols-2">
+        <legend className="px-1 text-sm font-semibold text-ink">{t("Automatiske tall til forsiden (valgfritt)")}</legend>
+        <p className="text-xs text-ink-soft sm:col-span-2">
+          {t("Fyller du inn gjennomsnittet og første dato, regnes «deltakere hittil» og frivillige timer ut automatisk og øker for hver samling.")}
+        </p>
+        <div>
+          <label className={label}>{t("Deltakere i snitt per gang")}</label>
+          <input name="avg_participants" type="number" min={0} defaultValue={program?.avg_participants ?? ""} className={field} />
+        </div>
+        <div>
+          <label className={label}>{t("Uker i året de samles")}</label>
+          <input name="weeks_per_year" type="number" min={1} max={52} defaultValue={program?.weeks_per_year ?? 32} className={field} />
+        </div>
+        <div>
+          <label className={label}>{t("Frivillige per gang")}</label>
+          <input name="volunteers_per_session" type="number" min={0} defaultValue={program?.volunteers_per_session ?? ""} className={field} />
+        </div>
+        <div>
+          <label className={label}>{t("Timer per frivillig per gang (inkl. forberedelser)")}</label>
+          <input name="hours_per_volunteer" type="number" min={0} max={24} step="0.5" defaultValue={program?.hours_per_volunteer ?? ""} className={field} />
+        </div>
+      </fieldset>
 
       <div className="sm:col-span-2">
         <label className={label}>{t("Sted")}</label>

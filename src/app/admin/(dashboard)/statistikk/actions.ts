@@ -10,7 +10,6 @@ export async function updateStats(formData: FormData) {
   const supabase = await createClient();
 
   const updates = [
-    { key: "activities", value: Number(formData.get("activities")) },
     { key: "participants", value: Number(formData.get("participants")) },
     {
       key: "volunteer_hours",

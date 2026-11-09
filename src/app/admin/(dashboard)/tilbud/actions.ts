@@ -11,6 +11,14 @@ function text(formData: FormData, key: string) {
   return typeof v === "string" && v.trim() ? v.trim() : null;
 }
 
+/** Timer med ett desimal (0–24), eller null hvis tomt/ugyldig. */
+function hours(formData: FormData, key: string): number | null {
+  const v = text(formData, key);
+  if (v === null) return null;
+  const n = Number(v.replace(",", "."));
+  return Number.isFinite(n) && n >= 0 && n <= 24 ? Math.round(n * 10) / 10 : null;
+}
+
 function fields(formData: FormData) {
   const frequency = formData.get("frequency") === "monthly" ? "monthly" : "weekly";
   const skipped = String(formData.get("skipped_dates") ?? "")
@@ -38,6 +46,10 @@ function fields(formData: FormData) {
     featured: formData.get("featured") === "on",
     show_on_homepage: formData.get("show_on_homepage") === "on",
     price: text(formData, "price"),
+    avg_participants: formInt(formData, "avg_participants"),
+    weeks_per_year: Math.min(52, Math.max(1, formInt(formData, "weeks_per_year") ?? 32)),
+    volunteers_per_session: formInt(formData, "volunteers_per_session"),
+    hours_per_volunteer: hours(formData, "hours_per_volunteer"),
     menu: text(formData, "menu"),
     registration_open: formData.get("registration_open") === "on",
   };

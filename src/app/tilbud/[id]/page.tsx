@@ -10,6 +10,7 @@ import HoneypotFields from "@/components/HoneypotFields";
 import { signUpForProgram } from "./actions";
 import { formatHighlightDate, parseHighlights } from "@/lib/highlights";
 import {
+  programParticipants,
   isoWeek,
   nextOccurrences,
   parseMenu,
@@ -68,6 +69,7 @@ export default async function ProgramPage({ params, searchParams }: Props) {
   const skipped = p.skipped_dates.filter((d) => d >= today).sort();
   const startsLater = p.start_date && p.start_date > today;
   const highlights = parseHighlights(p.highlights);
+  const so_far = programParticipants(p, today);
 
   return (
     <>
@@ -350,8 +352,8 @@ export default async function ProgramPage({ params, searchParams }: Props) {
 
         <ReportSection
           heading="Hittil"
-          participants={p.participants}
-          participantsLabel="deltakere hittil"
+          participants={so_far.value}
+          participantsLabel={so_far.auto ? "deltakere hittil (ca.)" : "deltakere hittil"}
           summary={p.summary}
           feedback={p.feedback}
           photos={[]}

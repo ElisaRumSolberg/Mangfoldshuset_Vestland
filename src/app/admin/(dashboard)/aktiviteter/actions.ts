@@ -63,6 +63,7 @@ export async function updateActivity(id: string, formData: FormData) {
     show_on_homepage: formData.get("show_on_homepage") === "on",
     homepage_image_urls: formUrls(formData, "homepage_image_urls"),
     participants: formInt(formData, "participants"),
+    volunteer_hours: formInt(formData, "volunteer_hours"),
     summary: formText(formData, "summary"),
     feedback: formText(formData, "feedback"),
   };
