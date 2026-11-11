@@ -47,6 +47,18 @@ const sections: { title: string; body: React.ReactNode }[] = [
     ),
   },
   {
+    title: "2b. Gratis medlemskap til 1. januar 2027",
+    body: (
+      <p>
+        Medlemskap er gratis fram til 1. januar 2027. Den som melder seg inn før
+        denne datoen, er medlem uten å betale ut 2026. Fra og med 1. januar 2027
+        er kontingenten 100 kr per år (25 kr til og med 15 år), og
+        medlemskapet fornyes ved betaling. Vi gir beskjed i god tid før du skal
+        fornye. Alle andre punkter i vilkårene gjelder også for gratis medlemskap.
+      </p>
+    ),
+  },
+  {
     title: "3. Varighet og fornyelse",
     body: (
       <p>

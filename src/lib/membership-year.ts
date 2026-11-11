@@ -22,3 +22,24 @@ export function coverageYear(today: string, currentExpires: string | null): numb
   const year = Number(today.slice(0, 4));
   return Number(today.slice(5, 7)) >= NEXT_YEAR_FROM_MONTH ? year + 1 : year;
 }
+
+// Gratisperiode: medlemskap er gratis til og med 31. desember 2026. Fra og med 1. januar 2027
+// betaler man kontingent. Endres datoen her, følger hele nettsiden etter.
+export const FEE_STARTS = "2027-01-01";
+
+/** Er vi fortsatt i perioden der medlemskap er gratis? `today` er ÅÅÅÅ-MM-DD (norsk tid). */
+export function isFreePeriod(today: string): boolean {
+  return today < FEE_STARTS;
+}
+
+/** Siste dag et gratis medlemskap gjelder (dagen før kontingenten innføres), ÅÅÅÅ-MM-DD. */
+export function freeMembershipEnd(): string {
+  return yearEnd(Number(FEE_STARTS.slice(0, 4)) - 1);
+}
+
+/** «1. januar 2027» */
+export function feeStartsText(): string {
+  const [y, m, d] = FEE_STARTS.split("-").map(Number);
+  const months = ["januar", "februar", "mars", "april", "mai", "juni", "juli", "august", "september", "oktober", "november", "desember"];
+  return `${d}. ${months[m - 1]} ${y}`;
+}

@@ -3,6 +3,8 @@
 import { randomUUID } from "node:crypto";
 import { redirect } from "next/navigation";
 import { feeForPerson } from "@/lib/membership-fee";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { feeStartsText, freeMembershipEnd, isFreePeriod } from "@/lib/membership-year";
 import { findExistingMember } from "@/lib/member-lookup";
 import { existingMemberMessage } from "@/lib/receipt-email";
 import { todayOslo } from "@/lib/recurring";
@@ -44,9 +46,18 @@ export async function submitMembership(formData: FormData) {
   // for da telles personen dobbelt. Lenken til medlemssiden sendes til e-postadressen i stedet.
   const existing = await findExistingMember({ email: parsed.data.email, first_name: parsed.data.first_name, last_name: parsed.data.last_name, birth_date: parsed.data.birth_date });
   if (existing) {
+    const today = todayOslo();
+    // I gratisperioden aktiveres et utløpt eller aldri betalt medlemskap uten betaling.
+    if (isFreePeriod(today) && (!existing.expires_at || existing.expires_at < today)) {
+      try {
+        const { error } = await createAdminClient().from("members").update({ expires_at: freeMembershipEnd() }).eq("id", existing.id);
+        if (!error) existing.expires_at = freeMembershipEnd();
+      } catch {
+        // Lykkes ikke aktiveringen, får personen e-posten som før, og admin kan registrere medlemskapet.
+      }
+    }
     if (isResendConfigured()) {
       const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.mangfoldshusetvestland.no";
-      const today = todayOslo();
       const mail = existingMemberMessage(existing, feeForPerson(existing.birth_date, today), today, siteUrl);
       await notifyAfterSave(() => getResendClient().emails.send({
         from: "Mangfoldshuset Vestland <post@mangfoldshusetvestland.no>",
@@ -69,9 +80,11 @@ export async function submitMembership(formData: FormData) {
   const { first_name, last_name, email } = parsed.data;
   const household_id = randomUUID();
   const pay_token = randomUUID();
-  const fee = feeForPerson(parsed.data.birth_date, todayOslo());
+  const today = todayOslo();
+  const fee = feeForPerson(parsed.data.birth_date, today);
+  const free = isFreePeriod(today);
 
-  const saved = await savePublicSubmission("members", {
+  const record = {
     membership_type: "enkelt",
     family_members: [],
     household_id,
@@ -86,7 +99,19 @@ export async function submitMembership(formData: FormData) {
     guardian: parsed.data.guardian || null,
     comment: parsed.data.comment || null,
     accepted_terms: formData.get("terms") === "on",
-  });
+  };
+  // I gratisperioden er medlemskapet aktivt med en gang. Innsendingsreglene for anonyme brukere tillater ikke å
+  // sette utløpsdato, så det gjøres på serveren. Lykkes ikke det, lagres innmeldingen som vanlig.
+  let saved = false;
+  if (free && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    try {
+      const { error } = await createAdminClient().from("members").insert({ ...record, expires_at: freeMembershipEnd() });
+      saved = !error;
+    } catch {
+      saved = false;
+    }
+  }
+  if (!saved) saved = await savePublicSubmission("members", record);
   if (!saved) return { error: "Kunne ikke sende skjemaet. Sjekk feltene og prøv igjen." };
 
   if (isResendConfigured()) {
@@ -97,14 +122,23 @@ export async function submitMembership(formData: FormData) {
       to: NOTIFY_EMAIL,
       replyTo: email,
       subject: `Ny medlemssøknad: ${first_name} ${last_name}`,
-      text: `${first_name} ${last_name} (${email}) har meldt seg inn. Kontingent: ${fee} kr. Se admin → Medlemmer.`,
+      text: `${first_name} ${last_name} (${email}) har meldt seg inn. ${free ? `Gratis medlemskap ut 2026 (fra ${feeStartsText()}: ${fee} kr per år).` : `Kontingent: ${fee} kr.`} Se admin → Medlemmer.`,
     }));
     await notifyAfterSave(() => getResendClient().emails.send({
       from,
       to: email,
       replyTo: NOTIFY_EMAIL,
-      subject: "Velkommen som medlem – betal kontingenten din",
-      text: `Hei ${first_name}!\n\nTakk for at du meldte deg inn i Mangfoldshuset Vestland. Medlemskapet aktiveres når kontingenten er betalt: ${fee} kr per år.\n\nBetal med Vipps til #595791 eller til bankkonto 3207 31 01688, og skriv navnet ditt.\n\nDu betaler for deg selv. Når betalingen er registrert, kan du legge til flere i familien på din egen side. Hver person har sin egen betaling, og foresatte betaler for barn under 18 år:\n${site}/bli-med/medlem/${pay_token}\n\nMangfoldshuset Vestland`,
+      subject: free ? "Velkommen som medlem" : "Velkommen som medlem – betal kontingenten din",
+      text: free
+        ? `Hei ${first_name}!
+
+Takk for at du meldte deg inn i Mangfoldshuset Vestland. Medlemskapet ditt er gratis og aktivt ut 2026. Fra ${feeStartsText()} koster medlemskap ${fee} kr per år (25 kr for barn til og med 15 år). Vi gir deg beskjed i god tid før du skal fornye.
+
+På din egen side ser du medlemskapet ditt og kan legge til flere i familien. Hver person er eget medlem, og foresatte melder inn barn under 18 år:
+${site}/bli-med/medlem/${pay_token}
+
+Mangfoldshuset Vestland`
+        : `Hei ${first_name}!\n\nTakk for at du meldte deg inn i Mangfoldshuset Vestland. Medlemskapet aktiveres når kontingenten er betalt: ${fee} kr per år.\n\nBetal med Vipps til #595791 eller til bankkonto 3207 31 01688, og skriv navnet ditt.\n\nDu betaler for deg selv. Når betalingen er registrert, kan du legge til flere i familien på din egen side. Hver person har sin egen betaling, og foresatte betaler for barn under 18 år:\n${site}/bli-med/medlem/${pay_token}\n\nMangfoldshuset Vestland`,
     }));
   }
 

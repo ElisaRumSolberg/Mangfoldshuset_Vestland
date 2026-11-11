@@ -7,6 +7,8 @@ import HoneypotFields from "@/components/HoneypotFields";
 import { fetchSiteSettings } from "@/lib/site-settings";
 import BirthDateInput from "@/components/BirthDateInput";
 import { submitApplication, submitMembership } from "./actions";
+import { feeStartsText, isFreePeriod } from "@/lib/membership-year";
+import { todayOslo } from "@/lib/recurring";
 
 export const metadata: Metadata = {
   title: "Bli med – Mangfoldshuset Vestland",
@@ -138,6 +140,12 @@ const PANEL_STEPS = [
   ["Legg til familien", "Når du har betalt, kan du legge til flere."],
 ] as const;
 
+const FREE_STEPS = [
+  ["Meld deg inn", "Fyll ut skjemaet for deg selv. Medlemskapet er gratis og aktivt med en gang."],
+  ["Legg til familien", "Hver person er eget medlem. Foresatte melder inn barn."],
+  ["Forny fra januar", "Fra 1. januar 2027 koster medlemskap kontingent. Vi gir deg beskjed i god tid."],
+] as const;
+
 /** Medlemsseksjonen: et grønt infopanel i merkefargene ved siden av ett enkelt skjema. */
 function MembershipSection({
   sendt,
@@ -148,6 +156,7 @@ function MembershipSection({
   feil?: string;
   vippsLink?: string | null;
 }) {
+  const free = isFreePeriod(todayOslo());
   return (
     <section id="medlem" className="scroll-mt-32 pb-6 pt-8">
       <div className="rise grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start">
@@ -171,6 +180,11 @@ function MembershipSection({
 
           <div className="relative">
             <h2 className="font-serif text-4xl font-medium text-balance">Bli medlem</h2>
+            {free && (
+              <p className="mt-4 rounded-2xl bg-white px-5 py-4 text-base font-semibold leading-snug text-[#33482F]">
+                Gratis medlemskap fram til {feeStartsText()}. Fra da koster det 100 kr per år (25 kr for barn).
+              </p>
+            )}
             <p className="mt-4 text-base leading-relaxed text-white/90">
               Mangfoldshuset Vestland er en aktivitetsforening for alle i nærmiljøet. Et medlemskap er et verdifullt
               bidrag til arbeidet vårt – uansett alder, bakgrunn og forutsetninger.
@@ -189,11 +203,13 @@ function MembershipSection({
                 <dd className="font-serif text-3xl">100 kr</dd>
               </div>
             </dl>
-            <p className="mt-2 text-xs text-white/80">Per person, per år.</p>
+            <p className="mt-2 text-xs text-white/80">
+              {free ? `Kontingent per person, per år, fra ${feeStartsText()}.` : "Per person, per år."}
+            </p>
 
             <h3 className="mt-8 font-serif text-xl font-medium">Slik går det til</h3>
             <ol className="mt-3 space-y-3 text-sm leading-relaxed">
-              {PANEL_STEPS.map(([title, text], i) => (
+              {(free ? FREE_STEPS : PANEL_STEPS).map(([title, text], i) => (
                 <li key={title} className="flex gap-3">
                   <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-bold text-[#33482F]">
                     {i + 1}
@@ -209,12 +225,19 @@ function MembershipSection({
 
         <div className="rounded-[24px] border border-line bg-white p-6 shadow-[0_16px_36px_-24px_rgba(51,49,44,0.45)] sm:p-9">
           {sendt === "medlem" ? (
-            <Thanks text="Takk! Vi har sendt en e-post til adressen du oppga, med lenke til din medlemsside. Der ser du betalingsstatus og hvordan du betaler eller fornyer." vippsLink={vippsLink} />
+            <Thanks
+              text={free
+                ? "Takk! Du er medlem, og medlemskapet er gratis ut 2026. Vi har sendt en e-post med lenke til din medlemsside."
+                : "Takk! Vi har sendt en e-post til adressen du oppga, med lenke til din medlemsside. Der ser du betalingsstatus og hvordan du betaler eller fornyer."}
+              vippsLink={free ? null : vippsLink}
+            />
           ) : (
             <>
               <h3 className="font-serif text-3xl font-medium text-ink">Meld deg inn</h3>
               <p className="mt-2 text-base leading-relaxed text-ink-soft">
-                Du melder deg inn og betaler for deg selv. Flere i familien kan legges til når du har betalt.
+                {free
+                  ? "Du melder deg inn for deg selv, og medlemskapet er gratis ut 2026. Flere i familien kan legges til etterpå."
+                  : "Du melder deg inn og betaler for deg selv. Flere i familien kan legges til når du har betalt."}
               </p>
 
               <SubmissionForm action={submitMembership} className="mt-7 flex flex-col gap-5">
@@ -303,6 +326,7 @@ function MembershipSection({
               <details className="mt-8 rounded-2xl bg-cream px-5 py-4 text-sm leading-relaxed text-ink-soft">
                 <summary className="cursor-pointer font-semibold text-ink">Mer om medlemskapet</summary>
                 <ul className="mt-3 list-disc space-y-1.5 pl-5">
+                  {free && <li>Medlemskap er gratis fram til {feeStartsText()}. Fra da er kontingenten 100 kr per år (25 kr til og med 15 år), og du fornyer selv.</li>}
                   <li>Medlemskapet gjelder kalenderåret, 1. januar–31. desember. Melder du deg inn fra 1. oktober, gjelder det ut neste år.</li>
                   <li>Du velger selv om det skal fornyes automatisk 1. januar (kommer snart). Du får e-post 15 dager før.</li>
                   <li>Du kan når som helst si opp automatisk fornyelse, i Vipps-appen eller på e-post.</li>

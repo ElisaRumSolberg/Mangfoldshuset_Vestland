@@ -1,5 +1,6 @@
 import { beforeEach, expect, it, vi } from "vitest";
-const mocks = vi.hoisted(() => ({ save: vi.fn(), send: vi.fn(), find: vi.fn() }));
+const mocks = vi.hoisted(() => ({ save: vi.fn(), send: vi.fn(), find: vi.fn(), update: vi.fn(), insert: vi.fn() }));
+vi.mock("@/lib/supabase/admin", () => ({ createAdminClient: () => ({ from: () => ({ update: () => ({ eq: mocks.update }), insert: mocks.insert }) }) }));
 vi.mock("@/lib/public-submission", () => ({ savePublicSubmission: mocks.save, notifyAfterSave: async (f: () => Promise<unknown>) => { await f(); } }));
 vi.mock("@/lib/spam-guard", () => ({ looksLikeBot: () => false, isRateLimited: async () => false }));
 vi.mock("@/lib/resend", () => ({ getResendClient: () => ({ emails: { send: mocks.send } }), isResendConfigured: () => true, NOTIFY_EMAIL: "qa@example.invalid" }));
@@ -24,6 +25,8 @@ beforeEach(() => {
   mocks.save.mockResolvedValue(true);
   mocks.send.mockResolvedValue({ error: null });
   mocks.find.mockResolvedValue(null);
+  mocks.update.mockResolvedValue({ error: null });
+  mocks.insert.mockResolvedValue({ error: null });
 });
 
 it("does not create a second row when an existing member signs up again", async () => {
@@ -32,13 +35,30 @@ it("does not create a second row when an existing member signs up again", async 
   expect(mocks.save).not.toHaveBeenCalled();
   const toMember = mocks.send.mock.calls.map((c) => c[0]).find((m) => m.to === "kari@example.invalid");
   expect(toMember.text).toContain("/bli-med/medlem/tok-1");
-  expect(toMember.text).toContain("utløp 2026-05-01");
+  // I gratisperioden aktiveres et utløpt medlemskap uten betaling.
+  expect(mocks.update).toHaveBeenCalledOnce();
+  expect(toMember.text).toContain("allerede medlem");
+  expect(toMember.text).toContain("ut 2026");
   expect(mocks.send.mock.calls.map((c) => c[0]).some((m) => m.to === "qa@example.invalid")).toBe(true);
 });
 
 it("still signs up a new person normally", async () => {
   await expect(submitMembership(form())).rejects.toThrow("REDIRECT:/bli-med/medlem/");
   expect(mocks.save).toHaveBeenCalledOnce();
+});
+
+it("makes a new sign-up a free, active member during the free period", async () => {
+  vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "http://localhost");
+  vi.stubEnv("SUPABASE_SERVICE_ROLE_KEY", "synthetic-not-a-real-key");
+  await expect(submitMembership(form())).rejects.toThrow("REDIRECT:/bli-med/medlem/");
+  expect(mocks.insert).toHaveBeenCalledOnce();
+  expect(mocks.insert.mock.calls[0][0]).toMatchObject({ expires_at: "2026-12-31", first_name: "Kari" });
+  expect(mocks.save).not.toHaveBeenCalled();
+  const welcome = mocks.send.mock.calls.map((c) => c[0]).find((m) => m.to === "kari@example.invalid");
+  expect(welcome.text).toContain("gratis");
+  expect(welcome.text).toContain("1. januar 2027");
+  expect(welcome.text).not.toContain("#595791");
+  vi.unstubAllEnvs();
 });
 
 it("writes the right status for active, expired and never-paid members", () => {

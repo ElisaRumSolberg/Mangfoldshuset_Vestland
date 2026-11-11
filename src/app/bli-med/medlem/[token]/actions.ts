@@ -7,11 +7,62 @@ import { getResendClient, isResendConfigured, NOTIFY_EMAIL } from "@/lib/resend"
 import { looksLikeBot } from "@/lib/spam-guard";
 import { familyMembersSchema } from "@/lib/validation";
 import { MAX_HOUSEHOLD, splitName } from "@/lib/household";
-import { ageOn } from "@/lib/membership-fee";
+import { ageOn, feeForPerson } from "@/lib/membership-fee";
+import { coverageYear, freeMembershipEnd, isFreePeriod } from "@/lib/membership-year";
 import { todayOslo } from "@/lib/recurring";
+import { createPayment, newReference, toOre, vippsEnv } from "@/lib/vipps";
+import { SITE } from "@/lib/vipps-server";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const FAIL = { error: "Kunne ikke legge til personen. Sjekk feltene og prøv igjen." };
+
+/**
+ * Starter en Vipps-betaling for én person. `payToken` er personens egen hemmelige lenke. Beløp og år regnes
+ * ut her på serveren, aldri fra nettleseren. Sender kunden videre til Vipps.
+ */
+export async function startVippsPayment(payToken: string) {
+  if (!UUID.test(payToken)) redirect("/bli-med");
+  const back = `/bli-med/medlem/${payToken}`;
+  const cfg = vippsEnv();
+  if (!cfg || !process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) redirect(`${back}?vipps=feil`);
+
+  const supabase = createAdminClient();
+  const { data: m } = await supabase
+    .from("members")
+    .select("id, first_name, last_name, birth_date, expires_at")
+    .eq("pay_token", payToken)
+    .maybeSingle();
+  if (!m) redirect("/bli-med");
+
+  const today = todayOslo();
+  const covers = coverageYear(today, m.expires_at);
+  // Maks ett år frem i tid, så et dobbeltklikk ikke betaler flere år.
+  if (covers > Number(today.slice(0, 4)) + 1) redirect(back);
+
+  const reference = newReference();
+  const amountOre = toOre(feeForPerson(m.birth_date, today));
+  const { error } = await supabase.from("vipps_payments").insert({
+    reference,
+    member_id: m.id,
+    covers_year: covers,
+    amount_ore: amountOre,
+  });
+  if (error) redirect(`${back}?vipps=feil`);
+
+  let redirectUrl: string;
+  try {
+    ({ redirectUrl } = await createPayment(cfg!, {
+      reference,
+      amountOre,
+      description: `Medlemskap ${covers} – ${m.first_name} ${m.last_name}`,
+      returnUrl: `${SITE()}/bli-med/betalt/${reference}`,
+    }));
+  } catch {
+    await supabase.from("vipps_payments").update({ status: "failed" }).eq("reference", reference);
+    redirect(`${back}?vipps=feil`);
+  }
+  redirect(redirectUrl!);
+}
 
 /**
  * Et medlem som har betalt, kan legge til en annen person (f.eks. i familien). Den nye personen er eget
@@ -70,6 +121,8 @@ export async function addHouseholdMember(token: string, formData: FormData) {
     membership_type: "familie",
     family_members: [],
     household_id,
+    // I gratisperioden er den nye personen medlem med en gang.
+    ...(isFreePeriod(today) ? { expires_at: freeMembershipEnd() } : {}),
   }).select("pay_token").single();
   if (error || !created) return FAIL;
 
@@ -84,5 +137,5 @@ export async function addHouseholdMember(token: string, formData: FormData) {
     );
   }
 
-  redirect(`/bli-med/medlem/${token}?lagt=1&betal=${created.pay_token}`);
+  redirect(isFreePeriod(today) ? `/bli-med/medlem/${token}?lagt=1` : `/bli-med/medlem/${token}?lagt=1&betal=${created.pay_token}`);
 }

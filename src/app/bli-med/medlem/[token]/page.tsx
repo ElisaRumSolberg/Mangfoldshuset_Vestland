@@ -10,8 +10,24 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchSiteSettings } from "@/lib/site-settings";
 import { ageOn, feeForPerson } from "@/lib/membership-fee";
 import { todayOslo } from "@/lib/recurring";
+import { feeStartsText, freeMembershipEnd, isFreePeriod } from "@/lib/membership-year";
 import { MAX_HOUSEHOLD } from "@/lib/household";
-import { addHouseholdMember } from "./actions";
+import { addHouseholdMember, startVippsPayment } from "./actions";
+import { isVippsConfigured } from "@/lib/vipps";
+
+function VippsButton({ payToken, label }: { payToken: string; label: string }) {
+  return (
+    <form action={startVippsPayment.bind(null, payToken)} className="mt-4">
+      <button
+        type="submit"
+        className="inline-flex min-h-11 items-center rounded-full px-6 text-sm font-semibold text-[#1A1512]"
+        style={{ backgroundColor: "#FF5B24" }}
+      >
+        {label}
+      </button>
+    </form>
+  );
+}
 
 export const dynamic = "force-dynamic";
 
@@ -60,10 +76,11 @@ export default async function MemberPage({
   searchParams,
 }: {
   params: Promise<{ token: string }>;
-  searchParams: Promise<{ ny?: string; lagt?: string; betal?: string }>;
+  searchParams: Promise<{ ny?: string; lagt?: string; betal?: string; vipps?: string }>;
 }) {
   const { token } = await params;
-  const { ny, lagt, betal } = await searchParams;
+  const { ny, lagt, betal, vipps } = await searchParams;
+  const vippsOn = isVippsConfigured();
   const data = await load(token);
   if (!data) notFound();
   const { me, others } = data;
@@ -72,6 +89,8 @@ export default async function MemberPage({
 
   const today = todayOslo();
   const active = !!me.expires_at && me.expires_at >= today;
+  // Gratis medlem: aktivt uten betaling i gratisperioden (utløper dagen før kontingenten innføres).
+  const freeMember = active && isFreePeriod(today) && me.expires_at === freeMembershipEnd();
   const fee = feeForPerson(me.birth_date, today);
   const full = others.length + 1 >= MAX_HOUSEHOLD;
   const isPaid = (p: Person) => !!p.expires_at && p.expires_at >= today;
@@ -94,7 +113,16 @@ export default async function MemberPage({
         )}
         {lagt === "1" && (
           <p className="mt-6 rounded-xl bg-[#EAF0E9] px-5 py-4 text-sm font-semibold text-green-dark">
-            Personen er lagt til. Medlemskapet blir aktivt når betalingen er registrert.
+            {isFreePeriod(today)
+              ? "Personen er lagt til som medlem. Medlemskapet er gratis ut 2026."
+              : "Personen er lagt til. Medlemskapet blir aktivt når betalingen er registrert."}
+          </p>
+        )}
+
+        {vipps === "feil" && (
+          <p className="mt-6 rounded-xl bg-[#F5EAD5] px-5 py-4 text-sm font-semibold text-[#93701F]">
+            Vi kunne ikke starte betalingen. Ingen penger er trukket. Prøv igjen om litt, eller betal til bankkonto
+            3207 31 01688.
           </p>
         )}
 
@@ -108,6 +136,15 @@ export default async function MemberPage({
               <span className="font-semibold text-ink">{feeForPerson(payNow.birth_date, today)} kr</span> per år
               {payNow.birth_date && ageOn(payNow.birth_date, today) < 18 ? " · du betaler som foresatt" : ""}
             </p>
+            {vippsOn ? (
+              <>
+                <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+                  Hver person har sin egen betaling. Du betaler trygt i Vipps-appen, og medlemskapet blir aktivt med en
+                  gang.
+                </p>
+                <VippsButton payToken={payNow.pay_token} label={`Betal ${feeForPerson(payNow.birth_date, today)} kr med Vipps for ${payNow.first_name}`} />
+              </>
+            ) : (
             <p className="mt-3 text-sm leading-relaxed text-ink-soft">
               Betal med Vipps til <span className="font-semibold text-ink">#595791</span> eller til bankkonto{" "}
               <span className="font-semibold text-ink">3207 31 01688</span>, og skriv navnet{" "}
@@ -116,7 +153,8 @@ export default async function MemberPage({
               </span>
               . Hver person har sin egen betaling. Betaling direkte på nettsiden kommer snart.
             </p>
-            {vippsLink && (
+            )}
+            {!vippsOn && vippsLink && (
               <a
                 href={vippsLink}
                 target="_blank"
@@ -140,7 +178,7 @@ export default async function MemberPage({
             </div>
             {active ? (
               <span className="rounded-full bg-[#EAF0E9] px-4 py-2 text-sm font-semibold text-green-dark">
-                Betalt – medlem til {me.expires_at}
+                {freeMember ? `Gratis medlem ut 2026` : `Betalt – medlem til ${me.expires_at}`}
               </span>
             ) : (
               <span className="rounded-full bg-[#F5EAD5] px-4 py-2 text-sm font-semibold text-[#93701F]">
@@ -149,14 +187,43 @@ export default async function MemberPage({
             )}
           </div>
 
+          {freeMember && (
+            <div className="mt-5 rounded-lg bg-white px-4 py-3 text-sm leading-relaxed text-ink-soft">
+              <p>
+                Medlemskap er gratis til {feeStartsText()}. Fra da koster det {fee} kr per år, og du fornyer på denne
+                siden. Vi sender deg en e-post i god tid før.
+              </p>
+              {vippsOn && (
+                <>
+                  <p className="mt-3">Du kan også betale for {Number(freeMembershipEnd().slice(0, 4)) + 1} allerede nå.</p>
+                  <VippsButton
+                    payToken={token}
+                    label={`Betal ${fee} kr med Vipps for ${Number(freeMembershipEnd().slice(0, 4)) + 1}`}
+                  />
+                </>
+              )}
+            </div>
+          )}
+
           {!active && (
             <div className="mt-5 text-sm leading-relaxed text-ink-soft">
+              {vippsOn ? (
+                <>
+                  <p>Du betaler trygt i Vipps-appen, og medlemskapet blir aktivt med en gang betalingen er godkjent.</p>
+                  <VippsButton payToken={token} label={`Betal ${fee} kr med Vipps`} />
+                  <p className="mt-4">
+                    Foretrekker du bank? Betal til kontonummer{" "}
+                    <span className="font-semibold text-ink">3207 31 01688</span> og skriv navnet ditt.
+                  </p>
+                </>
+              ) : (
               <p>
                 Betal med Vipps til <span className="font-semibold text-ink">#595791</span> eller til bankkonto{" "}
                 <span className="font-semibold text-ink">3207 31 01688</span>, og skriv navnet ditt. Betaling
                 direkte på nettsiden kommer snart.
               </p>
-              {vippsLink && (
+              )}
+              {!vippsOn && vippsLink && (
                 <a
                   href={vippsLink}
                   target="_blank"

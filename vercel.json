@@ -1,6 +1,7 @@
 {
   "crons": [
     { "path": "/api/cron/paminnelser", "schedule": "0 7 * * *" },
-    { "path": "/api/cron/betalingspaminnelser", "schedule": "10 7 * * *" }
+    { "path": "/api/cron/betalingspaminnelser", "schedule": "10 7 * * *" },
+    { "path": "/api/cron/vipps-avstemming", "schedule": "30 3 * * *" }
   ]
 }

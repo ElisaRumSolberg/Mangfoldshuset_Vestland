@@ -25,3 +25,21 @@ describe("coverageYear", () => {
     expect(yearEnd(2027)).toBe("2027-12-31");
   });
 });
+
+import { feeStartsText, freeMembershipEnd, isFreePeriod } from "./membership-year";
+
+describe("gratisperiode", () => {
+  it("is free until the end of 2026 and paid from 1 January 2027", () => {
+    expect(isFreePeriod("2026-11-11")).toBe(true);
+    expect(isFreePeriod("2026-12-31")).toBe(true);
+    expect(isFreePeriod("2027-01-01")).toBe(false);
+  });
+  it("gives free members a membership to 31 December 2026", () => {
+    expect(freeMembershipEnd()).toBe("2026-12-31");
+    expect(feeStartsText()).toBe("1. januar 2027");
+  });
+  it("lets a free member renew for 2027 on payment", () => {
+    expect(coverageYear("2026-12-01", freeMembershipEnd())).toBe(2027);
+    expect(coverageYear("2027-01-05", freeMembershipEnd())).toBe(2027);
+  });
+});

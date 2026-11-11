@@ -1,5 +1,5 @@
 import { beforeEach, expect, it, vi } from "vitest";
-const mocks = vi.hoisted(() => ({ adder: vi.fn(), count: vi.fn(), insert: vi.fn(), single: vi.fn(), update: vi.fn(), send: vi.fn() }));
+const mocks = vi.hoisted(() => ({ today: vi.fn(), adder: vi.fn(), count: vi.fn(), insert: vi.fn(), single: vi.fn(), update: vi.fn(), send: vi.fn() }));
 vi.mock("@/lib/supabase/admin", () => ({
   createAdminClient: () => ({
     from: () => ({
@@ -13,7 +13,7 @@ vi.mock("@/lib/supabase/admin", () => ({
 vi.mock("@/lib/spam-guard", () => ({ looksLikeBot: () => false }));
 vi.mock("@/lib/resend", () => ({ getResendClient: () => ({ emails: { send: mocks.send } }), isResendConfigured: () => true, NOTIFY_EMAIL: "qa@example.invalid" }));
 vi.mock("next/navigation", () => ({ redirect: (url: string) => { throw new Error(`REDIRECT:${url}`); } }));
-vi.mock("@/lib/recurring", async (orig) => ({ ...(await orig<typeof import("@/lib/recurring")>()), todayOslo: () => "2026-11-03" }));
+vi.mock("@/lib/recurring", async (orig) => ({ ...(await orig<typeof import("@/lib/recurring")>()), todayOslo: () => mocks.today() }));
 import { addHouseholdMember } from "@/app/bli-med/medlem/[token]/actions";
 
 const token = "00000000-0000-4000-8000-000000000009";
@@ -27,6 +27,7 @@ function form(extra: Record<string, string> = {}) {
 
 beforeEach(() => {
   vi.resetAllMocks();
+  mocks.today.mockReturnValue("2026-11-03");
   vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "http://localhost");
   vi.stubEnv("SUPABASE_SERVICE_ROLE_KEY", "synthetic-not-a-real-key");
   mocks.adder.mockResolvedValue({ data: paid, error: null });
@@ -37,7 +38,13 @@ beforeEach(() => {
   mocks.send.mockResolvedValue({ error: null });
 });
 
-it("lets a member who has paid add a person as their own, unpaid member", async () => {
+it("makes an added person a free member during the free period", async () => {
+  await expect(addHouseholdMember(token, form())).rejects.toThrow(`REDIRECT:/bli-med/medlem/${token}?lagt=1`);
+  expect(mocks.insert.mock.calls[0][0].expires_at).toBe("2026-12-31");
+});
+
+it("lets a member who has paid add a person as their own, unpaid member (after the free period)", async () => {
+  mocks.today.mockReturnValue("2027-02-03");
   await expect(addHouseholdMember(token, form())).rejects.toThrow(
     `REDIRECT:/bli-med/medlem/${token}?lagt=1&betal=11111111-1111-4111-8111-111111111111`,
   );
