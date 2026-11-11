@@ -88,6 +88,17 @@ export class VippsError extends Error {
   }
 }
 
+/** Kort feilmelding fra Vipps til loggen (aldri nøkler: Vipps svarer ikke med dem). */
+async function failure(message: string, res: Response): Promise<VippsError> {
+  let detail = "";
+  try {
+    detail = (await res.text()).replace(/\s+/g, " ").slice(0, 300);
+  } catch {
+    // ingen detaljer
+  }
+  return new VippsError(`${message} (HTTP ${res.status}${detail ? `: ${detail}` : ""})`, res.status);
+}
+
 export async function getAccessToken(cfg: VippsEnv, f: FetchLike = fetch): Promise<string> {
   const res = await f(`${cfg.baseUrl}/accesstoken/get`, {
     method: "POST",
@@ -100,7 +111,7 @@ export async function getAccessToken(cfg: VippsEnv, f: FetchLike = fetch): Promi
     },
     body: "",
   });
-  if (!res.ok) throw new VippsError("Kunne ikke hente tilgangstoken fra Vipps", res.status);
+  if (!res.ok) throw await failure("Kunne ikke hente tilgangstoken fra Vipps", res);
   const json = (await res.json()) as { access_token?: string };
   if (!json.access_token) throw new VippsError("Vipps ga ikke et tilgangstoken");
   return json.access_token;
@@ -124,7 +135,7 @@ export async function createPayment(
       userFlow: "WEB_REDIRECT",
     }),
   });
-  if (!res.ok) throw new VippsError("Kunne ikke opprette betalingen hos Vipps", res.status);
+  if (!res.ok) throw await failure("Kunne ikke opprette betalingen hos Vipps", res);
   const json = (await res.json()) as { redirectUrl?: string };
   if (!json.redirectUrl) throw new VippsError("Vipps ga ingen betalingslenke");
   return { redirectUrl: json.redirectUrl };
@@ -135,7 +146,7 @@ export async function getPayment(cfg: VippsEnv, reference: string, f: FetchLike 
   const res = await f(`${cfg.baseUrl}/epayment/v1/payments/${encodeURIComponent(reference)}`, {
     headers: headers(cfg, token),
   });
-  if (!res.ok) throw new VippsError("Kunne ikke hente betalingen fra Vipps", res.status);
+  if (!res.ok) throw await failure("Kunne ikke hente betalingen fra Vipps", res);
   const j = (await res.json()) as {
     state: VippsState;
     amount?: { value: number };
@@ -163,5 +174,5 @@ export async function capturePayment(
     headers: headers(cfg, token, { "Idempotency-Key": `${reference}-capture` }),
     body: JSON.stringify({ modificationAmount: { currency: "NOK", value: amountOre } }),
   });
-  if (!res.ok) throw new VippsError("Kunne ikke trekke betalingen hos Vipps", res.status);
+  if (!res.ok) throw await failure("Kunne ikke trekke betalingen hos Vipps", res);
 }

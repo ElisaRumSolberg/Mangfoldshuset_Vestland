@@ -21,7 +21,10 @@ export async function startVippsDonation(formData: FormData) {
   const amountOre = toOre(kroner);
   const supabase = createAdminClient();
   const { error } = await supabase.from("vipps_donations").insert({ reference, amount_ore: amountOre });
-  if (error) redirect("/stott-oss/feil");
+  if (error) {
+    console.error("Vipps-gave: kunne ikke lagre i vipps_donations", error.code, error.message);
+    redirect("/stott-oss/feil");
+  }
 
   let redirectUrl: string;
   try {
@@ -31,7 +34,8 @@ export async function startVippsDonation(formData: FormData) {
       description: "Gave til Mangfoldshuset Vestland",
       returnUrl: `${SITE()}/stott-oss/takk/${reference}`,
     }));
-  } catch {
+  } catch (err) {
+    console.error("Vipps-gave: kunne ikke opprette betalingen", err instanceof Error ? err.message : err);
     await supabase.from("vipps_donations").update({ status: "failed" }).eq("reference", reference);
     redirect("/stott-oss/feil");
   }

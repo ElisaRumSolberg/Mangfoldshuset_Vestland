@@ -47,7 +47,10 @@ export async function startVippsPayment(payToken: string) {
     covers_year: covers,
     amount_ore: amountOre,
   });
-  if (error) redirect(`${back}?vipps=feil`);
+  if (error) {
+    console.error("Vipps-betaling: kunne ikke lagre i vipps_payments", error.code, error.message);
+    redirect(`${back}?vipps=feil`);
+  }
 
   let redirectUrl: string;
   try {
@@ -57,7 +60,8 @@ export async function startVippsPayment(payToken: string) {
       description: `Medlemskap ${covers} – ${m.first_name} ${m.last_name}`,
       returnUrl: `${SITE()}/bli-med/betalt/${reference}`,
     }));
-  } catch {
+  } catch (err) {
+    console.error("Vipps-betaling: kunne ikke opprette betalingen", err instanceof Error ? err.message : err);
     await supabase.from("vipps_payments").update({ status: "failed" }).eq("reference", reference);
     redirect(`${back}?vipps=feil`);
   }
