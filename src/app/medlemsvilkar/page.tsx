@@ -35,10 +35,8 @@ const sections: { title: string; body: React.ReactNode }[] = [
         betaling. Alderen regnes
         ut fra fødselsdatoen din på betalingsdagen (ved automatisk fornyelse:
         1. januar).
-        Kontingenten betales med Vipps, enten direkte på nettsiden (når denne
-        betalingsmåten er åpnet), eller til{" "}
-        <span className="font-semibold text-ink">#595791</span>. Du kan også
-        betale til bankkonto{" "}
+        Kontingenten betales med Vipps direkte på din medlemsside på nettsiden.
+        Du kan også betale til bankkonto{" "}
         <span className="font-semibold text-ink">3207 31 01688</span>. Prisene
         er oppgitt i norske kroner og er den totale prisen; det kommer ingen
         tilleggsgebyrer. Medlemskapet aktiveres når kontingenten er registrert

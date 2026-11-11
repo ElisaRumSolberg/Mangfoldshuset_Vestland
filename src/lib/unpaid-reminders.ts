@@ -3,6 +3,7 @@
 // så den aldri kan forveksles med utløpspåminnelsene (som bruker -15…30).
 
 import { FEE_ADULT } from "@/lib/membership-fee";
+import { isVippsConfigured } from "@/lib/vipps";
 
 export const UNPAID_MILESTONES = [3, 14] as const;
 export const UNPAID_BASE = 1000;
@@ -24,7 +25,11 @@ export function nextUnpaidMilestone(daysSinceSignup: number, stored: number | nu
 
 /** Én e-post per husstand: hver person som ikke har betalt, med eget beløp. */
 export function unpaidMessage(firstName: string, people: { name: string; fee: number; link?: string }[]) {
-  const pay = "Betal med Vipps til #595791 eller til bankkonto 3207 31 01688";
+  // Når Vipps er satt opp, betaler hver person direkte på sin egen medlemsside.
+  const direct = isVippsConfigured() && people.every((p) => p.link);
+  const pay = direct
+    ? "Betal med Vipps direkte på medlemssiden, eller til bankkonto 3207 31 01688"
+    : "Betal med Vipps til #595791 eller til bankkonto 3207 31 01688";
   const body =
     people.length > 1
       ? `Medlemskapet aktiveres for hver person når kontingenten er betalt. Hver person har sin egen betaling, per år. Foresatte betaler for barn under 18 år:\n${people

@@ -2,12 +2,15 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getResendClient, isResendConfigured, NOTIFY_EMAIL } from "@/lib/resend";
 import { todayOslo } from "@/lib/recurring";
+import { isVippsConfigured } from "@/lib/vipps";
 
 // Dager til utløp (positivt = før, negativt = etter utløp).
 const MILESTONES = [30, 21, 15, 10, 5, 3, 1, -3, -7, -15];
 
 function message(firstName: string, expires: string, offset: number, link: string) {
-  const vipps = `Betal medlemskontingent med Vipps til #595791. Din medlemsside: ${link}`;
+  const vipps = isVippsConfigured()
+    ? `Betal kontingenten med Vipps direkte på din medlemsside: ${link}`
+    : `Betal medlemskontingent med Vipps til #595791. Din medlemsside: ${link}`;
   if (offset > 0) {
     return {
       subject: `Medlemskapet ditt utløper om ${offset} ${offset === 1 ? "dag" : "dager"}`,

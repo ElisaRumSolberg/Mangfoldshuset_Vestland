@@ -47,6 +47,25 @@ export function isReference(v: unknown): v is string {
   return typeof v === "string" && /^mh-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);
 }
 
+/** Referanse for en gave. Egen prefiks, så gaver og medlemsbetalinger aldri forveksles. */
+export function newDonationReference(): string {
+  return `gv-${crypto.randomUUID()}`;
+}
+
+export function isDonationReference(v: unknown): v is string {
+  return typeof v === "string" && /^gv-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);
+}
+
+/** Gave: minst 10 kr og høyst 100 000 kr, hele kroner. */
+export const DONATION_MIN = 10;
+export const DONATION_MAX = 100000;
+
+export function parseDonation(v: unknown): number | null {
+  if (typeof v !== "string" || !/^\d{1,6}$/.test(v.trim())) return null;
+  const n = Number(v.trim());
+  return n >= DONATION_MIN && n <= DONATION_MAX ? n : null;
+}
+
 export function toOre(kroner: number): number {
   return Math.round(kroner * 100);
 }

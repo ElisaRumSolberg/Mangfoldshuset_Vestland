@@ -91,3 +91,21 @@ describe("API calls", () => {
     await expect(getPayment(cfg, "mh-ref", f)).rejects.toThrow();
   });
 });
+
+import { isDonationReference, newDonationReference, parseDonation } from "./vipps";
+
+describe("gaver", () => {
+  it("makes donation references that cannot be confused with membership references", () => {
+    const g = newDonationReference();
+    expect(isDonationReference(g)).toBe(true);
+    expect(isReference(g)).toBe(false);
+    expect(isDonationReference(newReference())).toBe(false);
+  });
+
+  it("accepts whole kroner between 10 and 100 000 only", () => {
+    expect(parseDonation("250")).toBe(250);
+    expect(parseDonation(" 10 ")).toBe(10);
+    expect(parseDonation("100000")).toBe(100000);
+    for (const bad of ["9", "0", "-5", "100001", "12.5", "1e3", "", "abc", null, 250]) expect(parseDonation(bad)).toBeNull();
+  });
+});

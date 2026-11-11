@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { isReference } from "@/lib/vipps";
+import { isDonationReference, isReference } from "@/lib/vipps";
 import { settleByReference } from "@/lib/vipps-server";
 
 /**
@@ -10,7 +10,7 @@ import { settleByReference } from "@/lib/vipps-server";
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as { reference?: unknown };
-    if (isReference(body.reference)) await settleByReference(body.reference);
+    if (isReference(body.reference) || isDonationReference(body.reference)) await settleByReference(body.reference);
   } catch {
     // Ugyldig innhold ignoreres.
   }

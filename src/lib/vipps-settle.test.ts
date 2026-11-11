@@ -130,3 +130,32 @@ describe("settleVippsPayment", () => {
     expect(db.tables.members[0].expires_at).toBe("2027-12-31");
   });
 });
+
+import { settleVippsDonation } from "./vipps-settle";
+
+describe("settleVippsDonation", () => {
+  const GREF = "gv-22222222-2222-2222-2222-222222222222";
+  const dbGift = () => fakeDb({ vipps_payments: [], members: [], ...{ vipps_donations: [{ reference: GREF, amount_ore: 10000, status: "created" }] } } as never);
+
+  it("captures an approved gift once and marks it received", async () => {
+    const g = dbGift();
+    const f = vippsFetch({ value: "AUTHORIZED", authorized: 10000, captured: 0 });
+    expect(await settleVippsDonation(GREF, { supabase: g.client, cfg, fetchFn: f })).toBe("paid");
+    expect(g.tables.vipps_donations[0].status).toBe("captured");
+    expect(await settleVippsDonation(GREF, { supabase: g.client, cfg, fetchFn: f })).toBe("paid");
+  });
+
+  it("stays pending until approved and fails when cancelled or the amount differs", async () => {
+    let g = dbGift();
+    expect(await settleVippsDonation(GREF, { supabase: g.client, cfg, fetchFn: vippsFetch({ value: "CREATED", authorized: 0, captured: 0 }) })).toBe("pending");
+    g = dbGift();
+    expect(await settleVippsDonation(GREF, { supabase: g.client, cfg, fetchFn: vippsFetch({ value: "ABORTED", authorized: 0, captured: 0 }) })).toBe("failed");
+    g = dbGift();
+    expect(await settleVippsDonation(GREF, { supabase: g.client, cfg, fetchFn: vippsFetch({ value: "AUTHORIZED", authorized: 500, captured: 0 }) })).toBe("failed");
+  });
+
+  it("returns unknown for an unknown reference", async () => {
+    const g = fakeDb({ vipps_payments: [], members: [], vipps_donations: [] } as never);
+    expect(await settleVippsDonation(GREF, { supabase: g.client, cfg })).toBe("unknown");
+  });
+});

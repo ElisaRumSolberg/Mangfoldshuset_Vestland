@@ -10,6 +10,8 @@ export function receiptMessage(
   };
 }
 
+import { isVippsConfigured } from "@/lib/vipps";
+
 /** Lenke til medlemmets egen side (betalingsstatus, fornyelse, legge til flere). */
 export function memberPageUrl(site: string, payToken: string): string {
   return `${site}/bli-med/medlem/${payToken}`;
@@ -23,12 +25,15 @@ export function existingMemberMessage(
   site: string,
 ): { subject: string; text: string } {
   const link = memberPageUrl(site, member.pay_token);
+  const how = isVippsConfigured()
+    ? "med Vipps direkte på medlemssiden din (lenken under), eller til bankkonto 3207 31 01688"
+    : "Vipps til #595791 eller bankkonto 3207 31 01688, og skriv navnet ditt";
   const active = !!member.expires_at && member.expires_at >= today;
   const status = active
     ? `Du er allerede medlem, og medlemskapet ditt gjelder ut ${member.expires_at!.slice(0, 4)}. Du trenger ikke melde deg inn på nytt.`
     : member.expires_at
-      ? `Du er registrert fra før, men medlemskapet ditt utløp ${member.expires_at}. Du fornyer ved å betale ${fee} kr: Vipps til #595791 eller bankkonto 3207 31 01688, og skriv navnet ditt. Når betalingen er registrert, får du en bekreftelse på e-post.`
-      : `Du er registrert fra før, men vi har ikke registrert noen betaling ennå. Kontingenten er ${fee} kr per år: Vipps til #595791 eller bankkonto 3207 31 01688, og skriv navnet ditt. Når betalingen er registrert, får du en bekreftelse på e-post.`;
+      ? `Du er registrert fra før, men medlemskapet ditt utløp ${member.expires_at}. Du fornyer ved å betale ${fee} kr: ${how}. Når betalingen er registrert, får du en bekreftelse på e-post.`
+      : `Du er registrert fra før, men vi har ikke registrert noen betaling ennå. Kontingenten er ${fee} kr per år: ${how}. Når betalingen er registrert, får du en bekreftelse på e-post.`;
   return {
     subject: "Din medlemsside – Mangfoldshuset Vestland",
     text: `Hei ${member.first_name}!\n\n${status}\n\nHer er din egen medlemsside:\n${link}\n\nMangfoldshuset Vestland`,

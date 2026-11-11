@@ -16,6 +16,46 @@ type Deps = {
 };
 
 /**
+ * Samme avstemming for en gave: sjekk mot Vipps, trekk pengene når giveren har godkjent, og marker gaven som
+ * mottatt nøyaktig én gang. Det registreres ikke noe medlemskap.
+ */
+export async function settleVippsDonation(
+  reference: string,
+  deps: { supabase: SupabaseClient; cfg: VippsEnv; fetchFn?: typeof fetch },
+): Promise<SettleResult> {
+  const { supabase, cfg, fetchFn } = deps;
+  const { data: row } = await supabase
+    .from("vipps_donations")
+    .select("reference, amount_ore, status")
+    .eq("reference", reference)
+    .maybeSingle();
+  if (!row) return "unknown";
+  if (row.status === "captured") return "paid";
+  if (row.status === "failed") return "failed";
+
+  const fail = async () => {
+    await supabase.from("vipps_donations").update({ status: "failed", settled_at: new Date().toISOString() }).eq("reference", reference);
+    return "failed" as const;
+  };
+
+  let payment = await getPayment(cfg, reference, fetchFn);
+  if (["ABORTED", "EXPIRED", "TERMINATED"].includes(payment.state)) return fail();
+  if (payment.state === "CREATED") return "pending";
+  if (payment.authorized !== row.amount_ore) return fail();
+
+  if (payment.captured < row.amount_ore) {
+    await capturePayment(cfg, reference, row.amount_ore, fetchFn);
+    payment = await getPayment(cfg, reference, fetchFn);
+  }
+  if (payment.captured !== row.amount_ore) {
+    await supabase.from("vipps_donations").update({ status: "authorized" }).eq("reference", reference);
+    return "pending";
+  }
+  await supabase.from("vipps_donations").update({ status: "captured", settled_at: new Date().toISOString() }).eq("reference", reference);
+  return "paid";
+}
+
+/**
  * Sjekker en Vipps-betaling mot Vipps selv (vi stoler aldri på det som kommer inn fra nettleseren eller
  * webhooken), trekker pengene når kunden har godkjent, og registrerer medlemsbetalingen nøyaktig én gang.
  * Trygt å kalle flere ganger og samtidig: fra retursiden, fra webhooken og fra nattlig avstemming.
