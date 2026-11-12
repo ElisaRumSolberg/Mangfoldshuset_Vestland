@@ -2,15 +2,33 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getResendClient, isResendConfigured, NOTIFY_EMAIL } from "@/lib/resend";
 import { todayOslo } from "@/lib/recurring";
-import { isVippsConfigured } from "@/lib/vipps";
+import { isVippsPublic } from "@/lib/vipps";
+import { feeStartsText, freeMembershipEnd, FEE_STARTS } from "@/lib/membership-year";
+import { feeForPerson } from "@/lib/membership-fee";
 
 // Dager til utløp (positivt = før, negativt = etter utløp).
 const MILESTONES = [30, 21, 15, 10, 5, 3, 1, -3, -7, -15];
 
-function message(firstName: string, expires: string, offset: number, link: string) {
-  const vipps = isVippsConfigured()
+function message(firstName: string, expires: string, offset: number, link: string, birthDate?: string | null) {
+  const vipps = isVippsPublic()
     ? `Betal kontingenten med Vipps direkte på din medlemsside: ${link}`
     : `Betal medlemskontingent med Vipps til #595791. Din medlemsside: ${link}`;
+  // Gratis medlemskap ut 2026: forklar at kontingenten innføres, og hva det koster for akkurat denne personen.
+  if (expires === freeMembershipEnd() && offset > 0) {
+    const fee = feeForPerson(birthDate, FEE_STARTS);
+    const how = isVippsPublic()
+      ? `Du fornyer enkelt med Vipps på din medlemsside: ${link}`
+      : `Du fornyer ved å betale til Vipps #595791 eller bankkonto 3207 31 01688, og skriver navnet ditt. Din medlemsside: ${link}`;
+    return {
+      subject: "Fornye medlemskapet fra 1. januar?",
+      text: `Hei ${firstName}!
+
+Medlemskapet ditt i Mangfoldshuset Vestland har vært gratis i 2026, og gjelder til ${expires} (${offset} ${offset === 1 ? "dag" : "dager"} igjen). Fra ${feeStartsText()} koster medlemskap ${fee} kr per år. ${how}
+
+Takk for at du er med i fellesskapet!
+Mangfoldshuset Vestland`,
+    };
+  }
   if (offset > 0) {
     return {
       subject: `Medlemskapet ditt utløper om ${offset} ${offset === 1 ? "dag" : "dager"}`,
@@ -56,7 +74,7 @@ export async function GET(request: Request) {
     if (!MILESTONES.includes(offset)) continue;
     if (m.last_reminder_for === m.expires_at && m.last_reminder_offset === offset) continue;
 
-    const { subject, text } = message(m.first_name, m.expires_at, offset, `${site}/bli-med/medlem/${m.pay_token}`);
+    const { subject, text } = message(m.first_name, m.expires_at, offset, `${site}/bli-med/medlem/${m.pay_token}`, m.birth_date);
     const { error } = await resend.emails.send({
       from,
       to: m.email,

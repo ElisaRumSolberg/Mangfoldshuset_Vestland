@@ -10,7 +10,7 @@ export function receiptMessage(
   };
 }
 
-import { isVippsConfigured } from "@/lib/vipps";
+import { isVippsPublic } from "@/lib/vipps";
 
 /** Lenke til medlemmets egen side (betalingsstatus, fornyelse, legge til flere). */
 export function memberPageUrl(site: string, payToken: string): string {
@@ -25,7 +25,7 @@ export function existingMemberMessage(
   site: string,
 ): { subject: string; text: string } {
   const link = memberPageUrl(site, member.pay_token);
-  const how = isVippsConfigured()
+  const how = isVippsPublic()
     ? "med Vipps direkte på medlemssiden din (lenken under), eller til bankkonto 3207 31 01688"
     : "Vipps til #595791 eller bankkonto 3207 31 01688, og skriv navnet ditt";
   const active = !!member.expires_at && member.expires_at >= today;

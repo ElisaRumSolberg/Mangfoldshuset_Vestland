@@ -109,3 +109,18 @@ describe("gaver", () => {
     for (const bad of ["9", "0", "-5", "100001", "12.5", "1e3", "", "abc", null, 250]) expect(parseDonation(bad)).toBeNull();
   });
 });
+
+import { isVippsPublic } from "./vipps";
+
+describe("isVippsPublic", () => {
+  it("hides Vipps from visitors in the test environment", () => {
+    expect(isVippsPublic({})).toBe(false);
+    expect(isVippsPublic(KEYS)).toBe(false);
+    expect(isVippsPublic({ ...KEYS, VIPPS_ENV: "test" })).toBe(false);
+  });
+  it("shows Vipps in production, or when explicitly made public for a visible test", () => {
+    expect(isVippsPublic({ ...KEYS, VIPPS_ENV: "prod" })).toBe(true);
+    expect(isVippsPublic({ ...KEYS, VIPPS_PUBLIC: "1" })).toBe(true);
+    expect(isVippsPublic({ VIPPS_ENV: "prod" })).toBe(false);
+  });
+});

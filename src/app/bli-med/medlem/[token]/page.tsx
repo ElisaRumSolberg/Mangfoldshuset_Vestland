@@ -13,7 +13,7 @@ import { todayOslo } from "@/lib/recurring";
 import { feeStartsText, freeMembershipEnd, isFreePeriod } from "@/lib/membership-year";
 import { MAX_HOUSEHOLD } from "@/lib/household";
 import { addHouseholdMember, startVippsPayment } from "./actions";
-import { isVippsConfigured } from "@/lib/vipps";
+import { isVippsPublic } from "@/lib/vipps";
 
 function VippsButton({ payToken, label }: { payToken: string; label: string }) {
   return (
@@ -80,7 +80,7 @@ export default async function MemberPage({
 }) {
   const { token } = await params;
   const { ny, lagt, betal, vipps } = await searchParams;
-  const vippsOn = isVippsConfigured();
+  const vippsOn = isVippsPublic();
   const data = await load(token);
   if (!data) notFound();
   const { me, others } = data;

@@ -38,6 +38,14 @@ export function isVippsConfigured(): boolean {
   return vippsEnv() !== null;
 }
 
+/**
+ * Skal Vipps vises for besøkende? Bare når nøklene finnes OG det er produksjon (`VIPPS_ENV=prod`), eller
+ * `VIPPS_PUBLIC=1` er satt for en synlig test. Det hindrer at besøkende ser en knapp som ikke virker.
+ */
+export function isVippsPublic(env: Record<string, string | undefined> = process.env): boolean {
+  return vippsEnv(env) !== null && (env.VIPPS_ENV === "prod" || env.VIPPS_PUBLIC === "1");
+}
+
 /** Referansen må være unik per salgsenhet. «mh-» + uuid er 39 tegn (bokstaver, tall og bindestrek). */
 export function newReference(): string {
   return `mh-${crypto.randomUUID()}`;

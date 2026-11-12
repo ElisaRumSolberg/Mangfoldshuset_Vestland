@@ -12,7 +12,7 @@ describe("e-poster viser direkte Vipps-betaling når Vipps er satt opp", () => {
   });
 
   it("points to the member page instead of the old number when Vipps is configured", () => {
-    for (const [k, v] of Object.entries(KEYS)) vi.stubEnv(k, v);
+    for (const [k, v] of Object.entries({ ...KEYS, VIPPS_ENV: "prod" })) vi.stubEnv(k, v);
     const unpaid = unpaidMessage("Kari", [{ name: "Kari", fee: 100, link: "https://x/medlem/t" }]);
     expect(unpaid.text).not.toContain("#595791");
     expect(unpaid.text).toContain("direkte på medlemssiden");

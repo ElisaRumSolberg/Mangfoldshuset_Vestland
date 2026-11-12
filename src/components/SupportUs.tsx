@@ -1,4 +1,4 @@
-import { isVippsConfigured } from "@/lib/vipps";
+import { isVippsPublic } from "@/lib/vipps";
 import { startVippsDonation } from "@/app/stott-oss/actions";
 
 const AMOUNTS = [100, 250, 500];
@@ -10,7 +10,7 @@ const chip =
 
 /** Støtt oss: en rolig linje på siden, ikke en egen scene. Skjemaet vises bare når Vipps er satt opp. */
 export default function SupportUs({ vippsLink }: { vippsLink?: string | null }) {
-  const direct = isVippsConfigured();
+  const direct = isVippsPublic();
   return (
     <section id="stott-oss" className="mx-auto max-w-6xl scroll-mt-28 px-6 pb-16">
       <div className="grid grid-cols-1 gap-6 border-t border-line pt-10 md:grid-cols-[1fr_minmax(0,24rem)] md:items-center md:gap-14">

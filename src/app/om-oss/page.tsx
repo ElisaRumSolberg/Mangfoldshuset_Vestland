@@ -37,7 +37,7 @@ const grupper = [
   {
     title: "Barn og ungdom",
     desc: "Aktiviteter og fritidstilbud som engasjerer barn og ungdom i lokalmiljøet.",
-    grad: "from-[#9CA86B] to-[#4B6B4A]",
+    grad: "from-[#9CA86B] to-green",
   },
   {
     title: "Aktivitet for familie",
@@ -52,17 +52,17 @@ const grupper = [
   {
     title: "Menn",
     desc: "Et fellesskap og møtested for menn i lokalmiljøet.",
-    grad: "from-[#6E8B67] to-[#3F5A3E]",
+    grad: "from-green to-green-dark",
   },
   {
     title: "Kultur",
     desc: "Kulturkvelder, mat og markeringer som viser mangfoldet i Vestland.",
-    grad: "from-[#9CA86B] to-[#4B6B4A]",
+    grad: "from-[#9CA86B] to-green",
   },
   {
     title: "Språk og dialog",
     desc: "Språkkafé og samtalegrupper for å styrke norskferdigheter og fellesskap.",
-    grad: "from-[#6E8B67] to-[#3F5A3E]",
+    grad: "from-green to-green-dark",
   },
   {
     title: "Seniorer",

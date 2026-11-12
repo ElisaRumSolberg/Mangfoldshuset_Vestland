@@ -8,7 +8,7 @@ import { fetchSiteSettings } from "@/lib/site-settings";
 import BirthDateInput from "@/components/BirthDateInput";
 import { submitApplication, submitMembership } from "./actions";
 import { feeStartsText, isFreePeriod } from "@/lib/membership-year";
-import { isVippsConfigured } from "@/lib/vipps";
+import { isVippsPublic } from "@/lib/vipps";
 import { todayOslo } from "@/lib/recurring";
 
 export const metadata: Metadata = {
@@ -154,7 +154,7 @@ function MembershipSection({
             text={free
               ? "Takk! Du er medlem, og medlemskapet er gratis ut 2026. Vi har sendt en e-post med lenke til din medlemsside."
               : "Takk! Vi har sendt en e-post til adressen du oppga, med lenke til din medlemsside. Der ser du betalingsstatus og hvordan du betaler eller fornyer."}
-            vippsLink={free || isVippsConfigured() ? null : vippsLink}
+            vippsLink={free || isVippsPublic() ? null : vippsLink}
           />
         ) : (
           <>

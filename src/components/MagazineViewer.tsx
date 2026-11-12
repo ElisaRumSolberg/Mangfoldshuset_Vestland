@@ -75,7 +75,7 @@ export default function MagazineViewer({ issues }: { issues: Issue[] }) {
                       className="aspect-[3/4] w-16 shrink-0 rounded-lg border border-line object-cover"
                     />
                   ) : (
-                    <div className="aspect-[3/4] w-16 shrink-0 rounded-lg bg-gradient-to-br from-[#6E8B67] to-[#3F5A3E]" />
+                    <div className="aspect-[3/4] w-16 shrink-0 rounded-lg bg-gradient-to-br from-green to-green-dark" />
                   )}
                   <span className="min-w-0">
                     {idx === 0 && (

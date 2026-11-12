@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { feeForPerson } from "@/lib/membership-fee";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { feeStartsText, freeMembershipEnd, isFreePeriod } from "@/lib/membership-year";
-import { isVippsConfigured } from "@/lib/vipps";
+import { isVippsPublic } from "@/lib/vipps";
 import { findExistingMember } from "@/lib/member-lookup";
 import { existingMemberMessage } from "@/lib/receipt-email";
 import { todayOslo } from "@/lib/recurring";
@@ -139,7 +139,7 @@ På din egen side ser du medlemskapet ditt og kan legge til flere i familien. Hv
 ${site}/bli-med/medlem/${pay_token}
 
 Mangfoldshuset Vestland`
-        : `Hei ${first_name}!\n\nTakk for at du meldte deg inn i Mangfoldshuset Vestland. Medlemskapet aktiveres når kontingenten er betalt: ${fee} kr per år.\n\n${isVippsConfigured() ? "Betal med Vipps direkte på din medlemsside (lenken under), eller til bankkonto 3207 31 01688." : "Betal med Vipps til #595791 eller til bankkonto 3207 31 01688, og skriv navnet ditt."}\n\nDu betaler for deg selv. Når betalingen er registrert, kan du legge til flere i familien på din egen side. Hver person har sin egen betaling, og foresatte betaler for barn under 18 år:\n${site}/bli-med/medlem/${pay_token}\n\nMangfoldshuset Vestland`,
+        : `Hei ${first_name}!\n\nTakk for at du meldte deg inn i Mangfoldshuset Vestland. Medlemskapet aktiveres når kontingenten er betalt: ${fee} kr per år.\n\n${isVippsPublic() ? "Betal med Vipps direkte på din medlemsside (lenken under), eller til bankkonto 3207 31 01688." : "Betal med Vipps til #595791 eller til bankkonto 3207 31 01688, og skriv navnet ditt."}\n\nDu betaler for deg selv. Når betalingen er registrert, kan du legge til flere i familien på din egen side. Hver person har sin egen betaling, og foresatte betaler for barn under 18 år:\n${site}/bli-med/medlem/${pay_token}\n\nMangfoldshuset Vestland`,
     }));
   }
 

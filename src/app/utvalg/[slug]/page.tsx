@@ -10,7 +10,7 @@ import ActivityShowcase, { type ShowcaseSlide } from "@/components/ActivityShowc
 import MobileCollapse from "@/components/MobileCollapse";
 import { customColors, toUtvalg } from "@/lib/utvalg";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
-import { isVippsConfigured } from "@/lib/vipps";
+import { isVippsPublic } from "@/lib/vipps";
 import { createClient } from "@/lib/supabase/server";
 import { shortDateRange } from "@/lib/activity-date";
 
@@ -416,7 +416,7 @@ export default async function UtvalgPage({ params }: Props) {
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-fig font-serif text-lg text-white">2</span>
                 <h3 className="mt-4 font-serif text-lg">Betal kontingenten</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-                  {isVippsConfigured()
+                  {isVippsPublic()
                     ? "Betal med Vipps direkte på din medlemsside, så er medlemskapet aktivt med en gang. Du kan også betale til bankkonto 3207 31 01688."
                     : "Betal med Vipps til #595791 eller til bankkonto 3207 31 01688, så aktiverer vi medlemskapet ditt."}
                 </p>

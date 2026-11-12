@@ -3,9 +3,9 @@ import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
 
 const grads = [
-  "from-[#6E8B67] to-[#3F5A3E]",
+  "from-green to-green-dark",
   "from-[#C08A5C] to-[#9C3B44]",
-  "from-[#9CA86B] to-[#4B6B4A]",
+  "from-[#9CA86B] to-green",
 ];
 
 const fallback: { id: string; title: string; date: string; imageUrl: string | null }[] = [];
