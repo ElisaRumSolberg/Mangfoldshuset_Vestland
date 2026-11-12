@@ -18,7 +18,7 @@ export default function NotFound() {
         </p>
         <Link
           href="/"
-          className="mt-8 rounded-full bg-fig px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
+          className="mt-8 rounded-lg bg-fig px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
         >
           Til forsiden
         </Link>

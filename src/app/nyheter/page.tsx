@@ -49,7 +49,7 @@ export default async function NyheterPage() {
 
         <Link
           href="/mangfoldsposten"
-          className="mt-8 flex items-center justify-between gap-4 rounded-[18px] bg-[#F7E9E9] px-6 py-5 transition-opacity hover:opacity-90"
+          className="mt-8 flex items-center justify-between gap-4 rounded-xl bg-[#F7E9E9] px-6 py-5 transition-opacity hover:opacity-90"
         >
           <span>
             <span className="block text-xs font-bold uppercase tracking-widest text-fig">
@@ -68,7 +68,7 @@ export default async function NyheterPage() {
               <article
                 key={n.id}
                 id={`nyhet-${n.id}`}
-                className="overflow-hidden rounded-[18px] border border-line bg-white"
+                className="overflow-hidden rounded-xl border border-line bg-white"
               >
                 {n.video_url ? (
                   <video src={n.video_url} controls className="aspect-[4/3] w-full bg-black object-cover" />

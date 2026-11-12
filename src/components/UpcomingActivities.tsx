@@ -126,16 +126,13 @@ export default async function UpcomingActivities() {
     <section className="mx-auto max-w-6xl px-6 py-24">
       <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
-            Kalender
-          </p>
-          <h2 className="mt-2 font-serif text-3xl font-medium">
+          <h2 className="font-serif text-3xl font-medium">
             Kommende aktiviteter
           </h2>
         </div>
         <Link
           href="/aktiviteter"
-          className="rounded-full border border-ink px-6 py-3 text-sm font-semibold transition-all hover:-translate-y-0.5 hover:bg-ink hover:text-cream"
+          className="rounded-lg border border-ink px-6 py-3 text-sm font-semibold transition-all hover:bg-ink hover:text-cream"
         >
           Se alle aktiviteter
         </Link>

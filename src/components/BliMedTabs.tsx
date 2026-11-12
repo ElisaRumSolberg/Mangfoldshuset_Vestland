@@ -50,7 +50,7 @@ export default function BliMedTabs({
 
   return (
     <div>
-      <div role="tablist" aria-label="Velg hvordan du vil bli med" className="mt-6 flex flex-wrap gap-3 text-sm font-semibold">
+      <div role="tablist" aria-label="Velg hvordan du vil bli med" className="mt-6 flex flex-wrap gap-x-7 gap-y-1 border-b border-line text-base font-semibold">
         {tabs.map((t, i) => {
           const selected = t.id === active;
           return (
@@ -64,8 +64,8 @@ export default function BliMedTabs({
               tabIndex={selected ? 0 : -1}
               onClick={() => select(t.id)}
               onKeyDown={(e) => onKeyDown(e, i)}
-              className={`min-h-11 rounded-full px-5 py-2.5 transition-colors ${
-                selected ? "bg-fig text-white" : "bg-[#F7E9E9] text-fig hover:bg-[#F1DADA]"
+              className={`-mb-px min-h-11 border-b-[3px] px-1 py-2.5 transition-colors ${
+                selected ? "border-fig text-ink" : "border-transparent text-ink-soft hover:text-ink"
               }`}
             >
               {t.label}

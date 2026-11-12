@@ -16,7 +16,7 @@ function isActivePath(pathname: string, href: string) {
 }
 
 const navLink = (active: boolean) =>
-  `rounded-full px-4 py-2 transition-colors ${
+  `rounded-lg px-3 py-2.5 transition-colors ${
     active ? "bg-fig/10 font-semibold text-fig" : "hover:bg-ink/5 hover:text-ink"
   }`;
 
@@ -70,13 +70,13 @@ function DropdownMenu({
         </svg>
       </button>
       {open && (
-        <div className="absolute left-0 top-full z-10 mt-2 w-52 overflow-hidden rounded-2xl border border-line bg-cream shadow-lg">
+        <div className="absolute left-0 top-full z-10 mt-2 w-52 overflow-hidden rounded-xl border border-line bg-cream shadow-lg">
           {items.map((i) => (
             <Link
               key={i.href}
               href={i.href}
               onClick={() => setOpen(false)}
-              className={`block px-4 py-3 text-sm transition-colors ${
+              className={`block px-4 py-3 text-base transition-colors ${
                 isActivePath(pathname, i.href)
                   ? "bg-fig/10 font-semibold text-fig"
                   : "text-ink-soft hover:bg-ink/5 hover:text-ink"
@@ -117,17 +117,7 @@ export default function NavbarClient({
         { href: "/mangfoldsposten", label: "Mangfoldsposten" },
       ],
     },
-    {
-      type: "dropdown",
-      href: "/bli-med",
-      label: "Bli med",
-      items: [
-        { href: "/bli-med#medlem", label: "Bli medlem" },
-        { href: "/bli-med#frivillig", label: "Bli frivillig" },
-        { href: "/bli-med#ide", label: "Har du en idé?" },
-        { href: "/bli-med#samarbeid", label: "Samarbeid med oss" },
-      ],
-    },
+    { type: "link", href: "/bli-med", label: "Bli med" },
     { type: "link", href: "/kontakt", label: "Kontakt" },
   ];
 
@@ -142,12 +132,12 @@ export default function NavbarClient({
           alt="Mangfoldshuset Vestland"
           width={2197}
           height={1415}
-          className="h-[67px] w-auto sm:h-[134px]"
+          className="h-[67px] w-auto sm:h-[96px]"
           priority
         />
       </Link>
 
-      <nav aria-label="Hovedmeny" className="hidden items-center justify-center gap-1 text-sm font-medium text-ink-soft xl:flex">
+      <nav aria-label="Hovedmeny" className="hidden items-center justify-center gap-0.5 text-[15px] font-medium text-ink-soft lg:flex">
         {navEntries.map((entry) =>
           entry.type === "dropdown" ? (
             <DropdownMenu
@@ -169,11 +159,16 @@ export default function NavbarClient({
         )}
       </nav>
 
-      <details className="self-center justify-self-end xl:hidden">
-        <summary className="cursor-pointer rounded-lg px-3 py-3 text-sm font-semibold">Meny</summary>
+      <details className="self-center justify-self-end lg:hidden">
+        <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-lg border border-line px-4 text-base font-semibold [&::-webkit-details-marker]:hidden">
+          <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+            <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none" />
+          </svg>
+          Meny
+        </summary>
         <nav aria-label="Mobilmeny" className="absolute inset-x-0 top-full max-h-[70vh] overflow-y-auto border-b border-line bg-cream p-4 shadow-lg">
           {navEntries.flatMap(entry => entry.type === "link" ? [entry] : entry.items).map(item => (
-            <Link key={item.href} href={item.href} className="block rounded-lg px-4 py-3 text-sm hover:bg-fig/10" onClick={event => event.currentTarget.closest("details")?.removeAttribute("open")}>
+            <Link key={item.href} href={item.href} className="block rounded-lg px-4 py-3 text-base hover:bg-fig/10" onClick={event => event.currentTarget.closest("details")?.removeAttribute("open")}>
               {item.label}
             </Link>
           ))}
@@ -185,7 +180,7 @@ export default function NavbarClient({
           href="/utvalg/ungdom"
           aria-label="Mangfoldhuset Ungdom"
           title="Mangfoldhuset Ungdom"
-          className="hidden shrink-0 border-r border-line pr-5 transition-transform hover:-translate-y-0.5 2xl:block"
+          className="hidden shrink-0 border-r border-line pr-5 transition-transform 2xl:block"
         >
           <Image
             src="/utvalg/mangfoldhuset-ungdom-logo.png"
@@ -197,7 +192,7 @@ export default function NavbarClient({
         </Link>
         <Link
           href="/bli-med#frivillig"
-          className="whitespace-nowrap rounded-full bg-fig px-3 py-3 text-xs font-semibold text-white transition-colors hover:bg-fig-dark sm:px-5 sm:text-sm"
+          className="whitespace-nowrap rounded-lg bg-fig px-3 py-3 text-xs font-semibold text-white transition-colors hover:bg-fig-dark sm:px-5 sm:text-sm"
         >
           Bli frivillig
         </Link>

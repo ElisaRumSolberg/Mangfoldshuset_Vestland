@@ -22,7 +22,7 @@ export default function DonationError() {
           bankkonto <span className="font-semibold text-ink">3207 31 01688</span>.
         </p>
         <div className="mt-6">
-          <Link href="/" className="rounded-full border border-line px-6 py-3 text-sm font-semibold text-ink">
+          <Link href="/" className="rounded-lg border border-line px-6 py-3 text-sm font-semibold text-ink">
             Til forsiden
           </Link>
         </div>

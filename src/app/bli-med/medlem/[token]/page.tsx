@@ -20,7 +20,7 @@ function VippsButton({ payToken, label }: { payToken: string; label: string }) {
     <form action={startVippsPayment.bind(null, payToken)} className="mt-4">
       <button
         type="submit"
-        className="inline-flex min-h-11 items-center rounded-full px-6 text-sm font-semibold text-[#1A1512]"
+        className="inline-flex min-h-11 items-center rounded-lg px-6 text-sm font-semibold text-[#1A1512]"
         style={{ backgroundColor: "#FF5B24" }}
       >
         {label}
@@ -127,7 +127,7 @@ export default async function MemberPage({
         )}
 
         {payNow && (
-          <section className="mt-6 rounded-2xl border-2 border-fig bg-white p-6">
+          <section className="mt-6 rounded-xl border-2 border-fig bg-white p-6">
             <h2 className="font-serif text-2xl font-medium">
               Betal for {payNow.first_name} nå
             </h2>
@@ -159,7 +159,7 @@ export default async function MemberPage({
                 href={vippsLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-4 inline-flex min-h-11 items-center rounded-full px-6 text-sm font-semibold text-[#1A1512]"
+                className="mt-4 inline-flex min-h-11 items-center rounded-lg px-6 text-sm font-semibold text-[#1A1512]"
                 style={{ backgroundColor: "#FF5B24" }}
               >
                 Betal med Vipps for {payNow.first_name}
@@ -168,7 +168,7 @@ export default async function MemberPage({
           </section>
         )}
 
-        <section className="mt-8 rounded-2xl border border-line bg-cream p-6">
+        <section className="mt-8 rounded-xl border border-line bg-cream p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="font-serif text-2xl font-medium">Ditt medlemskap</h2>
@@ -177,11 +177,11 @@ export default async function MemberPage({
               </p>
             </div>
             {active ? (
-              <span className="rounded-full bg-[#EAF0E9] px-4 py-2 text-sm font-semibold text-green-dark">
+              <span className="rounded-lg bg-[#EAF0E9] px-4 py-2 text-sm font-semibold text-green-dark">
                 {freeMember ? `Gratis medlem ut 2026` : `Betalt – medlem til ${me.expires_at}`}
               </span>
             ) : (
-              <span className="rounded-full bg-[#F5EAD5] px-4 py-2 text-sm font-semibold text-[#93701F]">
+              <span className="rounded-lg bg-[#F5EAD5] px-4 py-2 text-sm font-semibold text-[#93701F]">
                 {me.expires_at ? `Utløpt ${me.expires_at} – fornyes ved betaling` : "Ikke betalt ennå"}
               </span>
             )}
@@ -228,7 +228,7 @@ export default async function MemberPage({
                   href={vippsLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-4 inline-flex min-h-11 items-center rounded-full px-6 text-sm font-semibold text-[#1A1512]"
+                  className="mt-4 inline-flex min-h-11 items-center rounded-lg px-6 text-sm font-semibold text-[#1A1512]"
                   style={{ backgroundColor: "#FF5B24" }}
                 >
                   Betal med Vipps
@@ -280,7 +280,7 @@ export default async function MemberPage({
         )}
 
         {active && !full && (
-          <section className="mt-8 rounded-2xl border border-line bg-white p-6">
+          <section className="mt-8 rounded-xl border border-line bg-white p-6">
             <h2 className="font-serif text-2xl font-medium">Legg til en person</h2>
             <p className="mt-1 text-sm leading-relaxed text-ink-soft">
               Du kan legge til familiemedlemmer. Hver person blir eget medlem og har sin egen betaling, som du får
@@ -317,7 +317,7 @@ export default async function MemberPage({
               </label>
               <button
                 type="submit"
-                className="w-fit rounded-full bg-fig px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-fig-dark sm:col-span-2"
+                className="w-fit rounded-lg bg-fig px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-fig-dark sm:col-span-2"
               >
                 Legg til
               </button>

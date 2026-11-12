@@ -89,7 +89,7 @@ export default function ReportSection({
           </div>
           {sidePhotos.length > 0 && (
             <div>
-              <div className="mt-6 overflow-hidden rounded-[18px] border border-line bg-cream-2 lg:mt-6">
+              <div className="mt-6 overflow-hidden rounded-xl border border-line bg-cream-2 lg:mt-6">
                 <ActivityMedia images={sidePhotos} title={title} className="aspect-[4/3] w-full lg:aspect-[5/4]" />
               </div>
               {consent}

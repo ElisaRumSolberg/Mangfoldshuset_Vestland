@@ -64,10 +64,7 @@ export default async function AktiviteterPage() {
     <>
       <Navbar />
       <main className="mx-auto max-w-6xl px-6 py-20">
-        <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
-          Kalender
-        </p>
-        <h1 className="mt-2 font-serif text-4xl font-medium">Aktiviteter</h1>
+        <h1 className="font-serif text-4xl font-medium">Aktiviteter</h1>
 
         <FasteTilbud programs={programs} />
 
@@ -94,7 +91,7 @@ export default async function AktiviteterPage() {
               <details
                 key={g.year}
                 open={i === 0}
-                className="group mt-6 rounded-[18px] border border-line bg-white px-5 pb-6 pt-2"
+                className="group mt-6 rounded-xl border border-line bg-white px-5 pb-6 pt-2"
               >
                 <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 rounded-lg py-2 [&::-webkit-details-marker]:hidden">
                   <span className="font-serif text-xl font-medium">{g.year}</span>

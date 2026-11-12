@@ -168,7 +168,7 @@ export default async function UtvalgPage({ params }: Props) {
           />
           <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-6 py-16 md:grid-cols-[1fr_1fr] md:py-16">
             <div>
-              <span className="mb-5 inline-block rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm font-semibold text-[#EFE7D6]">
+              <span className="mb-5 inline-block rounded-lg border border-white/20 bg-white/10 px-4 py-1.5 text-sm font-semibold text-[#EFE7D6]">
                 Utvalg
               </span>
               <h1 className="max-w-xl font-serif text-3xl font-medium leading-[1.1] text-white md:text-4xl">
@@ -180,7 +180,7 @@ export default async function UtvalgPage({ params }: Props) {
                     href={u.external_link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-all hover:-translate-y-0.5 ${
+                    className={`flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold transition-all ${
                       custom ? "hover:brightness-95" : "bg-fig text-white hover:bg-fig-dark"
                     }`}
                     style={
@@ -200,7 +200,7 @@ export default async function UtvalgPage({ params }: Props) {
                     href={u.instagram_link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 rounded-full border border-white/50 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:bg-white/20"
+                    className="flex items-center gap-2 rounded-lg border border-white/50 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20"
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                       <rect x="3.5" y="3.5" width="17" height="17" rx="5" stroke="currentColor" strokeWidth="1.7" />
@@ -212,14 +212,14 @@ export default async function UtvalgPage({ params }: Props) {
                 )}
                 <Link
                   href="/bli-med#frivillig"
-                  className="rounded-full border border-white/50 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:bg-white/20"
+                  className="rounded-lg border border-white/50 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20"
                 >
                   Bli med i utvalget
                 </Link>
                 {u.contact && (
                   <a
                     href={`mailto:${u.contact}`}
-                    className="rounded-full border border-white/50 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:bg-white/20"
+                    className="rounded-lg border border-white/50 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20"
                   >
                     {u.contact}
                   </a>
@@ -229,12 +229,12 @@ export default async function UtvalgPage({ params }: Props) {
             {u.cover_images.length ? (
               <PhotoSlideshow
                 images={u.cover_images}
-                className="h-80 rounded-3xl border border-white/10 md:h-[440px]"
+                className="h-80 rounded-xl border border-white/10 md:h-[440px]"
               />
             ) : heroSlides.length ? (
               <ActivityShowcase
                 slides={heroSlides}
-                className="h-80 rounded-3xl border border-white/10 md:h-[440px]"
+                className="h-80 rounded-xl border border-white/10 md:h-[440px]"
               />
             ) : (
               <OrganicPanel
@@ -249,20 +249,20 @@ export default async function UtvalgPage({ params }: Props) {
         {/* Om oss: kort, i samme stil som forsidens Om oss-utsnitt */}
         <section className="bg-cream-2 py-16">
           <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-6 md:grid-cols-[0.85fr_1.15fr]">
-            <dl className="order-2 grid grid-cols-2 gap-4 rounded-[20px] border border-line bg-white p-6 md:order-1">
+            <dl className="order-2 grid grid-cols-2 gap-4 rounded-xl border border-line bg-white p-6 md:order-1">
               <div>
-                <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Aktiviteter</dt>
+                <dt className="text-sm font-semibold text-green-dark">Aktiviteter</dt>
                 <dd className="mt-1 font-serif text-3xl font-medium text-ink">{totalActivities}</dd>
               </div>
               <div>
-                <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Deltakere</dt>
+                <dt className="text-sm font-semibold text-green-dark">Deltakere</dt>
                 <dd className="mt-1 font-serif text-3xl font-medium text-ink">
                   {totalParticipants > 0 ? `${totalParticipants.toLocaleString("nb-NO")}+` : "–"}
                 </dd>
               </div>
               {u.contact && (
                 <div className="col-span-2 border-t border-line pt-4">
-                  <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Kontakt</dt>
+                  <dt className="text-sm font-semibold text-green-dark">Kontakt</dt>
                   <dd className="mt-1 text-sm">
                     <a className="break-all font-semibold text-ink underline underline-offset-4" href={`mailto:${u.contact}`}>
                       {u.contact}
@@ -273,7 +273,7 @@ export default async function UtvalgPage({ params }: Props) {
               <div className="col-span-2">
                 <Link
                   href="/bli-med#frivillig"
-                  className="inline-flex min-h-11 items-center rounded-full bg-fig px-6 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
+                  className="inline-flex min-h-11 items-center rounded-lg bg-fig px-6 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
                 >
                   Bli med i utvalget
                 </Link>
@@ -298,7 +298,7 @@ export default async function UtvalgPage({ params }: Props) {
             {upcoming.length > 0 ? (
               <ActivityGrid items={upcoming} emptyText="" />
             ) : (
-              <div className="mt-6 rounded-[18px] border border-line bg-white p-8">
+              <div className="mt-6 rounded-xl border border-line bg-white p-8">
                 <p className="font-serif text-xl text-ink">Ingen kommende aktiviteter akkurat nå</p>
                 <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-soft">
                   Nye aktiviteter legges ut her så snart de er klare. Bli medlem i Mangfoldshuset Vestland, så hører du fra oss først.
@@ -306,13 +306,13 @@ export default async function UtvalgPage({ params }: Props) {
                 <div className="mt-5 flex flex-wrap gap-3">
                   <Link
                     href="/bli-med#medlem"
-                    className="inline-flex min-h-11 items-center rounded-full bg-fig px-6 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
+                    className="inline-flex min-h-11 items-center rounded-lg bg-fig px-6 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
                   >
                     Bli medlem
                   </Link>
                   <Link
                     href="/bli-med#frivillig"
-                    className="inline-flex min-h-11 items-center rounded-full border border-ink px-6 text-sm font-semibold transition-colors hover:bg-ink hover:text-cream"
+                    className="inline-flex min-h-11 items-center rounded-lg border border-ink px-6 text-sm font-semibold transition-colors hover:bg-ink hover:text-cream"
                   >
                     Bli med i utvalget
                   </Link>
@@ -321,7 +321,7 @@ export default async function UtvalgPage({ params }: Props) {
                       href={u.external_link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex min-h-11 items-center rounded-full border border-ink px-6 text-sm font-semibold transition-colors hover:bg-ink hover:text-cream"
+                      className="inline-flex min-h-11 items-center rounded-lg border border-ink px-6 text-sm font-semibold transition-colors hover:bg-ink hover:text-cream"
                     >
                       Følg oss på Facebook
                     </a>
@@ -340,7 +340,7 @@ export default async function UtvalgPage({ params }: Props) {
                 className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2"
                 visibleOnMobile={2}
                 items={summaries.map((x) => (
-                  <div key={x.id} className="rounded-[18px] border border-line bg-white p-6">
+                  <div key={x.id} className="rounded-xl border border-line bg-white p-6">
                     <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
                       {x.date}
                       {x.participants ? ` · ${x.participants} deltakere` : ""}
@@ -368,7 +368,7 @@ export default async function UtvalgPage({ params }: Props) {
                 className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
                 visibleOnMobile={3}
                 items={quotes.map((q, i) => (
-                  <div key={i} className="flex flex-col justify-between rounded-[18px] border border-line bg-white p-6">
+                  <div key={i} className="flex flex-col justify-between rounded-xl border border-line bg-white p-6">
                     <p className="font-serif text-base italic leading-relaxed text-ink">«{q.text}»</p>
                     <Link
                       href={`/aktiviteter/${q.id}`}
@@ -399,7 +399,7 @@ export default async function UtvalgPage({ params }: Props) {
           <div className="mx-auto max-w-6xl">
             <h2 className="font-serif text-2xl font-medium">Slik blir du med</h2>
             <ol className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
-              <li className="rounded-[18px] border border-line bg-white p-6">
+              <li className="rounded-xl border border-line bg-white p-6">
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-fig font-serif text-lg text-white">1</span>
                 <h3 className="mt-4 font-serif text-lg">Bli medlem</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">
@@ -412,7 +412,7 @@ export default async function UtvalgPage({ params }: Props) {
                   Bli medlem →
                 </Link>
               </li>
-              <li className="rounded-[18px] border border-line bg-white p-6">
+              <li className="rounded-xl border border-line bg-white p-6">
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-fig font-serif text-lg text-white">2</span>
                 <h3 className="mt-4 font-serif text-lg">Betal kontingenten</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">
@@ -421,7 +421,7 @@ export default async function UtvalgPage({ params }: Props) {
                     : "Betal med Vipps til #595791 eller til bankkonto 3207 31 01688, så aktiverer vi medlemskapet ditt."}
                 </p>
               </li>
-              <li className="rounded-[18px] border border-line bg-white p-6">
+              <li className="rounded-xl border border-line bg-white p-6">
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-fig font-serif text-lg text-white">3</span>
                 <h3 className="mt-4 font-serif text-lg">Bli med i utvalget</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">
@@ -441,7 +441,7 @@ export default async function UtvalgPage({ params }: Props) {
         {(u.external_link || u.instagram_link) && (
           <section className="px-6 pb-16">
             <div
-              className={`mx-auto flex max-w-6xl flex-col items-center gap-5 rounded-[20px] px-8 py-10 text-center text-white ${custom ? "" : "bg-gradient-to-br from-[#5F7A56] to-[#4D6245]"}`}
+              className={`mx-auto flex max-w-6xl flex-col items-center gap-5 rounded-xl px-8 py-10 text-center text-white ${custom ? "" : "bg-gradient-to-br from-[#5F7A56] to-[#4D6245]"}`}
               style={custom ? { backgroundImage: `linear-gradient(135deg, ${custom.from}, ${custom.to})` } : undefined}
             >
               <h2 className="font-serif text-2xl font-medium">Følg {u.title}</h2>
@@ -454,7 +454,7 @@ export default async function UtvalgPage({ params }: Props) {
                     href={u.external_link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex min-h-11 items-center rounded-full bg-white px-6 text-sm font-semibold text-ink transition-all hover:-translate-y-0.5"
+                    className="inline-flex min-h-11 items-center rounded-lg bg-white px-6 text-sm font-semibold text-ink transition-all"
                   >
                     Facebook
                   </a>
@@ -464,14 +464,14 @@ export default async function UtvalgPage({ params }: Props) {
                     href={u.instagram_link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex min-h-11 items-center rounded-full border border-white/70 px-6 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-white/15"
+                    className="inline-flex min-h-11 items-center rounded-lg border border-white/70 px-6 text-sm font-semibold text-white transition-all hover:bg-white/15"
                   >
                     Instagram
                   </a>
                 )}
                 <Link
                   href="/bli-med#medlem"
-                  className="inline-flex min-h-11 items-center rounded-full bg-fig px-6 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-fig-dark"
+                  className="inline-flex min-h-11 items-center rounded-lg bg-fig px-6 text-sm font-semibold text-white transition-all hover:bg-fig-dark"
                 >
                   Bli medlem
                 </Link>

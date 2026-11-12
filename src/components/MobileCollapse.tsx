@@ -40,7 +40,7 @@ export default function MobileCollapse({
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
-          className="mt-6 inline-flex min-h-11 items-center rounded-full border border-ink px-6 text-sm font-semibold transition-colors hover:bg-ink hover:text-cream md:hidden"
+          className="mt-6 inline-flex min-h-11 items-center rounded-lg border border-ink px-6 text-sm font-semibold transition-colors hover:bg-ink hover:text-cream md:hidden"
         >
           {open ? lessLabel : `${moreLabel} (${extra})`}
         </button>

@@ -3,7 +3,7 @@ import Image from "next/image";
 /** Animert logo-fremvisning: logoen med en varm pulserende glød. */
 export default function WarmHouseAnimation({ className = "" }: { className?: string }) {
   return (
-    <div className={`relative flex items-center justify-center overflow-hidden rounded-[20px] bg-cream ${className}`}>
+    <div className={`relative flex items-center justify-center overflow-hidden rounded-xl bg-cream ${className}`}>
       <style>{`
         .wh-glow { animation: wh-glow 3.5s ease-in-out infinite; }
         @keyframes wh-glow { 0%,100% { opacity: 0.7; transform: scale(1); } 50% { opacity: 1; transform: scale(1.06); } }

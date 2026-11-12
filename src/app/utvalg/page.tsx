@@ -23,10 +23,7 @@ export default async function UtvalgOversiktPage() {
     <>
       <Navbar />
       <main className="mx-auto max-w-6xl px-6 py-20">
-        <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
-          Utvalg
-        </p>
-        <h1 className="mt-2 font-serif text-4xl font-medium">Våre utvalg</h1>
+        <h1 className="font-serif text-4xl font-medium">Våre utvalg</h1>
         <p className="mt-5 max-w-2xl text-base leading-relaxed text-ink-soft">
           Utvalgene er undergrupper i Mangfoldshuset Vestland som driver egne
           aktiviteter innenfor foreningens rammer.
@@ -38,7 +35,7 @@ export default async function UtvalgOversiktPage() {
               <Link
                 key={u.id}
                 href={`/utvalg/${u.slug}`}
-                className="group overflow-hidden rounded-[18px] border border-line bg-white transition-all hover:-translate-y-1 hover:shadow-lg"
+                className="group overflow-hidden rounded-xl border border-line bg-white transition-all hover:shadow-lg"
               >
                 <div className={`h-2 bg-gradient-to-r ${grads[i % grads.length]}`} />
                 <div className="p-6">

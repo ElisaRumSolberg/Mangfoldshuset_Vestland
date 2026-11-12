@@ -43,7 +43,7 @@ export default function Footer() {
         <div className="md:pr-8">
           <Link
             href="/bli-med#medlem"
-            className="mb-8 inline-block rounded-full bg-fig px-6 py-3 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-fig-dark"
+            className="mb-8 inline-block rounded-lg bg-fig px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-fig-dark"
           >
             Bli medlem
           </Link>

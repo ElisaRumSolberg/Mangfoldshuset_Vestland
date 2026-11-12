@@ -34,35 +34,28 @@ export default function CookieConsent() {
       aria-label="Informasjonskapsler"
       className="fixed inset-x-0 bottom-0 z-[60] border-t border-line bg-cream/97 backdrop-blur-sm"
     >
-      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
-        <div className="max-w-2xl">
-          <p className="font-serif text-base font-semibold text-ink">
-            Informasjonskapsler
-          </p>
-          <p className="mt-1 text-sm leading-relaxed text-ink-soft">
-            Vi bruker ikke informasjonskapsler for å spore vanlige besøkende.
-            Nødvendige cookies brukes kun ved administratorpålogging. Les mer
-            i vår{" "}
-            <a href="/personvern" className="underline hover:text-ink">
-              personvernerklæring
-            </a>
-            .
-          </p>
-        </div>
+      <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="max-w-2xl text-sm leading-relaxed text-ink-soft">
+          Vi bruker ikke informasjonskapsler for å spore besøkende. Les mer i{" "}
+          <a href="/personvern" className="underline hover:text-ink">
+            personvernerklæringen
+          </a>
+          .
+        </p>
         <div className="flex shrink-0 gap-3">
           <button
             type="button"
             onClick={() => decide("avvist")}
-            className="rounded-full border border-ink px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-cream"
+            className="min-h-11 rounded-lg border border-ink px-5 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-cream"
           >
             Avvis
           </button>
           <button
             type="button"
             onClick={() => decide("godkjent")}
-            className="rounded-full bg-fig px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
+            className="min-h-11 rounded-lg bg-fig px-5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
           >
-            Godta
+            Greit
           </button>
         </div>
       </div>

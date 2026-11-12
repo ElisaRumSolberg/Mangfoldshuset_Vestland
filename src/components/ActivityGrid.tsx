@@ -50,7 +50,7 @@ export default function ActivityGrid({
             onClick={() => setStart((v) => Math.max(0, v - pageSize))}
             disabled={start === 0}
             aria-label="Forrige"
-            className="rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-cream disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-ink"
+            className="rounded-lg border border-line bg-white px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-cream disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-ink"
           >
             ←
           </button>
@@ -64,7 +64,7 @@ export default function ActivityGrid({
             }
             disabled={start + pageSize >= items.length}
             aria-label="Neste"
-            className="rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-cream disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-ink"
+            className="rounded-lg border border-line bg-white px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-cream disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-ink"
           >
             →
           </button>

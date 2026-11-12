@@ -41,7 +41,7 @@ export default function MagazineViewer({ issues }: { issues: Issue[] }) {
           <a
             href={selected.pdf_url}
             download
-            className="rounded-full border border-ink px-5 py-2 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-cream"
+            className="rounded-lg border border-ink px-5 py-2 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-cream"
           >
             Last ned PDF
           </a>
@@ -61,7 +61,7 @@ export default function MagazineViewer({ issues }: { issues: Issue[] }) {
                   type="button"
                   onClick={() => setSelectedId(i.id)}
                   aria-current={active ? "true" : undefined}
-                  className={`flex w-full items-center gap-3 rounded-2xl border p-2.5 text-left transition-colors ${
+                  className={`flex w-full items-center gap-3 rounded-xl border p-2.5 text-left transition-colors ${
                     active
                       ? "border-fig bg-white shadow-sm"
                       : "border-line bg-white/60 hover:border-fig/50 hover:bg-white"
@@ -102,7 +102,7 @@ export default function MagazineViewer({ issues }: { issues: Issue[] }) {
               onClick={() => setStart((v) => Math.max(0, v - ARCHIVE_PAGE_SIZE))}
               disabled={start === 0}
               aria-label="Nyere utgaver"
-              className="rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-cream disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-ink"
+              className="rounded-lg border border-line bg-white px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-cream disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-ink"
             >
               ←
             </button>
@@ -118,7 +118,7 @@ export default function MagazineViewer({ issues }: { issues: Issue[] }) {
               }
               disabled={start + ARCHIVE_PAGE_SIZE >= issues.length}
               aria-label="Eldre utgaver"
-              className="rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-cream disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-ink"
+              className="rounded-lg border border-line bg-white px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-cream disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-ink"
             >
               →
             </button>
@@ -382,7 +382,7 @@ function Book({ pdfUrl }: { pdfUrl: string }) {
     "absolute top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-white/95 text-xl text-ink shadow-md transition-colors hover:bg-ink hover:text-cream disabled:opacity-30";
 
   const tool =
-    "rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-ink shadow-sm transition-colors hover:bg-ink hover:text-cream disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-ink";
+    "rounded-lg border border-line bg-white px-4 py-2 text-sm font-semibold text-ink shadow-sm transition-colors hover:bg-ink hover:text-cream disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-ink";
 
   return (
     <div
@@ -390,7 +390,7 @@ function Book({ pdfUrl }: { pdfUrl: string }) {
       className={
         full
           ? "fixed inset-0 z-[100] flex flex-col justify-center bg-[#2b2a26] p-4"
-          : "relative rounded-[18px] border border-line bg-cream-2 p-8 max-sm:p-4"
+          : "relative rounded-xl border border-line bg-cream-2 p-8 max-sm:p-4"
       }
     >
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -470,7 +470,7 @@ function Book({ pdfUrl }: { pdfUrl: string }) {
                 href={pdfUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 inline-block rounded-full bg-fig px-5 py-2 text-sm font-semibold text-white hover:bg-fig-dark"
+                className="mt-3 inline-block rounded-lg bg-fig px-5 py-2 text-sm font-semibold text-white hover:bg-fig-dark"
               >
                 Åpne PDF i ny fane
               </a>

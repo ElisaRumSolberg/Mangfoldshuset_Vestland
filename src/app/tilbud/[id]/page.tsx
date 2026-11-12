@@ -100,13 +100,13 @@ export default async function ProgramPage({ params, searchParams }: Props) {
           <dl className="mt-4 flex flex-wrap gap-x-8 gap-y-2 text-base">
             {p.price && (
               <div>
-                <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Pris</dt>
+                <dt className="text-sm font-semibold text-green-dark">Pris</dt>
                 <dd className="mt-0.5 text-ink">{p.price}</dd>
               </div>
             )}
             {p.registration_open && (
               <div>
-                <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Påmelding</dt>
+                <dt className="text-sm font-semibold text-green-dark">Påmelding</dt>
                 <dd className="mt-0.5 text-ink">Påmelding kreves – se skjema nedenfor</dd>
               </div>
             )}
@@ -115,7 +115,7 @@ export default async function ProgramPage({ params, searchParams }: Props) {
         {p.registration_open && signupDates.length > 0 && (
           <a
             href="#pamelding"
-            className="mt-4 inline-flex min-h-11 items-center rounded-full bg-fig px-6 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
+            className="mt-4 inline-flex min-h-11 items-center rounded-lg bg-fig px-6 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
           >
             Meld deg på ↓
           </a>
@@ -143,7 +143,7 @@ export default async function ProgramPage({ params, searchParams }: Props) {
             )}
 
             {menuRows.length > 0 && (
-              <div className="mt-8 rounded-2xl border border-line bg-white p-6">
+              <div className="mt-8 rounded-xl border border-line bg-white p-6">
                 <h2 className="font-serif text-xl font-medium">Ukens suppe</h2>
                 <ul className="mt-3 flex flex-col gap-4">
                   {menuRows.map((r) => (
@@ -171,7 +171,7 @@ export default async function ProgramPage({ params, searchParams }: Props) {
               </div>
             )}
 
-            <div className="mt-8 rounded-2xl border border-line bg-white p-6">
+            <div className="mt-8 rounded-xl border border-line bg-white p-6">
               <h2 className="font-serif text-xl font-medium">
                 {startsLater && p.start_date ? `Starter ${shortDate(p.start_date)}` : "Neste datoer"}
               </h2>
@@ -229,14 +229,14 @@ export default async function ProgramPage({ params, searchParams }: Props) {
               <img
                 src={p.image_url}
                 alt={`Plakat: ${p.title}`}
-                className="w-full rounded-[18px] border border-line"
+                className="w-full rounded-xl border border-line"
               />
             </a>
           )}
         </div>
 
         {p.registration_open && signupDates.length > 0 && (
-          <section id="pamelding" className="mt-10 scroll-mt-6 rounded-[18px] border border-line bg-cream p-6 sm:p-8">
+          <section id="pamelding" className="mt-10 scroll-mt-6 rounded-xl border border-line bg-cream p-6 sm:p-8">
             <h2 className="font-serif text-2xl font-medium">Meld deg på</h2>
             {meldt === "1" ? (
               <div className="mt-4 rounded-xl bg-[#EAF0E9] px-6 py-8 text-center">
@@ -323,7 +323,7 @@ export default async function ProgramPage({ params, searchParams }: Props) {
                 </label>
                 <button
                   type="submit"
-                  className="rounded-full bg-fig px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-fig-dark sm:col-span-2 sm:w-fit"
+                  className="rounded-lg bg-fig px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-fig-dark sm:col-span-2 sm:w-fit"
                 >
                   Meld meg på
                 </button>
@@ -363,7 +363,7 @@ export default async function ProgramPage({ params, searchParams }: Props) {
         {p.photos.length > 0 && (
           <div className="mt-12">
             <h2 className="font-serif text-2xl font-medium">Bilder</h2>
-            <div className="mt-6 overflow-hidden rounded-[18px] border border-line">
+            <div className="mt-6 overflow-hidden rounded-xl border border-line">
               <ActivityMedia
                 images={p.photos}
                 title={p.title}

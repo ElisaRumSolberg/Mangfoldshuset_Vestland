@@ -65,11 +65,11 @@ export default async function PaymentReturn({ params }: { params: Promise<{ refe
         <p className="mt-4 text-ink-soft">{copy.body}</p>
         <div className="mt-6 flex flex-wrap gap-3">
           {result === "pending" && (
-            <Link href={`/bli-med/betalt/${reference}`} className="rounded-full bg-fig px-6 py-3 text-sm font-semibold text-white">
+            <Link href={`/bli-med/betalt/${reference}`} className="rounded-lg bg-fig px-6 py-3 text-sm font-semibold text-white">
               Oppdater
             </Link>
           )}
-          <Link href={memberLink} className="rounded-full border border-line px-6 py-3 text-sm font-semibold text-ink">
+          <Link href={memberLink} className="rounded-lg border border-line px-6 py-3 text-sm font-semibold text-ink">
             Til medlemssiden
           </Link>
         </div>

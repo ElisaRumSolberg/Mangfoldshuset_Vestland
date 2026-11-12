@@ -120,10 +120,7 @@ export default async function OmOssPage() {
         <section className="mx-auto max-w-6xl px-6 py-20">
           <div className="grid grid-cols-1 items-center gap-14 md:grid-cols-[1.15fr_0.85fr]">
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
-                Om oss
-              </p>
-              <h1 className="mt-2 font-serif text-4xl font-medium leading-tight">
+              <h1 className="font-serif text-4xl font-medium leading-tight">
                 Hvem er vi?
               </h1>
               <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-soft">
@@ -144,7 +141,7 @@ export default async function OmOssPage() {
             {settings.om_oss_images.length ? (
               <PhotoSlideshow
                 images={settings.om_oss_images}
-                className="h-72 rounded-3xl border border-white/10 md:h-96"
+                className="h-72 rounded-xl border border-white/10 md:h-96"
               />
             ) : (
               <WarmHouseAnimation className="h-72 md:h-96" />
@@ -153,75 +150,40 @@ export default async function OmOssPage() {
         </section>
 
         {/* Misjon og visjon */}
-        <section className="bg-cream py-20">
-          <div className="mx-auto max-w-6xl px-6">
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div
-                className="rounded-[18px] border-2 p-8"
-                style={{ backgroundColor: "#F7E9E9", borderColor: "#9C3B44" }}
-              >
-                <p className="text-xs font-bold uppercase tracking-widest text-fig">
-                  Misjon
-                </p>
-                <p className="mt-3 text-lg leading-relaxed text-ink">
-                  Vi skaper trygge møteplasser der mennesker med ulike
-                  bakgrunner kan bygge relasjoner, lære av hverandre og delta
-                  aktivt i lokalsamfunnet.
-                </p>
-              </div>
-              <div
-                className="rounded-[18px] border-2 p-8"
-                style={{ backgroundColor: "#EAF0E9", borderColor: "#3A5439" }}
-              >
-                <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
-                  Visjon
-                </p>
-                <p className="mt-3 text-lg leading-relaxed text-ink">
-                  Et Vestland der mangfold oppleves som en styrke, og der
-                  alle – uansett bakgrunn – føler tilhørighet og likeverd.
-                </p>
-              </div>
+        <section className="mx-auto max-w-6xl border-t border-line px-6 py-16">
+          <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
+            <div>
+              <h2 className="font-serif text-2xl font-medium">Misjon</h2>
+              <p className="mt-3 max-w-md text-lg leading-relaxed text-ink">
+                Vi skaper trygge møteplasser der mennesker med ulike bakgrunner kan bygge relasjoner, lære av hverandre
+                og delta aktivt i lokalsamfunnet.
+              </p>
+            </div>
+            <div>
+              <h2 className="font-serif text-2xl font-medium">Visjon</h2>
+              <p className="mt-3 max-w-md text-lg leading-relaxed text-ink">
+                Et Vestland der mangfold oppleves som en styrke, og der alle, uansett bakgrunn, føler tilhørighet og
+                likeverd.
+              </p>
             </div>
           </div>
         </section>
 
         {/* Vårt formål */}
-        <section className="bg-cream-2 py-20">
-          <div className="mx-auto max-w-6xl px-6">
-            <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
-              Formål
-            </p>
-            <h2 className="mt-2 font-serif text-3xl font-medium">
-              Vårt formål
-            </h2>
-            <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {formal.map((f, i) => {
-                const tint = tints[i % tints.length];
-                return (
-                  <div
-                    key={f}
-                    className="flex items-start gap-3.5 rounded-xl border border-line bg-cream px-5 py-4"
-                  >
-                    <span
-                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold"
-                      style={{ backgroundColor: tint.bg, color: tint.text }}
-                    >
-                      {i + 1}
-                    </span>
-                    <p className="text-sm leading-relaxed text-ink-soft">{f}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+        <section className="mx-auto max-w-6xl border-t border-line px-6 py-16">
+          <h2 className="font-serif text-3xl font-medium">Vårt formål</h2>
+          <ol className="mt-8 max-w-3xl list-decimal space-y-3 pl-6 text-base leading-relaxed text-ink marker:font-semibold marker:text-fig">
+            {formal.map((f) => (
+              <li key={f} className="pl-2">
+                {f}
+              </li>
+            ))}
+          </ol>
         </section>
 
         {/* Våre verdier */}
         <section className="mx-auto max-w-6xl px-6 py-20">
-          <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
-            Verdier
-          </p>
-          <h2 className="mt-2 font-serif text-3xl font-medium">
+          <h2 className="font-serif text-3xl font-medium">
             Våre verdier
           </h2>
           <div className="mt-8 flex flex-wrap gap-3">
@@ -230,7 +192,7 @@ export default async function OmOssPage() {
               return (
                 <span
                   key={v}
-                  className="rounded-full px-5 py-2.5 text-sm font-semibold"
+                  className="rounded-lg px-5 py-2.5 text-sm font-semibold"
                   style={{ backgroundColor: tint.bg, color: tint.text }}
                 >
                   {v}
@@ -243,10 +205,7 @@ export default async function OmOssPage() {
         {/* Kimlere hitap ediyoruz */}
         <section className="bg-cream-2 py-20">
           <div className="mx-auto max-w-6xl px-6">
-            <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
-              For alle
-            </p>
-            <h2 className="mt-2 font-serif text-3xl font-medium">
+            <h2 className="font-serif text-3xl font-medium">
               Hvem er aktivitetene for?
             </h2>
             <p className="mt-3 max-w-xl text-sm text-ink-soft">
@@ -269,10 +228,7 @@ export default async function OmOssPage() {
 
         {/* Våre grupper (målgrupper) */}
         <section className="mx-auto max-w-6xl px-6 py-20">
-          <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
-            Målgrupper
-          </p>
-          <h2 className="mt-2 font-serif text-3xl font-medium">
+          <h2 className="font-serif text-3xl font-medium">
             Våre grupper
           </h2>
           <p className="mt-3 max-w-xl text-sm text-ink-soft">
@@ -287,7 +243,7 @@ export default async function OmOssPage() {
             items={grupper.map((g) => (
               <div
                 key={g.title}
-                className="overflow-hidden rounded-[18px] border border-line bg-white"
+                className="overflow-hidden rounded-xl border border-line bg-white"
               >
                 <div className={`h-2 bg-gradient-to-r ${g.grad}`} />
                 <div className="p-6">
@@ -303,10 +259,7 @@ export default async function OmOssPage() {
 
         {/* Samarbeidspartnere */}
         <section className="mx-auto max-w-6xl px-6 py-20">
-          <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
-            Støttespillere
-          </p>
-          <h2 className="mt-2 font-serif text-3xl font-medium">
+          <h2 className="font-serif text-3xl font-medium">
             Samarbeidspartnere
           </h2>
           <p className="mt-3 max-w-xl text-sm text-ink-soft">
@@ -316,7 +269,7 @@ export default async function OmOssPage() {
             {partnere.map((p) => (
               <div
                 key={p.name}
-                className="flex w-36 flex-col items-center gap-3 rounded-2xl border border-line bg-white p-5"
+                className="flex w-36 flex-col items-center gap-3 rounded-xl border border-line bg-white p-5"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -335,10 +288,7 @@ export default async function OmOssPage() {
         {/* Vår historie */}
         <section className="bg-cream-2 py-20">
           <div className="mx-auto max-w-6xl px-6">
-            <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
-              Historie
-            </p>
-            <h2 className="mt-2 font-serif text-3xl font-medium">
+            <h2 className="font-serif text-3xl font-medium">
               Vår historie
             </h2>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-soft">
@@ -354,10 +304,7 @@ export default async function OmOssPage() {
 
         {/* Mangfoldshuset i Norge */}
         <section className="mx-auto max-w-6xl px-6 py-20">
-          <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
-            Nettverk
-          </p>
-          <h2 className="mt-2 font-serif text-3xl font-medium">
+          <h2 className="font-serif text-3xl font-medium">
             Mangfoldshuset i Norge
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-soft">
@@ -377,7 +324,7 @@ export default async function OmOssPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ backgroundColor: tint.bg, color: tint.text }}
-                  className="rounded-full px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-80"
+                  className="rounded-lg px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-80"
                 >
                   {n.name} →
                 </a>
@@ -400,13 +347,13 @@ export default async function OmOssPage() {
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link
                 href="/bli-med"
-                className="rounded-full bg-fig px-6 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-fig-dark"
+                className="rounded-lg bg-fig px-6 py-3.5 text-sm font-semibold text-white transition-all hover:bg-fig-dark"
               >
                 Bli medlem
               </Link>
               <Link
                 href="/kontakt"
-                className="rounded-full border border-ink px-6 py-3.5 text-sm font-semibold text-ink transition-all hover:-translate-y-0.5 hover:bg-ink hover:text-cream"
+                className="rounded-lg border border-ink px-6 py-3.5 text-sm font-semibold text-ink transition-all hover:bg-ink hover:text-cream"
               >
                 Kontakt oss
               </Link>

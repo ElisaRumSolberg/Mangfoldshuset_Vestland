@@ -83,7 +83,7 @@ export default async function NewsAndMagazine() {
           </div>
         </div>
 
-        <div className="flex flex-col justify-between rounded-[20px] bg-gradient-to-br from-[#C08A5C] to-[#9C3B44] p-8 text-white">
+        <div className="flex flex-col justify-between rounded-xl bg-gradient-to-br from-[#C08A5C] to-[#9C3B44] p-8 text-white">
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-white/70">
               Mangfoldsposten
@@ -94,7 +94,7 @@ export default async function NewsAndMagazine() {
           </div>
           <Link
             href="/mangfoldsposten"
-            className="mt-6 inline-block self-start rounded-full border border-white/50 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:bg-white/20"
+            className="mt-6 inline-block self-start rounded-lg border border-white/50 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20"
           >
             Les magasinet
           </Link>

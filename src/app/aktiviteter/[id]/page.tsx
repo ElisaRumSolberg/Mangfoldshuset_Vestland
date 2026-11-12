@@ -87,25 +87,25 @@ export default async function ActivityPage({ params, searchParams }: Props) {
             <h2 className="sr-only">Praktisk informasjon</h2>
             <dl className="mt-5 grid grid-cols-1 gap-x-6 gap-y-2.5 rounded-[14px] border border-line bg-cream-2 p-5 text-sm sm:grid-cols-2">
               <div>
-                <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Dato</dt>
+                <dt className="text-sm font-semibold text-green-dark">Dato</dt>
                 <dd className="mt-0.5 capitalize text-ink">{longDateRange(a)}</dd>
               </div>
               {a.event_time && (
                 <div>
-                  <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Klokkeslett</dt>
+                  <dt className="text-sm font-semibold text-green-dark">Klokkeslett</dt>
                   <dd className="mt-0.5 whitespace-pre-line text-ink">{a.event_time}</dd>
                 </div>
               )}
               <div>
-                <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Sted</dt>
+                <dt className="text-sm font-semibold text-green-dark">Sted</dt>
                 <dd className="mt-0.5 text-ink">{a.place}</dd>
               </div>
               <div>
-                <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Pris</dt>
+                <dt className="text-sm font-semibold text-green-dark">Pris</dt>
                 <dd className="mt-0.5 text-ink">{a.price || "Gratis"}</dd>
               </div>
               <div className="sm:col-span-2">
-                <dt className="text-xs font-bold uppercase tracking-widest text-green-dark">Påmelding</dt>
+                <dt className="text-sm font-semibold text-green-dark">Påmelding</dt>
                 <dd className="mt-0.5 text-ink">
                   {isPast
                     ? "Aktiviteten er gjennomført"
@@ -143,7 +143,7 @@ export default async function ActivityPage({ params, searchParams }: Props) {
             </p>
           </div>
 
-          <div className="overflow-hidden rounded-[18px] border border-line bg-cream-2">
+          <div className="overflow-hidden rounded-xl border border-line bg-cream-2">
             {a.video_url ? (
               <video src={a.video_url} controls className="aspect-[4/3] w-full bg-black" />
             ) : (
@@ -157,7 +157,7 @@ export default async function ActivityPage({ params, searchParams }: Props) {
             href={a.external_link}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 inline-block rounded-full border border-ink px-6 py-3 text-sm font-semibold transition-colors hover:bg-ink hover:text-cream"
+            className="mt-6 inline-block rounded-lg border border-ink px-6 py-3 text-sm font-semibold transition-colors hover:bg-ink hover:text-cream"
           >
             Se innlegget →
           </a>
@@ -181,7 +181,7 @@ export default async function ActivityPage({ params, searchParams }: Props) {
         )}
 
         {a.registration_open && !isPast && (
-          <section className="mt-10 rounded-[18px] border border-line bg-cream p-6 sm:p-8">
+          <section className="mt-10 rounded-xl border border-line bg-cream p-6 sm:p-8">
             <h2 className="font-serif text-2xl font-medium">Meld deg på</h2>
             {meldt === "1" ? (
               <div className="mt-4 rounded-xl bg-[#EAF0E9] px-6 py-8 text-center">
@@ -258,7 +258,7 @@ export default async function ActivityPage({ params, searchParams }: Props) {
                 </label>
                 <button
                   type="submit"
-                  className="rounded-full bg-fig px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-fig-dark sm:col-span-2 sm:w-fit"
+                  className="rounded-lg bg-fig px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-fig-dark sm:col-span-2 sm:w-fit"
                 >
                   Meld meg på
                 </button>

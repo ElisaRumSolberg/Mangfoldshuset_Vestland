@@ -30,7 +30,7 @@ export default async function KontaktPage({
 
         <div className="mt-14 grid grid-cols-1 gap-14 md:grid-cols-[0.8fr_1.2fr]">
           <div className="flex flex-col gap-6">
-            <div className="rounded-[18px] border border-line bg-cream-2 p-6">
+            <div className="rounded-xl border border-line bg-cream-2 p-6">
               <h2 className="mb-4 text-xs font-bold uppercase tracking-widest text-ink">
                 Kontaktinformasjon
               </h2>
@@ -53,7 +53,7 @@ export default async function KontaktPage({
               </div>
             </div>
 
-            <div className="rounded-[18px] border border-line bg-cream-2 p-6">
+            <div className="rounded-xl border border-line bg-cream-2 p-6">
               <h2 className="mb-4 text-xs font-bold uppercase tracking-widest text-ink">
                 Følg oss
               </h2>
@@ -88,7 +88,7 @@ export default async function KontaktPage({
             </div>
           </div>
 
-          <div className="rounded-[18px] border border-line bg-white p-8">
+          <div className="rounded-xl border border-line bg-white p-8">
             <h2 className="sr-only">Send oss en melding</h2>
             {sendt === "takk" ? (
               <div className="flex flex-col items-center justify-center gap-3 py-10 text-center">
@@ -152,7 +152,7 @@ export default async function KontaktPage({
                 </div>
                 <button
                   type="submit"
-                  className="w-fit rounded-full bg-fig px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
+                  className="w-fit rounded-lg bg-fig px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
                 >
                   Send melding
                 </button>

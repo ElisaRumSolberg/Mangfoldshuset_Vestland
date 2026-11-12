@@ -37,11 +37,11 @@ export default async function DonationReturn({ params }: { params: Promise<{ ref
         <p className="mt-4 text-ink-soft">{copy.body}</p>
         <div className="mt-6 flex flex-wrap gap-3">
           {result === "pending" && (
-            <Link href={`/stott-oss/takk/${reference}`} className="rounded-full bg-fig px-6 py-3 text-sm font-semibold text-white">
+            <Link href={`/stott-oss/takk/${reference}`} className="rounded-lg bg-fig px-6 py-3 text-sm font-semibold text-white">
               Oppdater
             </Link>
           )}
-          <Link href="/" className="rounded-full border border-line px-6 py-3 text-sm font-semibold text-ink">
+          <Link href="/" className="rounded-lg border border-line px-6 py-3 text-sm font-semibold text-ink">
             Til forsiden
           </Link>
         </div>

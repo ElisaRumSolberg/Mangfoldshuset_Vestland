@@ -21,10 +21,7 @@ export default function FasteTilbud({ programs }: { programs: Program[] }) {
 
   return (
     <section className="mt-12" aria-labelledby="faste-tilbud">
-      <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
-        Hver uke og hver måned
-      </p>
-      <h2 id="faste-tilbud" className="mt-2 font-serif text-2xl font-medium">
+      <h2 id="faste-tilbud" className="font-serif text-2xl font-medium">
         Faste tilbud
       </h2>
 
@@ -42,7 +39,7 @@ export default function FasteTilbud({ programs }: { programs: Program[] }) {
           return (
             <article
               key={p.id}
-              className={`flex flex-col overflow-hidden rounded-[18px] border bg-white ${
+              className={`flex flex-col overflow-hidden rounded-xl border bg-white ${
                 p.featured ? "border-fig/50 shadow-md" : "border-line"
               }`}
             >
@@ -57,7 +54,7 @@ export default function FasteTilbud({ programs }: { programs: Program[] }) {
                   <img
                     src={p.image_url}
                     alt={p.title}
-                    className="aspect-[4/3] w-full object-cover object-top"
+                    className="aspect-[2/3] max-h-[26rem] w-full bg-cream-2 object-contain sm:max-h-none"
                   />
                 </a>
               )}

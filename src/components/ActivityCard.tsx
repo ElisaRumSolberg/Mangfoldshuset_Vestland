@@ -42,7 +42,7 @@ export default function ActivityCard({
 }) {
   return (
     <article
-      className={`overflow-hidden rounded-[18px] border bg-white transition-all hover:-translate-y-1.5 hover:shadow-xl ${
+      className={`overflow-hidden rounded-xl border bg-white transition-all.5 hover:shadow-xl ${
         featured ? "border-fig/50 shadow-md" : "border-line"
       }`}
     >

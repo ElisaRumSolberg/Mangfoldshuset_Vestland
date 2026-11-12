@@ -7,10 +7,7 @@ export default function AboutSnippet() {
       <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-14 px-6 py-12 md:grid-cols-[0.85fr_1.15fr]">
         <WarmHouseAnimation className="h-80" />
         <div>
-          <p className="text-xs font-bold uppercase tracking-widest text-green-dark">
-            Om oss
-          </p>
-          <h2 className="mt-2 font-serif text-3xl font-medium leading-tight">
+          <h2 className="font-serif text-3xl font-medium leading-tight">
             Mangfoldshuset Vestland
           </h2>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-ink-soft">
@@ -21,7 +18,7 @@ export default function AboutSnippet() {
           </p>
           <Link
             href="/om-oss"
-            className="mt-6 inline-block rounded-full bg-fig px-6 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-fig-dark"
+            className="mt-6 inline-block rounded-lg bg-fig px-6 py-3.5 text-sm font-semibold text-white transition-all hover:bg-fig-dark"
           >
             Les mer om oss
           </Link>
