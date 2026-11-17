@@ -34,24 +34,23 @@ export default async function WeekPoster({ weekParam }: { weekParam?: string }) 
           className="h-auto w-full rounded-xl border border-line bg-white"
         />
 
-        <div className="flex flex-col gap-6">
-          <div className="max-w-md">
-            <p className="font-serif text-xl font-medium leading-snug text-ink">
-              Alle er velkomne.
-            </p>
-            <p className="mt-3 text-base leading-relaxed text-ink-soft">
+        <div className="flex flex-col justify-center gap-8">
+          <div className="mx-auto max-w-md text-center">
+            <p className="font-serif text-3xl font-medium leading-tight text-ink">Alle er velkomne.</p>
+            <div aria-hidden="true" className="mx-auto mt-4 h-0.5 w-12 rounded-full bg-green" />
+            <p className="mt-5 text-lg leading-relaxed text-ink-soft">
               Hver uke samles vi rundt leksehjelp, kosetid, språkkafé, mat og samtaler. Programmet er til for alle,
               uavhengig av alder, bakgrunn og tro. Vi tror at mangfold er en styrke, og at vi blir bedre kjent og
               sterkere sammen når vi møtes og lærer av hverandre.
             </p>
-            <p className="mt-2">
+            <p className="mt-3">
               <Link href="/om-oss" className={nav}>
                 Les mer om hvem vi er
               </Link>
             </p>
           </div>
 
-          <nav aria-label="Bla mellom uker" className="flex flex-wrap items-center gap-x-8">
+          <nav aria-label="Bla mellom uker" className="flex flex-wrap items-center justify-center gap-x-8">
             <Link href={link(prev)} className={nav}>
               ← Forrige uke
             </Link>
