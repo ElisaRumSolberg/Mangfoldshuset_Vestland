@@ -31,7 +31,7 @@ export default async function WeekPoster({ weekParam }: { weekParam?: string }) 
           width={1080}
           height={1350}
           alt={`Plakat for uke ${week.number}. Alle dager og tider står i listen ved siden av.`}
-          className="h-auto w-full rounded-xl border border-line bg-white"
+          className="h-auto w-full"
         />
 
         <div className="flex flex-col justify-center gap-8">

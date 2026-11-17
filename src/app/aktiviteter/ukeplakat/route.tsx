@@ -138,7 +138,7 @@ export async function GET(request: Request) {
           )}
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", background: "#F5E4CE", padding: `14px ${pad}px ${story ? 70 : 22}px` }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", background: PAPER, borderTop: `2px solid ${LINE}`, padding: `14px ${pad}px ${story ? 70 : 22}px` }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={band} alt="" width={width - pad * 2} height={bandHeight} style={{ width: width - pad * 2, height: bandHeight }} />
           <div style={{ display: "flex", fontFamily: "Lora", fontWeight: 700, fontSize: 32, color: GREEN, marginTop: 6 }}>mangfoldshusetvestland.no</div>
