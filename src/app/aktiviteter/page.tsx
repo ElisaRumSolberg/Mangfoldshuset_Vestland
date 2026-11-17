@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ActivityGrid from "@/components/ActivityGrid";
 import FasteTilbud from "@/components/FasteTilbud";
+import WeekProgram from "@/components/WeekProgram";
 import { fetchPrograms, occurrenceCards, sortUpcoming } from "@/lib/recurring";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
@@ -15,7 +16,12 @@ export const metadata: Metadata = {
 
 type MappedActivity = ReturnType<typeof mapActivities>[number];
 
-export default async function AktiviteterPage() {
+export default async function AktiviteterPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ uke?: string }>;
+}) {
+  const { uke } = await searchParams;
   let upcoming: MappedActivity[] = [];
   let past: MappedActivity[] = [];
   const yearById = new Map<string, string>();
@@ -65,6 +71,10 @@ export default async function AktiviteterPage() {
       <Navbar />
       <main className="mx-auto max-w-6xl px-6 py-20">
         <h1 className="font-serif text-4xl font-medium">Aktiviteter</h1>
+
+        <div className="mt-10">
+          <WeekProgram weekParam={uke} />
+        </div>
 
         <FasteTilbud programs={programs} />
 
