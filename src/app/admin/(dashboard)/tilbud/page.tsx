@@ -5,8 +5,14 @@ import { nextOccurrences, shortDate, timeText, todayOslo, toProgram, whenText } 
 import { addProgram, deleteProgram } from "./actions";
 import TilbudForm from "./TilbudForm";
 import DeleteButton from "../DeleteButton";
+import WeekPosterAdmin from "./WeekPosterAdmin";
 
-export default async function AdminTilbudPage() {
+export default async function AdminTilbudPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ uke?: string }>;
+}) {
+  const { uke } = await searchParams;
   const t = await getT();
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -38,6 +44,8 @@ export default async function AdminTilbudPage() {
           <code>{t("supabase/tilbud.sql")}</code>{t("i Supabase SQL Editor først.")}
         </p>
       )}
+
+      <WeekPosterAdmin weekParam={uke} />
 
       <TilbudForm action={addProgram} submitLabel={t("Legg til tilbud")} />
 

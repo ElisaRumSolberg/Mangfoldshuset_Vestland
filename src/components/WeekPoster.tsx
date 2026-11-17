@@ -2,13 +2,11 @@ import Link from "next/link";
 import WeekList from "@/components/WeekList";
 import { loadWeek } from "@/lib/week-load";
 
-const button =
-  "inline-flex min-h-11 items-center justify-center rounded-lg border border-fig px-4 text-base font-semibold text-fig transition-colors hover:bg-fig hover:text-white";
 const nav = "inline-flex min-h-11 items-center text-base font-semibold text-fig underline underline-offset-4 hover:text-fig-dark";
 
 /**
- * «Ukens program» på Aktiviteter: plakaten for uken (laget automatisk av tallene på nettsiden) med nedlasting
- * til Instagram og Facebook, og selve listen under «Vis som liste».
+ * «Ukens program» på Aktiviteter: plakaten for uken (laget automatisk av tallene på nettsiden), bla mellom
+ * uker og selve listen under «Vis som liste». Nedlasting av plakaten til Instagram/Facebook ligger i admin.
  */
 export default async function WeekPoster({ weekParam }: { weekParam?: string }) {
   const { week, thisWeek, prev, next } = await loadWeek(weekParam);
@@ -50,24 +48,6 @@ export default async function WeekPoster({ weekParam }: { weekParam?: string }) 
               Neste uke →
             </Link>
           </nav>
-
-          <div>
-            <p className="text-base font-semibold text-ink">Del plakaten</p>
-            <p className="mt-1 max-w-md text-base leading-relaxed text-ink-soft">
-              Plakaten lages av de samme tidene som står på nettsiden. Last den ned og legg den ut.
-            </p>
-            <div className="mt-3 flex flex-wrap gap-3">
-              <a href={`/aktiviteter/ukeplakat?${q}&format=instagram&last=1`} download className={button}>
-                Instagram
-              </a>
-              <a href={`/aktiviteter/ukeplakat?${q}&format=story&last=1`} download className={button}>
-                Instagram story
-              </a>
-              <a href={`/aktiviteter/ukeplakat?${q}&format=facebook&last=1`} download className={button}>
-                Facebook
-              </a>
-            </div>
-          </div>
 
           <details className="group border-t border-line pt-4">
             <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-ink [&::-webkit-details-marker]:hidden">
