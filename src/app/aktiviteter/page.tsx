@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ActivityGrid from "@/components/ActivityGrid";
 import FasteTilbud from "@/components/FasteTilbud";
-import WeekProgram from "@/components/WeekProgram";
+import WeekPoster from "@/components/WeekPoster";
 import { fetchPrograms, occurrenceCards, sortUpcoming } from "@/lib/recurring";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
@@ -73,7 +73,7 @@ export default async function AktiviteterPage({
         <h1 className="font-serif text-4xl font-medium">Aktiviteter</h1>
 
         <div className="mt-10">
-          <WeekProgram weekParam={uke} />
+          <WeekPoster weekParam={uke} />
         </div>
 
         <FasteTilbud programs={programs} />

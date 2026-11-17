@@ -161,3 +161,38 @@ export function buildWeek(programs: Program[], activities: WeekActivity[], start
     days: days.filter((d) => d.items.length > 0),
   };
 }
+
+/** Fargene hvert tilbud har i ukeoversikten (stripen og plakaten). Ukjente tilbud får en stabil farge ut fra navnet. */
+export type Tint = { bg: string; fg: string; solid: string };
+
+const TINTS: Record<string, Tint> = {
+  mannstreff: { bg: "#E3EBDD", fg: "#2B4527", solid: "#4B6B4A" },
+  "kosetid for kvinner": { bg: "#F4DDE2", fg: "#6E2438", solid: "#B0475F" },
+  jenteklubb: { bg: "#D9E9EE", fg: "#173F50", solid: "#2F6D83" },
+  leksehjelp: { bg: "#F6E6C8", fg: "#5C3A0B", solid: "#A8691F" },
+  språkkafé: { bg: "#E9DDF0", fg: "#472560", solid: "#7A4C8C" },
+  torsdagssuppe: { bg: "#F4DCD3", fg: "#6B2514", solid: "#B0452F" },
+  barseltreff: { bg: "#F9E1CF", fg: "#6B3418", solid: "#C26F43" },
+  "åpent kjøkken": { bg: "#E2EDCC", fg: "#33501A", solid: "#5F8433" },
+  familiebrunsj: { bg: "#F5E3C0", fg: "#5C440B", solid: "#A07F1A" },
+};
+
+const FALLBACK: Tint[] = [
+  { bg: "#E3EBDD", fg: "#2B4527", solid: "#4B6B4A" },
+  { bg: "#F4DDE2", fg: "#6E2438", solid: "#B0475F" },
+  { bg: "#D9E9EE", fg: "#173F50", solid: "#2F6D83" },
+  { bg: "#F6E6C8", fg: "#5C3A0B", solid: "#A8691F" },
+];
+
+export function tintFor(title: string): Tint {
+  const known = TINTS[title.trim().toLowerCase()];
+  if (known) return known;
+  let h = 0;
+  for (const ch of title) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return FALLBACK[h % FALLBACK.length];
+}
+
+/** «Man», «Tir» … */
+export function dayShort(name: string): string {
+  return name.slice(0, 3);
+}

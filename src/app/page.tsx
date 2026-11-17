@@ -5,7 +5,7 @@ import UpcomingActivities from "@/components/UpcomingActivities";
 import AboutSnippet from "@/components/AboutSnippet";
 import ContributeSection from "@/components/ContributeSection";
 import SupportUs from "@/components/SupportUs";
-import WeekProgram from "@/components/WeekProgram";
+import WeekStrip from "@/components/WeekStrip";
 import NewsAndMagazine from "@/components/NewsAndMagazine";
 import Footer from "@/components/Footer";
 import { fetchSiteSettings } from "@/lib/site-settings";
@@ -26,9 +26,7 @@ export default async function Home() {
           slides={showcaseSlides}
           stats={<ImpactCounters variant="hero" />}
         />
-        <div className="mx-auto max-w-6xl px-6 pt-14">
-          <WeekProgram compact />
-        </div>
+        <WeekStrip />
         <UpcomingActivities />
         <AboutSnippet />
         <ContributeSection />
