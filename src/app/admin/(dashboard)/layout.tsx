@@ -18,6 +18,7 @@ const links = [
   { href: "/admin/utvalg", label: "Utvalg", ownerOnly: false },
   { href: "/admin/nyheter", label: "Nyheter", ownerOnly: false },
   { href: "/admin/mangfoldsposten", label: "Mangfoldsposten", ownerOnly: false },
+  { href: "/admin/frivillige", label: "Frivillige", ownerOnly: true },
   { href: "/admin/meldinger", label: "Meldinger", ownerOnly: true },
   { href: "/admin/skjema", label: "Søknader", ownerOnly: true },
   { href: "/admin/statistikk", label: "Statistikk", ownerOnly: true },
@@ -37,7 +38,7 @@ const groups = [
       "/admin/innhold",
     ],
   },
-  { label: "Folk", hrefs: ["/admin/medlemmer", "/admin/betalinger", "/admin/meldinger", "/admin/skjema"] },
+  { label: "Folk", hrefs: ["/admin/medlemmer", "/admin/betalinger", "/admin/frivillige", "/admin/meldinger", "/admin/skjema"] },
   { label: "Annet", hrefs: ["/admin/statistikk", "/admin/hjelp"] },
 ];
 

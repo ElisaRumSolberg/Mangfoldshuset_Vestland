@@ -70,7 +70,7 @@ export function summarize(rows: PaymentRow[], asOf: string): PaymentSummary {
 }
 
 /** Celler som starter med = + - @ kan bli tolket som formler i Excel. */
-function cell(v: string | number | null | undefined): string {
+export function csvCell(v: string | number | null | undefined): string {
   let s = v === null || v === undefined ? "" : String(v);
   if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
   return /[";\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
@@ -90,8 +90,8 @@ export function paymentsCsv(rows: PaymentRow[]): string {
       METHOD_LABEL[r.method as Method] ?? r.method,
       r.covers_year,
     ]
-      .map(cell)
+      .map(csvCell)
       .join(";"),
   );
-  return "﻿" + [header.map(cell).join(";"), ...lines].join("\r\n") + "\r\n";
+  return "﻿" + [header.map(csvCell).join(";"), ...lines].join("\r\n") + "\r\n";
 }
