@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ReportSection from "@/components/ReportSection";
@@ -11,6 +11,8 @@ import { signUpForProgram } from "./actions";
 import { formatHighlightDate, parseHighlights } from "@/lib/highlights";
 import {
   programParticipants,
+  programPath,
+  programSlug,
   isoWeek,
   nextOccurrences,
   parseMenu,
@@ -29,16 +31,20 @@ type Props = {
   searchParams: Promise<{ meldt?: string }>;
 };
 
-async function getProgram(id: string): Promise<Program | null> {
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** Finner tilbudet fra adressen: leselig navn (/tilbud/leksehjelp) eller den gamle id-en. */
+async function getProgram(key: string): Promise<Program | null> {
   if (!isSupabaseConfigured()) return null;
   const supabase = await createClient();
-  const { data } = await supabase
-    .from("recurring_programs")
-    .select("*")
-    .eq("id", id)
-    .eq("active", true)
-    .maybeSingle();
-  return data ? toProgram(data) : null;
+  if (UUID.test(key)) {
+    const { data } = await supabase.from("recurring_programs").select("*").eq("id", key).eq("active", true).maybeSingle();
+    return data ? toProgram(data) : null;
+  }
+  const { data } = await supabase.from("recurring_programs").select("*").eq("active", true).order("sort_order", { ascending: true });
+  const slug = key.toLowerCase();
+  const found = (data ?? []).map(toProgram).find((p) => programSlug(p.title) === slug);
+  return found ?? null;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -56,6 +62,8 @@ export default async function ProgramPage({ params, searchParams }: Props) {
   const { meldt } = await searchParams;
   const p = await getProgram(id);
   if (!p) notFound();
+  // Gamle lenker og QR-koder med id sendes videre til den leselige adressen.
+  if (UUID.test(id)) redirect(`${programPath(p)}${meldt ? "?meldt=1" : ""}`);
 
   const today = todayOslo();
   const next = nextOccurrences(p, today, 5);

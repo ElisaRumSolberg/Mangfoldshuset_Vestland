@@ -2,7 +2,7 @@ import { getT } from "@/lib/admin-i18n-server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { shortDate, todayOslo, toProgram } from "@/lib/recurring";
+import { programPath, shortDate, todayOslo, toProgram } from "@/lib/recurring";
 import { deleteProgramSignup, updateProgram } from "../actions";
 import TilbudForm from "../TilbudForm";
 import ShareBox from "../../ShareBox";
@@ -42,7 +42,7 @@ export default async function EditProgramPage({
       <h1 className="mt-3 font-serif text-2xl font-medium text-ink">{t("Rediger tilbud")}</h1>
 
       <ShareBox
-        url={`${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/tilbud/${id}`}
+        url={`${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}${programPath(program)}`}
       />
 
       <TilbudForm

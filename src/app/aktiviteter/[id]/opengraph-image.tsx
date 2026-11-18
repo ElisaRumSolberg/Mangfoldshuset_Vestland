@@ -1,6 +1,5 @@
 import { ImageResponse } from "next/og";
-import { createClient } from "@/lib/supabase/server";
-import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
+import { getActivityByKey } from "@/lib/activity-lookup";
 import { longDateRange } from "@/lib/activity-date";
 
 // Delekort (Facebook, WhatsApp, Messenger …) for en aktivitet: plakaten til venstre, tittel til høyre.
@@ -31,23 +30,16 @@ export default async function Image({ params }: { params: Promise<{ id: string }
   let place = "";
   let poster: string | null = null;
 
-  if (isSupabaseConfigured() && /^[0-9a-f-]{36}$/i.test(id)) {
-    const supabase = await createClient();
-    const { data } = await supabase
-      .from("activities")
-      .select("title,event_date,end_date,place,image_url")
-      .eq("id", id)
-      .maybeSingle();
-    if (data) {
-      title = String(data.title ?? title);
-      place = String(data.place ?? "");
-      try {
-        when = longDateRange(data);
-      } catch {
-        when = "";
-      }
-      if (data.image_url) poster = await posterDataUri(String(data.image_url));
+  const data = await getActivityByKey(id);
+  if (data) {
+    title = String(data.title ?? title);
+    place = String(data.place ?? "");
+    try {
+      when = longDateRange(data);
+    } catch {
+      when = "";
     }
+    if (data.image_url) poster = await posterDataUri(String(data.image_url));
   }
 
   return new ImageResponse(

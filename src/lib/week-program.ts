@@ -1,4 +1,5 @@
-import { isoWeek, occursOn, type Program } from "@/lib/recurring";
+import { isoWeek, occursOn, programPath, type Program } from "@/lib/recurring";
+import { activityPath } from "@/lib/slug";
 
 /** «Ukens program»: hva som skjer mandag–søndag, regnet ut fra faste tilbud og enkeltaktiviteter. */
 
@@ -122,16 +123,16 @@ export function buildWeek(programs: Program[], activities: WeekActivity[], start
 
     for (const p of programs) {
       if (occursOn(p, iso)) {
-        items.push({ key: `p-${p.id}-${iso}`, title: p.title, time: programTime(p), place: shortPlace(p.place), href: `/tilbud/${p.id}`, note: null });
+        items.push({ key: `p-${p.id}-${iso}`, title: p.title, time: programTime(p), place: shortPlace(p.place), href: programPath(p), note: null });
       } else if (p.skipped_dates.includes(iso) && occursOn({ ...p, skipped_dates: [] }, iso)) {
-        items.push({ key: `p-${p.id}-${iso}-x`, title: p.title, time: programTime(p), place: shortPlace(p.place), href: `/tilbud/${p.id}`, note: "avlyst" });
+        items.push({ key: `p-${p.id}-${iso}-x`, title: p.title, time: programTime(p), place: shortPlace(p.place), href: programPath(p), note: "avlyst" });
       }
     }
 
     for (const a of activities) {
       const last = a.end_date && a.end_date > a.event_date ? a.end_date : a.event_date;
       if (iso >= a.event_date && iso <= last) {
-        items.push({ key: `a-${a.id}-${iso}`, title: a.title, time: a.event_time?.trim() || null, place: shortPlace(a.place), href: `/aktiviteter/${a.id}`, note: null });
+        items.push({ key: `a-${a.id}-${iso}`, title: a.title, time: a.event_time?.trim() || null, place: shortPlace(a.place), href: activityPath(a), note: null });
       }
     }
 
@@ -145,7 +146,7 @@ export function buildWeek(programs: Program[], activities: WeekActivity[], start
     if (!first) continue;
     const day = days.find((d) => utcDate(d.iso).getUTCDay() === p.weekday);
     if (!day) continue;
-    day.items.push({ key: `p-${p.id}-start`, title: p.title, time: null, place: shortPlace(p.place), href: `/tilbud/${p.id}`, note: "starter", startsWeek: isoWeek(first) });
+    day.items.push({ key: `p-${p.id}-start`, title: p.title, time: null, place: shortPlace(p.place), href: programPath(p), note: "starter", startsWeek: isoWeek(first) });
   }
 
   // Tidligst først innenfor en dag; uten klokkeslett sist.

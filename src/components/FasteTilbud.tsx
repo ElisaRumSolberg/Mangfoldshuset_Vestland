@@ -1,6 +1,7 @@
 import Link from "next/link";
 import {
   nextOccurrences,
+  programPath,
   shortDate,
   timeText,
   todayOslo,
@@ -112,7 +113,7 @@ export default function FasteTilbud({ programs }: { programs: Program[] }) {
                   )}
 
                   <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-semibold text-green-dark">
-                    <Link href={`/tilbud/${p.id}`} className="inline-flex min-h-11 items-center -my-3">Bilder og mer →</Link>
+                    <Link href={programPath(p)} className="inline-flex min-h-11 items-center -my-3">Bilder og mer →</Link>
                     {p.external_link && (
                       <a
                         href={p.external_link}

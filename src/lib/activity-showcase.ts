@@ -1,6 +1,8 @@
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
 import type { ShowcaseSlide } from "@/components/ActivityShowcase";
+import { programPath } from "@/lib/recurring";
+import { activityPath } from "@/lib/slug";
 
 /** Bilder fra aktiviteter/tilbud administrator har valgt å vise i karusellen på forsiden. */
 export async function fetchActivityShowcaseSlides(limit = 10): Promise<ShowcaseSlide[]> {
@@ -32,8 +34,8 @@ export async function fetchActivityShowcaseSlides(limit = 10): Promise<ShowcaseS
     }
   };
 
-  for (const a of activities ?? []) addSlides(a, `/aktiviteter/${a.id}`);
-  for (const p of programs ?? []) addSlides(p, `/tilbud/${p.id}`);
+  for (const a of activities ?? []) addSlides(a, activityPath({ id: a.id as string, title: a.title as string, event_date: a.event_date as string }));
+  for (const p of programs ?? []) addSlides(p, programPath({ title: p.title as string, id: p.id as string }));
 
   return slides.slice(0, limit);
 }

@@ -13,6 +13,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { isVippsPublic } from "@/lib/vipps";
 import { createClient } from "@/lib/supabase/server";
 import { shortDateRange } from "@/lib/activity-date";
+import { activityPath } from "@/lib/slug";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -58,8 +59,8 @@ export default async function UtvalgPage({ params }: Props) {
   let heroSlides: ShowcaseSlide[] = [];
   // «Fra aktivitetene» (oppsummeringer) og «Det deltakerne sier» (tilbakemeldinger),
   // hentet automatisk fra aktivitetene som hører til utvalget.
-  let summaries: { id: string; title: string; date: string; participants: number | null; text: string }[] = [];
-  let quotes: { text: string; id: string; title: string }[] = [];
+  let summaries: { id: string; href: string; title: string; date: string; participants: number | null; text: string }[] = [];
+  let quotes: { text: string; id: string; href: string; title: string }[] = [];
   if (u.activity_match && isSupabaseConfigured()) {
     const supabase = await createClient();
     const today = new Date().toISOString().slice(0, 10);
@@ -97,7 +98,7 @@ export default async function UtvalgPage({ params }: Props) {
         heroSlides.push({
           title: a.title as string,
           image,
-          href: `/aktiviteter/${a.id}`,
+          href: activityPath({ id: a.id as string, title: a.title as string, event_date: a.event_date as string }),
           // Plakater (afiser) vises i sin helhet, ekte foto fyller ruten.
           isPoster: image === a.image_url,
         });
@@ -112,6 +113,7 @@ export default async function UtvalgPage({ params }: Props) {
       .slice(0, 4)
       .map((a) => ({
         id: a.id as string,
+        href: activityPath({ id: a.id as string, title: a.title as string, event_date: a.event_date as string }),
         title: a.title as string,
         date: shortDateRange(a),
         participants: (a.participants as number | null) ?? null,
@@ -123,7 +125,7 @@ export default async function UtvalgPage({ params }: Props) {
           .split("\n")
           .map((q) => q.trim())
           .filter(Boolean)
-          .map((text) => ({ text, id: a.id as string, title: a.title as string }))
+          .map((text) => ({ text, id: a.id as string, href: activityPath({ id: a.id as string, title: a.title as string, event_date: a.event_date as string }), title: a.title as string }))
       )
       .slice(0, 6);
   }
@@ -346,7 +348,7 @@ export default async function UtvalgPage({ params }: Props) {
                       {x.participants ? ` · ${x.participants} deltakere` : ""}
                     </p>
                     <h3 className="mt-2 font-serif text-lg">
-                      <Link href={`/aktiviteter/${x.id}`} className="hover:text-fig">
+                      <Link href={x.href} className="hover:text-fig">
                         {x.title}
                       </Link>
                     </h3>
@@ -371,7 +373,7 @@ export default async function UtvalgPage({ params }: Props) {
                   <div key={i} className="flex flex-col justify-between rounded-xl border border-line bg-white p-6">
                     <p className="font-serif text-base italic leading-relaxed text-ink">«{q.text}»</p>
                     <Link
-                      href={`/aktiviteter/${q.id}`}
+                      href={q.href}
                       className="mt-4 inline-block text-xs font-semibold text-green-dark hover:underline"
                     >
                       Etter «{q.title}»
@@ -506,7 +508,7 @@ function mapActivities(
 ) {
   return data.map((a) => ({
     iso: a.event_date,
-    href: `/aktiviteter/${a.id}`,
+    href: activityPath(a),
     title: a.title,
     categories: a.categories ?? [],
     date: shortDateRange(a),

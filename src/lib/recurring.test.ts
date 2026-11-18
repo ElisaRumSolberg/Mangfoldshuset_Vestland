@@ -223,3 +223,34 @@ describe("automatiske tall for faste tilbud", () => {
     expect(programVolunteerHours(weekly({ volunteers_per_session: 3 }), "2026-11-05")).toBe(0);
   });
 });
+
+import { programPath, programSlug } from "./recurring";
+
+describe("leselige adresser", () => {
+  it("makes a clean slug from Norwegian titles", () => {
+    expect(programSlug("Leksehjelp")).toBe("leksehjelp");
+    expect(programSlug("Åpent kjøkken")).toBe("apent-kjokken");
+    expect(programSlug("Kosetid for kvinner")).toBe("kosetid-for-kvinner");
+    expect(programSlug("Språkkafé")).toBe("sprakkafe");
+    expect(programSlug("  Mann & Bil!  ")).toBe("mann-bil");
+  });
+  it("builds the path, and falls back to the id when the title gives no slug", () => {
+    expect(programPath({ title: "Torsdagssuppe", id: "590c279d" })).toBe("/tilbud/torsdagssuppe");
+    expect(programPath({ title: "!!!", id: "590c279d" })).toBe("/tilbud/590c279d");
+  });
+});
+
+import { activityPath, parseActivitySlug, slugify } from "./slug";
+
+describe("adresser til aktiviteter", () => {
+  it("combines title and date, and falls back to the id", () => {
+    expect(activityPath({ id: "abc", title: "Kulturkveld i Bergen", event_date: "2026-10-04" })).toBe("/aktiviteter/kulturkveld-i-bergen-2026-10-04");
+    expect(activityPath({ id: "abc", title: "Min historie, min kultur, min kunst", event_date: "2026-05-17T00:00:00" })).toBe("/aktiviteter/min-historie-min-kultur-min-kunst-2026-05-17");
+    expect(activityPath({ id: "abc", title: "???", event_date: "2026-10-04" })).toBe("/aktiviteter/abc");
+  });
+  it("splits a slug into title and date", () => {
+    expect(parseActivitySlug("kulturkveld-i-bergen-2026-10-04")).toEqual({ base: "kulturkveld-i-bergen", date: "2026-10-04" });
+    expect(parseActivitySlug("leksehjelp")).toBeNull();
+    expect(slugify("Påskefest 2026!")).toBe("paskefest-2026");
+  });
+});

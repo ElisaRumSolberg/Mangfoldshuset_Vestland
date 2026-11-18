@@ -1,3 +1,4 @@
+import { slugify } from "@/lib/slug";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
 
@@ -55,6 +56,17 @@ export const WEEKDAY_OPTIONS = [1, 2, 3, 4, 5, 6, 0].map((d) => ({
   label: DAYS[d][0].toUpperCase() + DAYS[d].slice(1),
 }));
 export const NTH_OPTIONS = [1, 2, 3, 4, -1].map((n) => ({ value: n, label: NTH[String(n)] }));
+
+/** «Åpent kjøkken» -> «apent-kjokken»: leselig adresse i stedet for en lang id. */
+export function programSlug(title: string): string {
+  return slugify(title);
+}
+
+/** Adressen til et fast tilbud, f.eks. /tilbud/leksehjelp. Gamle id-adresser fungerer fortsatt (de sender videre hit). */
+export function programPath(p: { title: string; id: string }): string {
+  const slug = programSlug(p.title);
+  return `/tilbud/${slug || p.id}`;
+}
 
 /** Dagens dato (ÅÅÅÅ-MM-DD) i norsk tid. */
 export function todayOslo(): string {
@@ -241,7 +253,7 @@ export function occurrenceCards(
         imageHref: p.image_url,
         featured: p.featured,
         recurring: true as const,
-        href: `/tilbud/${p.id}`,
+        href: programPath(p),
       };
     })
   );

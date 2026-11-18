@@ -89,7 +89,7 @@ describe("buildWeek", () => {
       "2026-11-16",
     );
     expect(week.days.map((d) => d.name)).toEqual(["Fredag", "Lørdag"]);
-    expect(week.days[0].items[0]).toMatchObject({ title: "Kulturkveld", time: "19.00", href: "/aktiviteter/e1" });
+    expect(week.days[0].items[0]).toMatchObject({ title: "Kulturkveld", time: "19.00", href: "/aktiviteter/kulturkveld-2026-11-20" });
   });
 
   it("ignores monthly programmes that do not fall in the week", () => {

@@ -8,6 +8,7 @@ import { fetchPrograms, occurrenceCards, sortUpcoming } from "@/lib/recurring";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
 import { shortDateRange } from "@/lib/activity-date";
+import { activityPath } from "@/lib/slug";
 
 export const metadata: Metadata = {
   title: "Aktiviteter – Mangfoldshuset Vestland",
@@ -144,7 +145,7 @@ function mapActivities(
   return data.map((a) => ({
     id: a.id,
     iso: a.event_date,
-    href: `/aktiviteter/${a.id}`,
+    href: activityPath(a),
     title: a.title,
     categories: a.categories ?? [],
     date: shortDateRange(a),

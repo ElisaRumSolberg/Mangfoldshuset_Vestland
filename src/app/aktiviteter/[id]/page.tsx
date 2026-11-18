@@ -1,7 +1,7 @@
 import SubmissionForm from "@/components/SubmissionForm";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ReportSection from "@/components/ReportSection";
@@ -9,8 +9,8 @@ import ActivityMedia, { type MediaImage } from "@/components/ActivityMedia";
 import HoneypotFields from "@/components/HoneypotFields";
 import { todayOslo } from "@/lib/recurring";
 import { googleCalendarUrl, isActivityPast, longDateRange } from "@/lib/activity-date";
-import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
-import { createClient } from "@/lib/supabase/server";
+import { activityPath, UUID_RE } from "@/lib/slug";
+import { getActivityByKey } from "@/lib/activity-lookup";
 import { signUpForActivity } from "./actions";
 
 type Props = {
@@ -18,12 +18,7 @@ type Props = {
   searchParams: Promise<{ meldt?: string; feil?: string }>;
 };
 
-async function getActivity(id: string) {
-  if (!isSupabaseConfigured()) return null;
-  const supabase = await createClient();
-  const { data } = await supabase.from("activities").select("*").eq("id", id).maybeSingle();
-  return data;
-}
+const getActivity = getActivityByKey;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
@@ -40,6 +35,13 @@ export default async function ActivityPage({ params, searchParams }: Props) {
   const { meldt, feil } = await searchParams;
   const a = await getActivity(id);
   if (!a) notFound();
+  // Gamle lenker og QR-koder med id sendes videre til den leselige adressen.
+  if (UUID_RE.test(id)) {
+    const qs = new URLSearchParams();
+    if (meldt) qs.set("meldt", meldt);
+    if (feil) qs.set("feil", feil);
+    redirect(`${activityPath(a as { id: string; title: string; event_date: string })}${qs.size ? `?${qs}` : ""}`);
+  }
 
   const isPast = isActivityPast(a, todayOslo());
   const photos: string[] = a.photos ?? [];

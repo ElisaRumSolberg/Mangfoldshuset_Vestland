@@ -4,6 +4,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
 import { fetchPrograms, occurrenceCards, sortUpcoming } from "@/lib/recurring";
 import { shortDateRange } from "@/lib/activity-date";
+import { activityPath } from "@/lib/slug";
 
 const grads = [
   "from-green to-green-dark",
@@ -114,7 +115,7 @@ export default async function UpcomingActivities() {
         responsibleEmail: a.responsible_email as string | null,
         featured: !!a.featured,
         recurring: false,
-        href: `/aktiviteter/${a.id}`,
+        href: activityPath({ id: a.id as string, title: a.title as string, event_date: a.event_date as string }),
       })),
       ...occurrenceCards(programs, 1),
     ]).slice(0, 6);

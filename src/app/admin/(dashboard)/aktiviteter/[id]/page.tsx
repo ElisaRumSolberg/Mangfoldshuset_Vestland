@@ -2,6 +2,7 @@ import { getT } from "@/lib/admin-i18n-server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { activityPath } from "@/lib/slug";
 import { updateActivity, deleteSignup } from "../actions";
 import FileUpload from "../../FileUpload";
 import ReportFields from "../../ReportFields";
@@ -39,7 +40,7 @@ export default async function EditActivityPage({
       </h1>
 
       <ShareBox
-        url={`${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/aktiviteter/${id}`}
+        url={`${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}${activityPath(activity as { id: string; title: string; event_date: string })}`}
       />
 
       <form
