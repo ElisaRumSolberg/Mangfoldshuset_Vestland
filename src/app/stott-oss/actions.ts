@@ -11,7 +11,9 @@ import { SITE } from "@/lib/vipps-server";
  */
 export async function startVippsDonation(formData: FormData) {
   const chosen = formData.get("amount");
-  const kroner = parseDonation(chosen === "annet" ? formData.get("custom") : chosen);
+  // Et beløp som er skrevet i «Annet beløp» vinner over et forhåndsvalgt beløp: det er det giveren mener.
+  const typed = parseDonation(formData.get("custom"));
+  const kroner = chosen === "annet" ? typed : (typed ?? parseDonation(chosen));
   const cfg = vippsEnv();
   if (!kroner || !cfg || !process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
     redirect("/stott-oss/feil");

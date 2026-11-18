@@ -1,12 +1,8 @@
 import { isVippsPublic } from "@/lib/vipps";
 import { startVippsDonation } from "@/app/stott-oss/actions";
-
-const AMOUNTS = [100, 250, 500];
+import DonationAmount from "@/components/DonationAmount";
 
 const VIPPS = "#FF5B24";
-
-const chip =
-  "flex min-h-11 items-center justify-center rounded-lg border border-line bg-white px-4 text-base font-semibold text-ink transition-colors peer-checked:border-green peer-checked:bg-green peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-[3px] peer-focus-visible:outline-offset-2 peer-focus-visible:outline-green hover:border-green";
 
 /** Støtt oss: en rolig linje på siden, ikke en egen scene. Skjemaet vises bare når Vipps er satt opp. */
 export default function SupportUs({ vippsLink }: { vippsLink?: string | null }) {
@@ -24,32 +20,7 @@ export default function SupportUs({ vippsLink }: { vippsLink?: string | null }) 
         <div>
           {direct ? (
             <form action={startVippsDonation}>
-              <fieldset>
-                <legend className="sr-only">Velg beløp</legend>
-                <div className="grid grid-cols-3 gap-2">
-                  {AMOUNTS.map((a, i) => (
-                    <label key={a} className="cursor-pointer">
-                      <input type="radio" name="amount" value={a} defaultChecked={i === 1} className="peer sr-only" />
-                      <span className={chip}>{a} kr</span>
-                    </label>
-                  ))}
-                </div>
-                <div className="mt-2 flex items-center gap-2">
-                  <label className="shrink-0 cursor-pointer">
-                    <input type="radio" name="amount" value="annet" className="peer sr-only" />
-                    <span className={chip}>Annet beløp</span>
-                  </label>
-                  <input
-                    name="custom"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    maxLength={6}
-                    placeholder="kr"
-                    aria-label="Annet beløp i kroner"
-                    className="min-h-11 w-full min-w-0 rounded-lg border border-line bg-white px-4 text-base text-ink outline-none focus:border-green"
-                  />
-                </div>
-              </fieldset>
+              <DonationAmount />
               <button
                 type="submit"
                 className="mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-lg px-6 text-base font-semibold text-white"
