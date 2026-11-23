@@ -1,0 +1,144 @@
+"use server";
+
+import { redirect } from "next/navigation";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
+import { checkExpenseCode, expenseCodeConfigured } from "@/lib/expense-access";
+import { getResendClient, isResendConfigured, NOTIFY_EMAIL } from "@/lib/resend";
+import { expenseCopyMessage, FAKTURA_EMAIL } from "@/lib/expense-email";
+import { looksLikeBot, isRateLimited } from "@/lib/spam-guard";
+import { todayOslo } from "@/lib/recurring";
+import { parseLines, totalOriginal, validReceiptPaths } from "@/lib/expenses";
+
+const PAGE = "/utlegg";
+const MAX_ATTACH_BYTES = 25 * 1024 * 1024;
+const ALLOWED_EXT = ["jpg", "jpeg", "png", "webp", "heic", "pdf"];
+
+function text(formData: FormData, key: string, max: number) {
+  const v = formData.get(key);
+  return typeof v === "string" && v.trim() ? v.trim().slice(0, max) : null;
+}
+
+/** Feil ord går alltid langsomt, så ordet ikke kan gjettes raskt. */
+async function wrongCodeDelay() {
+  await new Promise((r) => setTimeout(r, 900));
+}
+
+export type UploadTarget = { path: string; token: string } | { error: "kode" | "feil" };
+
+/** Gir nettleseren lov til å laste opp ÉN kvittering til den private bøtten, etter at fellesordet er sjekket. */
+export async function receiptUploadTarget(code: string, ext: string): Promise<UploadTarget> {
+  if (!isSupabaseConfigured() || !expenseCodeConfigured()) return { error: "feil" };
+  if (!checkExpenseCode(code)) {
+    await wrongCodeDelay();
+    return { error: "kode" };
+  }
+  const clean = ext.toLowerCase().replace(/[^a-z0-9]/g, "");
+  if (!ALLOWED_EXT.includes(clean)) return { error: "feil" };
+  const path = `public/${crypto.randomUUID()}.${clean}`;
+  const { data, error } = await createAdminClient().storage.from("receipts").createSignedUploadUrl(path);
+  if (error || !data) return { error: "feil" };
+  return { path, token: data.token };
+}
+
+/** Lagrer et utlegg fra en frivillig uten admin-konto. Alt regnes om på serveren. */
+export async function submitPublicExpense(formData: FormData) {
+  if (!isSupabaseConfigured() || !expenseCodeConfigured()) redirect(`${PAGE}?feil=stengt`);
+  if (looksLikeBot(formData)) redirect(`${PAGE}/takk`); // late som om det gikk bra
+  if (!checkExpenseCode(formData.get("code"))) {
+    await wrongCodeDelay();
+    redirect(`${PAGE}?feil=kode`);
+  }
+
+  const date = text(formData, "expense_date", 10);
+  if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(Date.parse(date)) || date > todayOslo()) redirect(`${PAGE}?feil=dato`);
+  const purpose = text(formData, "purpose", 200);
+  const name = text(formData, "by_name", 100);
+  const email = text(formData, "by_email", 200)?.toLowerCase() ?? null;
+  const phone = text(formData, "by_phone", 40);
+  if (!purpose || !name || !email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) redirect(`${PAGE}?feil=felt`);
+
+  const parsed = parseLines(formData.get("lines"));
+  if ("error" in parsed) redirect(`${PAGE}?feil=${parsed.error === "ingen-linjer" ? "linjer" : "linje"}`);
+  const receipts = validReceiptPaths(formData.get("receipts"), "public");
+  const noReceipt = formData.get("no_receipt") === "on";
+  if (receipts.length === 0 && !noReceipt) redirect(`${PAGE}?feil=kvittering`);
+  const total = totalOriginal(parsed.lines);
+  if (!(total > 0)) redirect(`${PAGE}?feil=linje`);
+
+  if (await isRateLimited("expenses", email)) redirect(`${PAGE}?feil=for-mange`);
+
+  const description = text(formData, "description", 2000);
+  const supabase = createAdminClient();
+  const { data: row, error } = await supabase
+    .from("expenses")
+    .insert({
+      created_by: null,
+      created_by_name: name,
+      created_by_email: email,
+      created_by_phone: phone,
+      source: "lenke",
+      expense_date: date,
+      purpose,
+      description,
+      currency: "NOK",
+      exchange_rate: 1,
+      lines: parsed.lines,
+      total_original: total,
+      total_nok: total,
+      receipts,
+      no_receipt: receipts.length === 0 && noReceipt,
+    })
+    .select("id")
+    .single();
+  if (error || !row) {
+    console.error("[utlegg] lagring feilet", error);
+    redirect(`${PAGE}?feil=lagring`);
+  }
+
+  if (isResendConfigured()) {
+    try {
+      const site = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.mangfoldshusetvestland.no";
+      const mail = expenseCopyMessage({
+        by: name,
+        email,
+        phone,
+        date,
+        purpose,
+        description,
+        currency: "NOK",
+        rate: 1,
+        lines: parsed.lines,
+        totalOriginal: total,
+        totalNok: total,
+        receiptCount: receipts.length,
+        noReceipt: receipts.length === 0,
+        link: `${site}/admin/utlegg/${row.id}`,
+      });
+      const attachments: { filename: string; content: Buffer }[] = [];
+      let bytes = 0;
+      for (const path of receipts) {
+        const { data: blob } = await supabase.storage.from("receipts").download(path);
+        if (!blob) continue;
+        const buf = Buffer.from(await blob.arrayBuffer());
+        if (bytes + buf.length > MAX_ATTACH_BYTES) continue;
+        bytes += buf.length;
+        attachments.push({ filename: `kvittering-${attachments.length + 1}.${path.split(".").pop()}`, content: buf });
+      }
+      await getResendClient().emails.send(
+        {
+          from: process.env.RESEND_FROM ?? "Mangfoldshuset Vestland <post@mangfoldshusetvestland.no>",
+          to: FAKTURA_EMAIL,
+          replyTo: email ?? NOTIFY_EMAIL,
+          attachments,
+          ...mail,
+        },
+        { idempotencyKey: `utlegg-${row.id}` },
+      );
+    } catch (e) {
+      console.error("[utlegg] kopi til faktura@ feilet", e);
+    }
+  }
+
+  redirect(`${PAGE}/takk`);
+}

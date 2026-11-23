@@ -12,6 +12,7 @@ const links = [
   { href: "/admin", label: "Oversikt", ownerOnly: true },
   { href: "/admin/medlemmer", label: "Medlemmer", ownerOnly: true },
   { href: "/admin/betalinger", label: "Betalinger", ownerOnly: true },
+  { href: "/admin/utlegg", label: "Utlegg", ownerOnly: false },
   { href: "/admin/innhold", label: "Innhold", ownerOnly: false },
   { href: "/admin/aktiviteter", label: "Aktiviteter", ownerOnly: false },
   { href: "/admin/tilbud", label: "Faste tilbud", ownerOnly: false },
@@ -38,7 +39,8 @@ const groups = [
       "/admin/innhold",
     ],
   },
-  { label: "Folk", hrefs: ["/admin/medlemmer", "/admin/betalinger", "/admin/frivillige", "/admin/meldinger", "/admin/skjema"] },
+  { label: "Folk", hrefs: ["/admin/medlemmer", "/admin/frivillige", "/admin/meldinger", "/admin/skjema"] },
+  { label: "Økonomi", hrefs: ["/admin/betalinger", "/admin/utlegg"] },
   { label: "Annet", hrefs: ["/admin/statistikk", "/admin/hjelp"] },
 ];
 
