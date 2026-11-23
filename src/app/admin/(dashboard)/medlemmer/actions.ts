@@ -9,8 +9,10 @@ import { coverageYear, yearEnd } from "@/lib/membership-year";
 import { isMethod } from "@/lib/payments-report";
 import { todayOslo } from "@/lib/recurring";
 import { notifyAfterSave } from "@/lib/public-submission";
-import { getResendClient, isResendConfigured } from "@/lib/resend";
-import { receiptMessage } from "@/lib/receipt-email";
+import { getResendClient, isResendConfigured, NOTIFY_EMAIL } from "@/lib/resend";
+import { memberPageUrl, receiptMessage } from "@/lib/receipt-email";
+import { groupByEmail, recentlyRequested, renewalMessage } from "@/lib/renewal-email";
+import { isVippsPublic } from "@/lib/vipps";
 
 function iso(d: Date) {
   return d.toISOString().slice(0, 10);
@@ -186,4 +188,73 @@ export async function updateMember(id: string, formData: FormData) {
 
   revalidatePath("/admin/medlemmer");
   done("/admin/medlemmer", "lagret");
+}
+
+type RenewalMember = {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  birth_date: string | null;
+  expires_at: string | null;
+  pay_token: string;
+  renewal_requested_at: string | null;
+};
+
+const RENEWAL_COLUMNS = "id, first_name, last_name, email, birth_date, expires_at, pay_token, renewal_requested_at";
+
+/** Sender «forny medlemskapet»-e-post (én per e-postadresse) og husker at den er sendt. Returnerer antall e-poster. */
+async function sendRenewal(members: RenewalMember[]): Promise<number> {
+  if (!isResendConfigured()) failed("/admin/medlemmer", "generell");
+  const site = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.mangfoldshusetvestland.no";
+  const today = todayOslo();
+  const supabase = await createClient();
+  const from = process.env.RESEND_FROM ?? "Mangfoldshuset Vestland <post@mangfoldshusetvestland.no>";
+  let sent = 0;
+
+  for (const group of groupByEmail(members)) {
+    const people = group.map((m) => ({
+      name: `${m.first_name} ${m.last_name}`,
+      fee: feeForPerson(m.birth_date, today),
+      link: memberPageUrl(site, m.pay_token),
+      expires: m.expires_at ?? "",
+      coverYear: coverageYear(today, m.expires_at),
+    }));
+    const mail = renewalMessage(group[0].first_name, people, isVippsPublic());
+    const { error } = await getResendClient().emails.send(
+      { from, to: group[0].email, replyTo: NOTIFY_EMAIL, ...mail },
+      { idempotencyKey: `renewal-${group.map((m) => m.id).join("-")}-${today}`.slice(0, 250) },
+    );
+    if (error) continue;
+    await supabase.from("members").update({ renewal_requested_at: new Date().toISOString() }).in("id", group.map((m) => m.id));
+    sent += 1;
+  }
+  return sent;
+}
+
+/** E-post om fornyelse til ett medlem (utløpt eller ikke betalt). */
+export async function sendRenewalToMember(id: string) {
+  await requireOwner();
+  const supabase = await createClient();
+  const { data: m } = await supabase.from("members").select(RENEWAL_COLUMNS).eq("id", id).maybeSingle();
+  if (!m || !m.email || (m.expires_at && m.expires_at >= todayOslo())) failed("/admin/medlemmer", "generell");
+  const sent = await sendRenewal([m as RenewalMember]);
+  if (sent === 0) failed("/admin/medlemmer", "generell");
+  revalidatePath("/admin/medlemmer");
+  done("/admin/medlemmer", "fornyelse-sendt");
+}
+
+/** E-post om fornyelse til alle utløpte medlemmer som ikke har fått en de siste 14 dagene. */
+export async function sendRenewalToExpired() {
+  await requireOwner();
+  const today = todayOslo();
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("members").select(RENEWAL_COLUMNS).lt("expires_at", today).limit(300);
+  if (error) failed("/admin/medlemmer", "generell", error);
+  const due = ((data ?? []) as RenewalMember[]).filter((m) => m.email && !recentlyRequested(m.renewal_requested_at, today));
+  if (due.length === 0) failed("/admin/medlemmer", "ingen-mottakere");
+  const sent = await sendRenewal(due.slice(0, 100));
+  if (sent === 0) failed("/admin/medlemmer", "generell");
+  revalidatePath("/admin/medlemmer");
+  done("/admin/medlemmer", "fornyelse-sendt");
 }

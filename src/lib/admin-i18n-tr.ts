@@ -543,4 +543,12 @@ export const TR: Record<string, string> = {
   "Åpne i Frivillige": "Gönüllüler sayfasında aç",
   "F.eks. «Ringt 20. nov., møter opp torsdag»": "Örn. «20 Kas aradım, perşembe gelecek»",
   "Lagre notat": "Notu kaydet",
+  "Be om fornyelse": "Yenileme iste",
+  "{n} medlemskap har utløpt. Send dem en e-post med deres egen betalingsside (Vipps), så kan de fornye selv. Betalingen registreres av seg selv.": "{n} üyeliğin süresi dolmuş. Onlara kendi ödeme sayfalarının (Vipps) bağlantısıyla bir e-posta gönder, kendileri yenilesin. Ödeme kendiliğinden kaydedilir.",
+  "{n} av dem har ikke fått en slik e-post de siste 14 dagene.": "Bunlardan {n} kişiye son 14 günde böyle bir e-posta gönderilmedi.",
+  "Send e-post til {n} utløpte": "Süresi dolan {n} kişiye e-posta gönder",
+  "Sende en e-post om å fornye til {n} utløpte medlemmer?": "Süresi dolan {n} üyeye yenileme e-postası gönderilsin mi?",
+  "Sende en e-post om fornyelse til {name}?": "{name} kişisine yenileme e-postası gönderilsin mi?",
+  "Forespørsel om fornyelse sendt {date}": "Yenileme isteği gönderildi: {date}",
+  "Venter på betaling": "Ödeme bekleniyor",
 };

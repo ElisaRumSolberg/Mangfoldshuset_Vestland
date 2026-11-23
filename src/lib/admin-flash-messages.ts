@@ -6,6 +6,7 @@ export const FLASH_OK = {
   "lagt-til": "Lagt til.",
   slettet: "Slettet.",
   kvittering: "Kvitteringen er sendt på e-post til medlemmet.",
+  "fornyelse-sendt": "E-posten om å fornye medlemskapet er sendt.",
   betalt: "Registrert som betalt. Betalingen står i oversikten Betalinger, og medlemskapet gjelder ut medlemsåret.",
 } as const;
 
@@ -20,6 +21,8 @@ export const FLASH_ERR = {
     "Du må laste opp en PDF-fil først. Vent til det står at filen er lastet opp, og trykk deretter «Legg til».",
   "allerede-betalt":
     "Dette medlemmet har allerede betalt for denne perioden. Ingen ny betaling ble registrert.",
+  "ingen-mottakere":
+    "Ingen e-poster ble sendt. Alle utløpte medlemmer har enten fått en forespørsel de siste 14 dagene, eller mangler e-postadresse.",
   "mangler-felt": "Noen obligatoriske felt manglet. Fyll ut feltene som er merket med stjerne (*).",
 } as const;
 

@@ -1,8 +1,10 @@
 import { getT } from "@/lib/admin-i18n-server";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { addMember, deleteMember, markPaid, sendReceipt } from "./actions";
+import { addMember, deleteMember, markPaid, sendReceipt, sendRenewalToExpired, sendRenewalToMember } from "./actions";
 import DeleteButton from "../DeleteButton";
+import ConfirmSubmitButton from "../ConfirmSubmitButton";
+import { recentlyRequested } from "@/lib/renewal-email";
 import { feeText, membershipFee } from "@/lib/membership-fee";
 import { ageOn, buildStats, type MemberStats } from "@/lib/member-stats";
 
@@ -64,12 +66,15 @@ export default async function AdminMedlemmerPage({
       birth_date: string | null;
       gender: string | null;
       expires_at: string | null;
+      renewal_requested_at: string | null;
       membership_type: "enkelt" | "familie";
       family_members: { name: string; birth_date: string | null; gender?: string | null }[];
       status: Status;
       days: number | null;
     };
   });
+  const expiredList = members.filter((m) => m.status === "utlopt" && m.email);
+  const toRequest = expiredList.filter((m) => !recentlyRequested(m.renewal_requested_at, new Date().toISOString().slice(0, 10)));
   const persons = members.reduce((n, m) => n + 1 + (m.family_members?.length ?? 0), 0);
   const counts = (s: string) => members.filter((m) => m.status === s).length;
   const byStatus = filter === "alle" ? members : members.filter((m) => m.status === filter);
@@ -175,6 +180,26 @@ export default async function AdminMedlemmerPage({
           unpaid: counts("ubetalt"),
         })}
       </p>
+
+      {expiredList.length > 0 && (
+        <section className="mt-6 rounded-xl border border-line bg-cream p-5">
+          <h2 className="font-serif text-lg font-medium text-ink">{t("Be om fornyelse")}</h2>
+          <p className="mt-1 max-w-2xl text-sm text-ink-soft">
+            {t("{n} medlemskap har utløpt. Send dem en e-post med deres egen betalingsside (Vipps), så kan de fornye selv. Betalingen registreres av seg selv.", { n: expiredList.length })}
+          </p>
+          <p className="mt-1 text-sm text-ink-soft">
+            {t("{n} av dem har ikke fått en slik e-post de siste 14 dagene.", { n: toRequest.length })}
+          </p>
+          {toRequest.length > 0 && (
+            <form action={sendRenewalToExpired} className="mt-3">
+              <ConfirmSubmitButton
+                label={t("Send e-post til {n} utløpte", { n: toRequest.length })}
+                message={t("Sende en e-post om å fornye til {n} utløpte medlemmer?", { n: toRequest.length })}
+              />
+            </form>
+          )}
+        </section>
+      )}
 
       <details className="mt-6 rounded-2xl border border-line bg-cream p-5">
         <summary className="cursor-pointer text-sm font-semibold text-ink">
@@ -393,8 +418,13 @@ export default async function AdminMedlemmerPage({
                             ? t("{n} dager igjen", { n: m.days! })
                             : t("utløpt for {n} dager siden", { n: -m.days! }),
                       })
-                    : t("Venter på betaling (Vipps #595791)")}
+                    : t("Venter på betaling")}
                 </p>
+                {m.renewal_requested_at && (
+                  <p className="text-sm text-ink-soft">
+                    {t("Forespørsel om fornyelse sendt {date}", { date: m.renewal_requested_at.slice(0, 10) })}
+                  </p>
+                )}
               </div>
               <div className="flex items-center gap-2">
                 <Link
@@ -403,6 +433,15 @@ export default async function AdminMedlemmerPage({
                 >
                   {t("Rediger")}
                 </Link>
+                {(m.status === "utlopt" || m.status === "ubetalt") && m.email && (
+                  <form action={sendRenewalToMember.bind(null, m.id)}>
+                    <ConfirmSubmitButton
+                      label={t("Be om fornyelse")}
+                      message={t("Sende en e-post om fornyelse til {name}?", { name: `${m.first_name} ${m.last_name}` })}
+                      className="min-h-11 rounded-full border border-fig px-4 py-2 text-sm font-semibold text-fig transition-colors hover:bg-fig hover:text-white"
+                    />
+                  </form>
+                )}
                 <form action={markPaid.bind(null, m.id)} className="flex items-center gap-2">
                   <select
                     name="method"
