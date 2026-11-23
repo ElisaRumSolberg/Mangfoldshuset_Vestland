@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useT } from "@/components/admin/AdminLang";
+import SignaturePad from "./SignaturePad";
 import {
   MAX_RECEIPTS,
   UNITS,
@@ -16,6 +17,7 @@ const label = "mb-1 block text-sm font-medium text-ink";
 const hint = "mt-1 text-xs text-ink-soft";
 const MAX_FILE_MB = 10;
 const OTHER = "__annet";
+const PROFILE_KEY = "utlegg-opplysninger";
 
 type Row = { id: number; item: string; qty: string; unit: string; unitPrice: string };
 type Receipt = { id: number; name: string; path?: string; state: "uploading" | "done" | "error"; message?: string };
@@ -78,6 +80,24 @@ export default function ExpenseForm({
   const [custom, setCustom] = useState("");
   const [preview, setPreview] = useState(false);
   const [snap, setSnap] = useState<Record<string, string>>({});
+  const [signature, setSignature] = useState("");
+  const [confirmed, setConfirmed] = useState(false);
+  const [remember, setRemember] = useState(true);
+
+  // Fyll inn opplysningene fra forrige gang (lagret bare i denne nettleseren).
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(PROFILE_KEY) ?? "{}") as Record<string, string>;
+      const form = formRef.current;
+      if (!form) return;
+      for (const [name, value] of Object.entries(saved)) {
+        const el = form.elements.namedItem(name);
+        if (el instanceof HTMLInputElement && !el.value && typeof value === "string") el.value = value;
+      }
+    } catch {
+      // Ingen lagrede opplysninger, eller nettleseren tillater det ikke.
+    }
+  }, []);
   const purpose = choice === OTHER ? custom.trim() : choice;
 
   const total = round2(
@@ -168,7 +188,14 @@ export default function ExpenseForm({
     if (!form || !form.reportValidity()) return;
     const fd = new FormData(form);
     const get = (k: string) => (typeof fd.get(k) === "string" ? (fd.get(k) as string).trim() : "");
-    setSnap({ name: get("by_name"), email: get("by_email"), phone: get("by_phone"), date: get("expense_date"), description: get("description") });
+    const profile = { by_name: get("by_name"), by_email: get("by_email"), by_phone: get("by_phone"), by_address: get("by_address"), by_postcode: get("by_postcode"), by_account: get("by_account") };
+    try {
+      if (remember) localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+      else localStorage.removeItem(PROFILE_KEY);
+    } catch {
+      // Lagring er bare en bekvemmelighet.
+    }
+    setSnap({ name: profile.by_name, email: profile.by_email, phone: profile.by_phone, address: profile.by_address, postcode: profile.by_postcode, account: profile.by_account, date: get("expense_date"), description: get("description") });
     setPreview(true);
     window.scrollTo({ top: 0 });
   }
@@ -180,6 +207,7 @@ export default function ExpenseForm({
       <input type="hidden" name="lines" value={JSON.stringify(rows.map(({ item, qty, unit, unitPrice }) => ({ item, qty, unit, unitPrice })))} />
       <input type="hidden" name="receipts" value={donePaths.join("\n")} />
       <input type="hidden" name="purpose" value={purpose} />
+      <input type="hidden" name="signature" value={signature} />
 
       {preview && (
         <section aria-live="polite" className="rounded-xl border border-fig/40 bg-cream p-5">
@@ -192,6 +220,10 @@ export default function ExpenseForm({
             <dd>{snap.date}</dd>
             <dt className="font-semibold text-ink">{t("Ditt navn")}</dt>
             <dd>{snap.name}</dd>
+            <dt className="font-semibold text-ink">{t("Adresse")}</dt>
+            <dd>{snap.address}, {snap.postcode}</dd>
+            <dt className="font-semibold text-ink">{t("Kontonummer til betaling")}</dt>
+            <dd>{snap.account}</dd>
             {publicMode && (
               <>
                 <dt className="font-semibold text-ink">{t("E-post")}</dt>
@@ -227,6 +259,13 @@ export default function ExpenseForm({
           <p className="mt-3 text-sm text-ink-soft">
             {donePaths.length > 0 ? `${donePaths.length} ${t("kvittering(er)")}` : t("Ingen kvittering")}
           </p>
+          {signature && (
+            <div className="mt-3">
+              <p className="text-sm font-semibold text-ink">{t("Underskrift")}</p>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={signature} alt={t("Underskrift")} className="mt-1 h-20 rounded-lg border border-line bg-white" />
+            </div>
+          )}
         </section>
       )}
 
@@ -259,6 +298,23 @@ export default function ExpenseForm({
             </div>
           </>
         )}
+        <div className="sm:col-span-2">
+          <label htmlFor="e-address" className={label}>{t("Adresse")} *</label>
+          <input id="e-address" name="by_address" required maxLength={200} className={field} autoComplete="street-address" />
+        </div>
+        <div>
+          <label htmlFor="e-postcode" className={label}>{t("Postnummer")} *</label>
+          <input id="e-postcode" name="by_postcode" required inputMode="numeric" pattern="[0-9]{4}" maxLength={4} className={field} autoComplete="postal-code" />
+        </div>
+        <div>
+          <label htmlFor="e-account" className={label}>{t("Kontonummer til betaling")} *</label>
+          <input id="e-account" name="by_account" required inputMode="numeric" maxLength={16} className={field} placeholder="1234.56.78903" autoComplete="off" />
+          <p className={hint}>{t("11 siffer. Brukes bare til å betale tilbake utlegget.")}</p>
+        </div>
+        <label className="flex items-start gap-2 text-sm text-ink-soft sm:col-span-2">
+          <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} className="mt-1" />
+          <span>{t("Husk opplysningene mine på denne enheten til neste gang")}</span>
+        </label>
         <div>
           <label htmlFor="e-date" className={label}>{t("Dato for utlegget")} *</label>
           <input id="e-date" name="expense_date" type="date" required max={today} defaultValue={today} className={field} />
@@ -391,6 +447,18 @@ export default function ExpenseForm({
         </label>
       </section>
 
+      <section>
+        <h2 className="font-serif text-lg font-medium text-ink">{t("Underskrift")}</h2>
+        <p className="mt-1 text-sm text-ink-soft">{t("Skriv under med finger, penn eller mus.")}</p>
+        <div className="mt-3">
+          <SignaturePad onChange={setSignature} />
+        </div>
+        <label className="mt-3 flex items-start gap-2 text-sm text-ink">
+          <input type="checkbox" name="confirm" required checked={confirmed} onChange={(e) => setConfirmed(e.target.checked)} className="mt-1" />
+          <span>{t("Jeg bekrefter at opplysningene er riktige og at utlegget er betalt av meg.")}</span>
+        </label>
+      </section>
+
       </div>
 
       <div>
@@ -418,13 +486,14 @@ export default function ExpenseForm({
             <button
               type="button"
               onClick={showPreview}
-              disabled={uploading || needsReceipt}
+              disabled={uploading || needsReceipt || !signature}
               className="min-h-12 rounded-lg bg-fig px-7 text-sm font-semibold text-white transition-colors hover:bg-fig-dark disabled:cursor-not-allowed disabled:opacity-50"
             >
               {t("Se over før du sender")}
             </button>
             {uploading && <p className={hint}>{t("Vent til opplastingen er ferdig.")}</p>}
             {!uploading && needsReceipt && <p className={hint}>{t("Legg ved kvittering, eller huk av for at du ikke har noen.")}</p>}
+            {!uploading && !needsReceipt && !signature && <p className={hint}>{t("Skriv under i feltet over før du går videre.")}</p>}
           </>
         )}
       </div>

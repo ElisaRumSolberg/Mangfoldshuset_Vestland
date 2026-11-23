@@ -6,12 +6,12 @@ import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { checkExpenseCode, expenseCodeConfigured } from "@/lib/expense-access";
 import { getResendClient, isResendConfigured, NOTIFY_EMAIL } from "@/lib/resend";
 import { expenseCopyMessage, FAKTURA_EMAIL } from "@/lib/expense-email";
+import { expenseToPdf, pdfFileName, type ExpenseFull } from "@/lib/expense-document";
 import { looksLikeBot, isRateLimited } from "@/lib/spam-guard";
 import { todayOslo } from "@/lib/recurring";
-import { parseLines, totalOriginal, validReceiptPaths } from "@/lib/expenses";
+import { normalizeAccount, parseLines, parseSignature, totalOriginal, validPostcode, validReceiptPaths } from "@/lib/expenses";
 
 const PAGE = "/utlegg";
-const MAX_ATTACH_BYTES = 25 * 1024 * 1024;
 const ALLOWED_EXT = ["jpg", "jpeg", "png", "webp", "heic", "pdf"];
 
 function text(formData: FormData, key: string, max: number) {
@@ -57,6 +57,14 @@ export async function submitPublicExpense(formData: FormData) {
   const email = text(formData, "by_email", 200)?.toLowerCase() ?? null;
   const phone = text(formData, "by_phone", 40);
   if (!purpose || !name || !email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) redirect(`${PAGE}?feil=felt`);
+  const address = text(formData, "by_address", 200);
+  if (!address) redirect(`${PAGE}?feil=adresse`);
+  const postcode = validPostcode(formData.get("by_postcode"));
+  if (!postcode) redirect(`${PAGE}?feil=postnummer`);
+  const account = normalizeAccount(formData.get("by_account"));
+  if (!account) redirect(`${PAGE}?feil=konto`);
+  if (!parseSignature(formData.get("signature"))) redirect(`${PAGE}?feil=signatur`);
+  if (formData.get("confirm") !== "on") redirect(`${PAGE}?feil=bekreft`);
 
   const parsed = parseLines(formData.get("lines"));
   if ("error" in parsed) redirect(`${PAGE}?feil=${parsed.error === "ingen-linjer" ? "linjer" : "linje"}`);
@@ -77,6 +85,11 @@ export async function submitPublicExpense(formData: FormData) {
       created_by_name: name,
       created_by_email: email,
       created_by_phone: phone,
+      created_by_address: address,
+      created_by_postcode: postcode,
+      bank_account: account,
+      signature: formData.get("signature"),
+      signed_at: new Date().toISOString(),
       source: "lenke",
       expense_date: date,
       purpose,
@@ -89,7 +102,7 @@ export async function submitPublicExpense(formData: FormData) {
       receipts,
       no_receipt: receipts.length === 0 && noReceipt,
     })
-    .select("id")
+    .select("*")
     .single();
   if (error || !row) {
     console.error("[utlegg] lagring feilet", error);
@@ -99,6 +112,7 @@ export async function submitPublicExpense(formData: FormData) {
   if (isResendConfigured()) {
     try {
       const site = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.mangfoldshusetvestland.no";
+      const full = row as ExpenseFull;
       const mail = expenseCopyMessage({
         by: name,
         email,
@@ -113,27 +127,18 @@ export async function submitPublicExpense(formData: FormData) {
         totalNok: total,
         receiptCount: receipts.length,
         noReceipt: receipts.length === 0,
-        link: `${site}/admin/utlegg/${row.id}`,
+        link: `${site}/admin/utlegg/${full.id}`,
       });
-      const attachments: { filename: string; content: Buffer }[] = [];
-      let bytes = 0;
-      for (const path of receipts) {
-        const { data: blob } = await supabase.storage.from("receipts").download(path);
-        if (!blob) continue;
-        const buf = Buffer.from(await blob.arrayBuffer());
-        if (bytes + buf.length > MAX_ATTACH_BYTES) continue;
-        bytes += buf.length;
-        attachments.push({ filename: `kvittering-${attachments.length + 1}.${path.split(".").pop()}`, content: buf });
-      }
+      const pdf = await expenseToPdf(supabase, full);
       await getResendClient().emails.send(
         {
           from: process.env.RESEND_FROM ?? "Mangfoldshuset Vestland <post@mangfoldshusetvestland.no>",
           to: FAKTURA_EMAIL,
           replyTo: email ?? NOTIFY_EMAIL,
-          attachments,
+          attachments: [{ filename: pdfFileName(full), content: Buffer.from(pdf) }],
           ...mail,
         },
-        { idempotencyKey: `utlegg-${row.id}` },
+        { idempotencyKey: `utlegg-${full.id}` },
       );
     } catch (e) {
       console.error("[utlegg] kopi til faktura@ feilet", e);

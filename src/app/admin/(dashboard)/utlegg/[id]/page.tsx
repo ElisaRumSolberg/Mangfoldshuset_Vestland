@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import { getT } from "@/lib/admin-i18n-server";
 import { createClient } from "@/lib/supabase/server";
 import { roleFromUser } from "@/lib/roles";
-import { STATUS_LABEL, STATUS_TINT, fmtMoney, isStatus, lineTotal, type ExpenseLine, type ExpenseRow } from "@/lib/expenses";
+import { STATUS_LABEL, STATUS_TINT, fmtMoney, formatAccount, isStatus, lineTotal } from "@/lib/expenses";
+import type { ExpenseFull } from "@/lib/expense-document";
 import DeleteButton from "../../DeleteButton";
 import { decideExpense, deleteExpense } from "../actions";
 
@@ -21,7 +22,7 @@ export default async function ExpenseDetailPage({ params }: { params: Promise<{ 
 
   const { data } = await supabase.from("expenses").select("*").eq("id", id).maybeSingle();
   if (!data) notFound();
-  const e = data as ExpenseRow & { lines: ExpenseLine[]; created_by: string };
+  const e = data as ExpenseFull & { created_by: string | null };
 
   const { data: signed } = e.receipts.length
     ? await supabase.storage.from("receipts").createSignedUrls(e.receipts, 3600)
@@ -50,6 +51,22 @@ export default async function ExpenseDetailPage({ params }: { params: Promise<{ 
       </div>
 
       {e.description && <p className="mt-4 max-w-2xl whitespace-pre-line text-sm text-ink">{e.description}</p>}
+
+      <dl className="mt-4 grid max-w-2xl grid-cols-1 gap-x-6 gap-y-1 text-sm sm:grid-cols-[11rem_1fr]">
+        <dt className="font-semibold text-ink">{t("Adresse")}</dt>
+        <dd>{[e.created_by_address, e.created_by_postcode].filter(Boolean).join(", ") || "–"}</dd>
+        <dt className="font-semibold text-ink">{t("Kontonummer til betaling")}</dt>
+        <dd>{e.bank_account ? formatAccount(e.bank_account) : "–"}</dd>
+      </dl>
+
+      <a
+        href={`/admin/utlegg/${e.id}/pdf`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-5 inline-flex min-h-11 items-center rounded-lg border border-fig px-5 text-sm font-semibold text-fig transition-colors hover:bg-fig hover:text-white"
+      >
+        {t("Åpne utleggsskjemaet som PDF")}
+      </a>
 
       <section className="mt-6 overflow-x-auto rounded-xl border border-line bg-cream p-5">
         <table className="w-full min-w-[32rem] text-left text-sm">

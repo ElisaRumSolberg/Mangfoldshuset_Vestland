@@ -156,3 +156,38 @@ export function expensesCsv(rows: ExpenseRow[]): string {
   );
   return "﻿" + [header.map(csvCell).join(";"), ...lines].join("\r\n") + "\r\n";
 }
+
+// --- Opplysninger til utbetaling (som på utleggsskjemaet) ---
+
+/** Norsk kontonummer: 11 siffer med gyldig kontrollsiffer (mod 11). Mellomrom og punktum godtas. */
+export function normalizeAccount(raw: unknown): string | null {
+  if (typeof raw !== "string") return null;
+  const digits = raw.replace(/[\s.]/g, "");
+  if (!/^\d{11}$/.test(digits)) return null;
+  const w = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2];
+  const sum = w.reduce((s, x, i) => s + x * Number(digits[i]), 0);
+  const check = (11 - (sum % 11)) % 11;
+  if (check === 10 || check !== Number(digits[10])) return null;
+  return digits;
+}
+
+export function formatAccount(digits: string) {
+  return digits.length === 11 ? `${digits.slice(0, 4)}.${digits.slice(4, 6)}.${digits.slice(6)}` : digits;
+}
+
+export function validPostcode(raw: unknown): string | null {
+  return typeof raw === "string" && /^\d{4}$/.test(raw.trim()) ? raw.trim() : null;
+}
+
+const MAX_SIGNATURE_BYTES = 150 * 1024;
+
+/** Underskriften kommer som PNG i en data-adresse. Alt annet (annen filtype, for stor, ikke PNG) avvises. */
+export function parseSignature(raw: unknown): Uint8Array | null {
+  if (typeof raw !== "string" || !raw.startsWith("data:image/png;base64,")) return null;
+  const b64 = raw.slice("data:image/png;base64,".length);
+  if (b64.length > MAX_SIGNATURE_BYTES * 1.4 || !/^[A-Za-z0-9+/=]+$/.test(b64)) return null;
+  const bytes = Uint8Array.from(Buffer.from(b64, "base64"));
+  const magic = [0x89, 0x50, 0x4e, 0x47];
+  if (bytes.length < 200 || bytes.length > MAX_SIGNATURE_BYTES || magic.some((m, i) => bytes[i] !== m)) return null;
+  return bytes;
+}

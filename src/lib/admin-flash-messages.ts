@@ -25,6 +25,11 @@ export const FLASH_ERR = {
     "Dette medlemmet har allerede betalt for denne perioden. Ingen ny betaling ble registrert.",
   "ingen-mottakere":
     "Ingen e-poster ble sendt. Alle utløpte medlemmer har enten fått en forespørsel de siste 14 dagene, eller mangler e-postadresse.",
+  "mangler-adresse": "Skriv inn adressen din. Den står på utleggsskjemaet.",
+  "ugyldig-postnummer": "Postnummeret må være fire siffer, for eksempel 5161.",
+  "ugyldig-konto": "Kontonummeret må være 11 siffer og gyldig, for eksempel 1234.56.78903. Sjekk at du har skrevet det riktig.",
+  "mangler-signatur": "Skriv under i feltet for underskrift før du sender.",
+  "mangler-bekreftelse": "Huk av for at opplysningene er riktige før du sender.",
   "ugyldig-dato": "Datoen mangler eller er i fremtiden. Velg datoen du betalte.",
   "mangler-formal": "Skriv hva utlegget gjelder, for eksempel «Workshop» eller «Torsdagssuppe».",
   "ugyldig-kurs": "Skriv inn kursen som et tall, for eksempel 5. Den må være større enn 0.",

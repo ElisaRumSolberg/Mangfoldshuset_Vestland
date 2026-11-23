@@ -7,16 +7,18 @@ import { requireEditor, requireOwner } from "@/lib/auth-guard";
 import { getResendClient, isResendConfigured, NOTIFY_EMAIL } from "@/lib/resend";
 import { todayOslo } from "@/lib/recurring";
 import { expenseCopyMessage, expenseDecisionMessage, FAKTURA_EMAIL } from "@/lib/expense-email";
+import { expenseToPdf, pdfFileName, type ExpenseFull } from "@/lib/expense-document";
 import {
   isStatus,
+  normalizeAccount,
   parseLines,
-  toNok,
+  parseSignature,
   totalOriginal,
+  validPostcode,
   validReceiptPaths,
 } from "@/lib/expenses";
 
 const BACK = "/admin/utlegg";
-const MAX_ATTACH_BYTES = 25 * 1024 * 1024;
 
 function text(formData: FormData, key: string, max: number) {
   const v = formData.get(key);
@@ -41,9 +43,15 @@ export async function submitExpense(formData: FormData) {
   if (!purpose) failed(NEW, "mangler-formal");
   const name = text(formData, "by_name", 100);
   if (!name) failed(NEW, "mangler-navn");
-
-  const currency = "NOK";
-  const rate = 1;
+  const address = text(formData, "by_address", 200);
+  if (!address) failed(NEW, "mangler-adresse");
+  const postcode = validPostcode(formData.get("by_postcode"));
+  if (!postcode) failed(NEW, "ugyldig-postnummer");
+  const account = normalizeAccount(formData.get("by_account"));
+  if (!account) failed(NEW, "ugyldig-konto");
+  const signaturePng = parseSignature(formData.get("signature"));
+  if (!signaturePng) failed(NEW, "mangler-signatur");
+  if (formData.get("confirm") !== "on") failed(NEW, "mangler-bekreftelse");
 
   const parsed = parseLines(formData.get("lines"));
   if ("error" in parsed) failed(NEW, parsed.error);
@@ -53,7 +61,6 @@ export async function submitExpense(formData: FormData) {
   if (receipts.length === 0 && !noReceipt) failed(NEW, "mangler-kvittering");
 
   const original = totalOriginal(parsed.lines);
-  const nok = toNok(original, currency, rate);
   if (!(original > 0)) failed(NEW, "ugyldig-linje");
 
   const description = text(formData, "description", 2000);
@@ -64,59 +71,56 @@ export async function submitExpense(formData: FormData) {
     .insert({
       created_by_name: name,
       created_by_email: email,
+      created_by_address: address,
+      created_by_postcode: postcode,
+      bank_account: account,
+      signature: formData.get("signature"),
+      signed_at: new Date().toISOString(),
       expense_date: date,
       purpose,
       description,
-      currency,
-      exchange_rate: rate,
+      currency: "NOK",
+      exchange_rate: 1,
       lines: parsed.lines,
       total_original: original,
-      total_nok: nok,
+      total_nok: original,
       receipts,
       no_receipt: receipts.length === 0 && noReceipt,
     })
-    .select("id")
+    .select("*")
     .single();
   if (error || !row) failed(NEW, "generell", error);
 
-  // Kopi til faktura@ (med kvitteringene vedlagt så langt det er plass). Feiler dette, er utlegget likevel lagret.
+  // Kopi til faktura@ med utleggsskjemaet (og kvitteringene) som PDF. Feiler dette, er utlegget likevel lagret.
   if (isResendConfigured()) {
     try {
       const site = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.mangfoldshusetvestland.no";
+      const full = row as ExpenseFull;
       const mail = expenseCopyMessage({
         by: name,
         email,
         date,
         purpose,
         description,
-        currency,
-        rate,
+        currency: "NOK",
+        rate: 1,
         lines: parsed.lines,
         totalOriginal: original,
-        totalNok: nok,
+        totalNok: original,
         receiptCount: receipts.length,
         noReceipt: receipts.length === 0,
-        link: `${site}/admin/utlegg/${row.id}`,
+        link: `${site}/admin/utlegg/${full.id}`,
       });
-      const attachments: { filename: string; content: Buffer }[] = [];
-      let bytes = 0;
-      for (const path of receipts) {
-        const { data: blob } = await supabase.storage.from("receipts").download(path);
-        if (!blob) continue;
-        const buf = Buffer.from(await blob.arrayBuffer());
-        if (bytes + buf.length > MAX_ATTACH_BYTES) continue;
-        bytes += buf.length;
-        attachments.push({ filename: `kvittering-${attachments.length + 1}.${path.split(".").pop()}`, content: buf });
-      }
+      const pdf = await expenseToPdf(supabase, full);
       await getResendClient().emails.send(
         {
           from: process.env.RESEND_FROM ?? "Mangfoldshuset Vestland <post@mangfoldshusetvestland.no>",
           to: FAKTURA_EMAIL,
           replyTo: email ?? NOTIFY_EMAIL,
-          attachments,
+          attachments: [{ filename: pdfFileName(full), content: Buffer.from(pdf) }],
           ...mail,
         },
-        { idempotencyKey: `utlegg-${row.id}` },
+        { idempotencyKey: `utlegg-${full.id}` },
       );
     } catch (e) {
       console.error("[utlegg] kopi til faktura@ feilet", e);

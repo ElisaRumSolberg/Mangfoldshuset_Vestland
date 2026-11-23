@@ -10,6 +10,11 @@ create table if not exists expenses (
   created_by_name text,
   created_by_email text,
   created_by_phone text,
+  created_by_address text,
+  created_by_postcode text,
+  bank_account text,
+  signature text,
+  signed_at timestamptz,
   source text not null default 'admin' check (source in ('admin', 'lenke')),
   expense_date date not null,
   purpose text not null,
@@ -28,6 +33,18 @@ create table if not exists expenses (
   paid_at date,
   created_at timestamptz not null default now()
 );
+
+-- Hvis tabellen ble laget med en eldre versjon av dette skjemaet, legges de nye feltene til her.
+alter table expenses alter column created_by drop not null;
+alter table expenses add column if not exists created_by_phone text;
+alter table expenses add column if not exists created_by_address text;
+alter table expenses add column if not exists created_by_postcode text;
+alter table expenses add column if not exists bank_account text;
+alter table expenses add column if not exists signature text;
+alter table expenses add column if not exists signed_at timestamptz;
+alter table expenses add column if not exists source text not null default 'admin';
+alter table expenses drop constraint if exists expenses_source_check;
+alter table expenses add constraint expenses_source_check check (source in ('admin', 'lenke'));
 
 create index if not exists expenses_status_idx on expenses (status);
 create index if not exists expenses_date_idx on expenses (expense_date);

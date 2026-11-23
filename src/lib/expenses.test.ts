@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { expensesCsv, lineTotal, parseLines, parseNumber, toNok, totalOriginal, validReceiptPaths, type ExpenseRow } from "./expenses";
+import { expensesCsv, formatAccount, lineTotal, normalizeAccount, parseLines, parseNumber, parseSignature, toNok, totalOriginal, validPostcode, validReceiptPaths, type ExpenseRow } from "./expenses";
 
 describe("parseNumber", () => {
   it("accepts comma and dot as decimal separator and rejects junk", () => {
@@ -74,5 +74,32 @@ describe("expensesCsv", () => {
     const csv = expensesCsv([row]);
     expect(csv.startsWith("﻿Dato;")).toBe(true);
     expect(csv).toContain("2026-11-20;Workshop;'=SUM(A1);Merve;m@x.no;TRY;5;41030;8206;Godkjent");
+  });
+});
+
+describe("normalizeAccount", () => {
+  it("accepts a valid number with spaces or dots and rejects bad check digits", () => {
+    expect(normalizeAccount("8601.11.17947")).toBe("86011117947");
+    expect(normalizeAccount("8601 11 17947")).toBe("86011117947");
+    expect(normalizeAccount("86011117948")).toBeNull();
+    expect(normalizeAccount("123")).toBeNull();
+    expect(normalizeAccount(undefined)).toBeNull();
+  });
+  it("formats as xxxx.xx.xxxxx", () => {
+    expect(formatAccount("86011117947")).toBe("8601.11.17947");
+  });
+});
+
+describe("validPostcode / parseSignature", () => {
+  it("needs exactly four digits", () => {
+    expect(validPostcode(" 5161 ")).toBe("5161");
+    expect(validPostcode("516")).toBeNull();
+  });
+  it("only accepts a real PNG data URL", () => {
+    const png = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47]), Buffer.alloc(300, 1)]).toString("base64");
+    expect(parseSignature(`data:image/png;base64,${png}`)).not.toBeNull();
+    expect(parseSignature(`data:image/jpeg;base64,${png}`)).toBeNull();
+    expect(parseSignature(`data:image/png;base64,${Buffer.alloc(300, 1).toString("base64")}`)).toBeNull();
+    expect(parseSignature("<script>")).toBeNull();
   });
 });
