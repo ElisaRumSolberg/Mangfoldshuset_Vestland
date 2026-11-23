@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getT } from "@/lib/admin-i18n-server";
 import { createClient } from "@/lib/supabase/server";
 import { todayOslo } from "@/lib/recurring";
+import { loadExpenseTargets } from "@/lib/expense-targets";
 import ExpenseForm from "../ExpenseForm";
 import { submitExpense } from "../actions";
 
@@ -11,7 +12,7 @@ export default async function NewExpensePage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const { data: programs } = await supabase.from("recurring_programs").select("title").eq("active", true).order("title");
+  const targets = await loadExpenseTargets(supabase, todayOslo());
   const defaultName = typeof user?.user_metadata?.name === "string" ? user.user_metadata.name : "";
 
   return (
@@ -21,13 +22,14 @@ export default async function NewExpensePage() {
       </Link>
       <h1 className="mt-3 font-serif text-2xl font-medium text-ink">{t("Nytt utlegg")}</h1>
       <p className="mt-2 max-w-2xl text-sm text-ink-soft">
-        {t("Fyll ut hva du har kjøpt, og legg ved bilde av kvitteringen. Beløpet regnes om til NOK automatisk. Når du sender, får kasserer og regnskapsføreren en kopi.")}
+        {t("Fyll ut hva du har kjøpt, og legg ved bilde av kvitteringen. Beløpet regnes om til NOK automatisk. Når du sender, får regnskapsføreren en kopi.")}
       </p>
       <ExpenseForm
         action={submitExpense}
         defaultName={defaultName}
         today={todayOslo()}
-        purposes={(programs ?? []).map((p) => p.title as string)}
+        programs={targets.programs}
+        activities={targets.activities}
       />
     </div>
   );

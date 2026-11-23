@@ -47,7 +47,7 @@ export default async function AdminUtleggPage({
           <p className="mt-2 max-w-2xl text-sm text-ink-soft">
             {isOwner
               ? t("Her leverer du inn utlegg med bilde av kvitteringen, og her godkjenner du dem. Alt arkiveres, og du kan laste ned en oversikt til regnskapsføreren.")
-              : t("Her leverer du inn utlegg du har betalt for foreningen, med bilde av kvitteringen. Kasserer godkjenner det, og du får beskjed på e-post.")}
+              : t("Her leverer du inn utlegg du har betalt for foreningen, med bilde av kvitteringen. Regnskapsføreren godkjenner det, og du får beskjed på e-post.")}
           </p>
         </div>
         <Link href="/admin/utlegg/ny" className="inline-flex min-h-11 items-center rounded-lg bg-fig px-5 text-sm font-semibold text-white transition-colors hover:bg-fig-dark">

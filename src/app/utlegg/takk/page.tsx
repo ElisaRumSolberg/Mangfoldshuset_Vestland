@@ -17,7 +17,7 @@ export default async function ExpenseThanksPage() {
       <main className="mx-auto max-w-2xl px-6 pb-16 pt-20">
         <h1 className="font-serif text-4xl font-medium">{t("Takk!")}</h1>
         <p className="mt-6 rounded-xl bg-[#EAF0E9] px-5 py-4 text-sm font-semibold text-green-dark">
-          {t("Utlegget er sendt inn. Kasserer har fått det, og du får beskjed på e-post når det er behandlet.")}
+          {t("Utlegget er sendt inn. Regnskapsføreren har fått det, og du får beskjed på e-post når det er behandlet.")}
         </p>
         <Link href="/utlegg" className="mt-6 inline-flex min-h-11 items-center rounded-lg border border-fig px-5 text-sm font-semibold text-fig transition-colors hover:bg-fig hover:text-white">
           {t("Send inn et nytt utlegg")}

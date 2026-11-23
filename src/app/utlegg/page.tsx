@@ -7,6 +7,7 @@ import ExpenseForm from "@/app/admin/(dashboard)/utlegg/ExpenseForm";
 import { getAdminLang, getT } from "@/lib/admin-i18n-server";
 import { expenseCodeConfigured } from "@/lib/expense-access";
 import { todayOslo } from "@/lib/recurring";
+import { loadExpenseTargets } from "@/lib/expense-targets";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
 import { receiptUploadTarget, submitPublicExpense } from "./actions";
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 const ERRORS: Record<string, string> = {
-  kode: "Fellesordet stemmer ikke. Spør kasserer eller styret om riktig ord.",
+  kode: "Fellesordet stemmer ikke. Spør regnskapsføreren eller styret om riktig ord.",
   dato: "Datoen mangler eller er i fremtiden. Velg datoen du betalte.",
   felt: "Fyll ut navn, e-post og hva utlegget gjelder.",
   linjer: "Legg inn minst én linje med hva som ble kjøpt.",
@@ -37,12 +38,7 @@ export default async function PublicExpensePage({ searchParams }: { searchParams
   const t = await getT();
   const open = isSupabaseConfigured() && expenseCodeConfigured();
 
-  let purposes: string[] = [];
-  if (open) {
-    const supabase = await createClient();
-    const { data } = await supabase.from("recurring_programs").select("title").eq("active", true).order("title");
-    purposes = (data ?? []).map((p) => p.title as string);
-  }
+  const targets = open ? await loadExpenseTargets(await createClient(), todayOslo()) : { programs: [], activities: [] };
 
   return (
     <AdminLangProvider lang={lang}>
@@ -53,7 +49,7 @@ export default async function PublicExpensePage({ searchParams }: { searchParams
           <LangSwitch />
         </div>
         <p className="mt-4 text-ink-soft">
-          {t("Har du kjøpt noe for foreningen? Fyll ut skjemaet og legg ved bilde av kvitteringen. Kasserer får det, og du får beskjed på e-post når det er behandlet.")}
+          {t("Har du kjøpt noe for foreningen? Fyll ut skjemaet og legg ved bilde av kvitteringen. Regnskapsføreren får det, og du får beskjed på e-post når det er behandlet.")}
         </p>
 
         {feil && ERRORS[feil] && (
@@ -67,7 +63,8 @@ export default async function PublicExpensePage({ searchParams }: { searchParams
             action={submitPublicExpense}
             defaultName=""
             today={todayOslo()}
-            purposes={purposes}
+            programs={targets.programs}
+            activities={targets.activities}
             publicMode
             uploadTarget={receiptUploadTarget}
             extra={<HoneypotFields />}

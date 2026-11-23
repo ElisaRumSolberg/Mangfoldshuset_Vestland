@@ -7,7 +7,7 @@ export const FLASH_OK = {
   slettet: "Slettet.",
   kvittering: "Kvitteringen er sendt på e-post til medlemmet.",
   "fornyelse-sendt": "E-posten om å fornye medlemskapet er sendt.",
-  "utlegg-sendt": "Utlegget er sendt inn. Kasserer og regnskapsføreren har fått en kopi.",
+  "utlegg-sendt": "Utlegget er sendt inn. Regnskapsføreren har fått en kopi.",
   "utlegg-behandlet": "Statusen er oppdatert.",
   betalt: "Registrert som betalt. Betalingen står i oversikten Betalinger, og medlemskapet gjelder ut medlemsåret.",
 } as const;

@@ -47,7 +47,7 @@ export function expenseCopyMessage(e: Submitted): { subject: string; text: strin
   };
 }
 
-/** Beskjed til den som leverte utlegget når kasserer har behandlet det. */
+/** Beskjed til den som leverte utlegget når regnskapet har behandlet det. */
 export function expenseDecisionMessage(
   e: { purpose: string; totalNok: number; status: ExpenseStatus; note: string | null },
 ): { subject: string; text: string } {

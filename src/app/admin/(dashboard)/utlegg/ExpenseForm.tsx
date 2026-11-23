@@ -15,6 +15,7 @@ const field = "w-full rounded-lg border border-line bg-white px-3 py-2.5 text-sm
 const label = "mb-1 block text-sm font-medium text-ink";
 const hint = "mt-1 text-xs text-ink-soft";
 const MAX_FILE_MB = 10;
+const OTHER = "__annet";
 
 type Row = { id: number; item: string; qty: string; unit: string; unitPrice: string };
 type Receipt = { id: number; name: string; path?: string; state: "uploading" | "done" | "error"; message?: string };
@@ -46,7 +47,8 @@ export default function ExpenseForm({
   action,
   defaultName,
   today,
-  purposes,
+  programs,
+  activities,
   publicMode,
   uploadTarget,
   extra,
@@ -54,7 +56,9 @@ export default function ExpenseForm({
   action: (formData: FormData) => void | Promise<void>;
   defaultName: string;
   today: string;
-  purposes: string[];
+  /** Faste tilbud (Leksehjelp, Torsdagssuppe …) og nyere aktiviteter, som valg for «hva gjelder utlegget». */
+  programs: string[];
+  activities: string[];
   /** Skjemaet for frivillige uten konto: fellesord, e-post og telefon, og opplasting via serveren. */
   publicMode?: boolean;
   uploadTarget?: (code: string, ext: string) => Promise<UploadTarget>;
@@ -69,6 +73,12 @@ export default function ExpenseForm({
   const [receipts, setReceipts] = useState<Receipt[]>([]);
   const [noReceipt, setNoReceipt] = useState(false);
   const [code, setCode] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
+  const [choice, setChoice] = useState("");
+  const [custom, setCustom] = useState("");
+  const [preview, setPreview] = useState(false);
+  const [snap, setSnap] = useState<Record<string, string>>({});
+  const purpose = choice === OTHER ? custom.trim() : choice;
 
   const total = round2(
     rows.reduce((sum, r) => {
@@ -153,18 +163,81 @@ export default function ExpenseForm({
   const donePaths = receipts.filter((r) => r.state === "done" && r.path).map((r) => r.path as string);
   const needsReceipt = donePaths.length === 0 && !noReceipt;
 
+  function showPreview() {
+    const form = formRef.current;
+    if (!form || !form.reportValidity()) return;
+    const fd = new FormData(form);
+    const get = (k: string) => (typeof fd.get(k) === "string" ? (fd.get(k) as string).trim() : "");
+    setSnap({ name: get("by_name"), email: get("by_email"), phone: get("by_phone"), date: get("expense_date"), description: get("description") });
+    setPreview(true);
+    window.scrollTo({ top: 0 });
+  }
+
+  const filled = rows.filter((r) => r.item.trim());
+
   return (
-    <form action={action} className="mt-6 flex flex-col gap-6">
+    <form ref={formRef} action={action} className="mt-6 flex flex-col gap-6">
       <input type="hidden" name="lines" value={JSON.stringify(rows.map(({ item, qty, unit, unitPrice }) => ({ item, qty, unit, unitPrice })))} />
       <input type="hidden" name="receipts" value={donePaths.join("\n")} />
+      <input type="hidden" name="purpose" value={purpose} />
 
+      {preview && (
+        <section aria-live="polite" className="rounded-xl border border-fig/40 bg-cream p-5">
+          <h2 className="font-serif text-xl font-medium text-ink">{t("Kontroller før du sender")}</h2>
+          <p className="mt-1 text-sm text-ink-soft">{t("Se over at alt stemmer. Når du sender, kan du ikke endre utlegget selv.")}</p>
+          <dl className="mt-4 grid grid-cols-1 gap-x-6 gap-y-2 text-sm sm:grid-cols-[10rem_1fr]">
+            <dt className="font-semibold text-ink">{t("Gjelder")}</dt>
+            <dd>{purpose}</dd>
+            <dt className="font-semibold text-ink">{t("Dato for utlegget")}</dt>
+            <dd>{snap.date}</dd>
+            <dt className="font-semibold text-ink">{t("Ditt navn")}</dt>
+            <dd>{snap.name}</dd>
+            {publicMode && (
+              <>
+                <dt className="font-semibold text-ink">{t("E-post")}</dt>
+                <dd>{snap.email}</dd>
+                {snap.phone && (
+                  <>
+                    <dt className="font-semibold text-ink">{t("Telefon")}</dt>
+                    <dd>{snap.phone}</dd>
+                  </>
+                )}
+              </>
+            )}
+            {snap.description && (
+              <>
+                <dt className="font-semibold text-ink">{t("Beskrivelse")}</dt>
+                <dd className="whitespace-pre-line">{snap.description}</dd>
+              </>
+            )}
+          </dl>
+          <ul className="mt-4 divide-y divide-line rounded-lg border border-line bg-white text-sm">
+            {filled.map((r) => {
+              const q = parseNumber(r.qty);
+              const p = parseNumber(r.unitPrice);
+              return (
+                <li key={r.id} className="flex flex-wrap items-baseline justify-between gap-2 px-3 py-2">
+                  <span>{r.item} <span className="text-ink-soft">· {r.qty} {t(r.unit)} × {fmtMoney(p ?? 0, currency)}</span></span>
+                  <strong>{fmtMoney(q !== null && p !== null ? round2(q * p) : 0, currency)}</strong>
+                </li>
+              );
+            })}
+          </ul>
+          <p className="mt-3 text-right font-serif text-xl font-medium text-ink">{t("Totalt")}: {fmtMoney(total, currency)}</p>
+          <p className="mt-3 text-sm text-ink-soft">
+            {donePaths.length > 0 ? `${donePaths.length} ${t("kvittering(er)")}` : t("Ingen kvittering")}
+          </p>
+        </section>
+      )}
+
+      <div className={preview ? "hidden" : "flex flex-col gap-6"}>
       {extra}
 
       {publicMode && (
         <section className="rounded-xl border border-line bg-cream p-5">
           <label htmlFor="e-code" className={label}>{t("Fellesord")} *</label>
           <input id="e-code" name="code" required value={code} onChange={(e) => setCode(e.target.value)} autoComplete="off" className={field} />
-          <p className={hint}>{t("Ordet får du av kasserer eller styret.")}</p>
+          <p className={hint}>{t("Ordet får du av regnskapsføreren eller styret.")}</p>
         </section>
       )}
 
@@ -191,13 +264,36 @@ export default function ExpenseForm({
           <input id="e-date" name="expense_date" type="date" required max={today} defaultValue={today} className={field} />
         </div>
         <div className="sm:col-span-2">
-          <label htmlFor="e-purpose" className={label}>{t("Hva gjelder utlegget?")} *</label>
-          <input id="e-purpose" name="purpose" required list="e-purposes" className={field} placeholder={t("F.eks. Workshop, Torsdagssuppe, Leksehjelp")} />
-          <datalist id="e-purposes">
-            {purposes.map((p) => (
-              <option key={p} value={p} />
-            ))}
-          </datalist>
+          <label htmlFor="e-purpose" className={label}>{t("Hvilken aktivitet er utlegget for?")} *</label>
+          <select id="e-purpose" required value={choice} onChange={(e) => setChoice(e.target.value)} className={field}>
+            <option value="">{t("Velg aktivitet")}</option>
+            {programs.length > 0 && (
+              <optgroup label={t("Faste tilbud")}>
+                {programs.map((p) => (
+                  <option key={p} value={p}>{p}</option>
+                ))}
+              </optgroup>
+            )}
+            {activities.length > 0 && (
+              <optgroup label={t("Aktiviteter")}>
+                {activities.map((a) => (
+                  <option key={a} value={a}>{a}</option>
+                ))}
+              </optgroup>
+            )}
+            <option value={OTHER}>{t("Annet / generelt (skriv selv)")}</option>
+          </select>
+          {choice === OTHER && (
+            <input
+              aria-label={t("Skriv hva utlegget gjelder")}
+              required
+              value={custom}
+              onChange={(e) => setCustom(e.target.value)}
+              className={`${field} mt-2`}
+              placeholder={t("Skriv hva utlegget gjelder")}
+              maxLength={200}
+            />
+          )}
         </div>
         <div className="sm:col-span-2">
           <label htmlFor="e-desc" className={label}>{t("Beskrivelse (valgfritt)")}</label>
@@ -295,16 +391,42 @@ export default function ExpenseForm({
         </label>
       </section>
 
+      </div>
+
       <div>
-        <button
-          type="submit"
-          disabled={uploading || needsReceipt}
-          className="min-h-12 rounded-lg bg-fig px-7 text-sm font-semibold text-white transition-colors hover:bg-fig-dark disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {t("Send inn utlegget")}
-        </button>
-        {uploading && <p className={hint}>{t("Vent til opplastingen er ferdig.")}</p>}
-        {!uploading && needsReceipt && <p className={hint}>{t("Legg ved kvittering, eller huk av for at du ikke har noen.")}</p>}
+        {preview ? (
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="submit"
+              className="min-h-12 rounded-lg bg-fig px-7 text-sm font-semibold text-white transition-colors hover:bg-fig-dark"
+            >
+              {t("Send inn utlegget")}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setPreview(false);
+                window.scrollTo({ top: 0 });
+              }}
+              className="min-h-12 rounded-lg border border-line px-6 text-sm font-semibold text-ink-soft transition-colors hover:border-fig hover:text-fig"
+            >
+              {t("Tilbake og rediger")}
+            </button>
+          </div>
+        ) : (
+          <>
+            <button
+              type="button"
+              onClick={showPreview}
+              disabled={uploading || needsReceipt}
+              className="min-h-12 rounded-lg bg-fig px-7 text-sm font-semibold text-white transition-colors hover:bg-fig-dark disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {t("Se over før du sender")}
+            </button>
+            {uploading && <p className={hint}>{t("Vent til opplastingen er ferdig.")}</p>}
+            {!uploading && needsReceipt && <p className={hint}>{t("Legg ved kvittering, eller huk av for at du ikke har noen.")}</p>}
+          </>
+        )}
       </div>
     </form>
   );

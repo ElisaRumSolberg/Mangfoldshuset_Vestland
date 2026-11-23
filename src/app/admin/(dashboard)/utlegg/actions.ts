@@ -127,7 +127,7 @@ export async function submitExpense(formData: FormData) {
   done(BACK, "utlegg-sendt");
 }
 
-/** Kasserer (owner) setter status: godkjent, utbetalt, avvist eller tilbake til «venter». Innleveren får beskjed. */
+/** Owner setter status: godkjent, utbetalt, avvist eller tilbake til «venter». Innleveren får beskjed. */
 export async function decideExpense(id: string, formData: FormData) {
   await requireOwner();
   const back = `${BACK}/${id}`;
