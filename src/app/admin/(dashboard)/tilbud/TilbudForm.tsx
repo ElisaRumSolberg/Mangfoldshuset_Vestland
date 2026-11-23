@@ -141,7 +141,7 @@ export default async function TilbudForm({
           name="place"
           required
           defaultValue={program?.place}
-          placeholder={t("Mangfoldhuset, Arne Abrahamsens vei 1, 5161 Laksevåg")}
+          placeholder={t("Mangfoldshuset Vestland, Arne Abrahamsens vei 1, 5161 Laksevåg")}
           className={field}
         />
       </div>
