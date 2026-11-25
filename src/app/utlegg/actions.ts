@@ -1,9 +1,10 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
-import { checkExpenseCode, expenseCodeConfigured } from "@/lib/expense-access";
+import { checkExpenseCode, expenseAccessToken, expenseCodeConfigured, EXPENSE_COOKIE, hasExpenseAccess } from "@/lib/expense-access";
 import { getResendClient, isResendConfigured, NOTIFY_EMAIL } from "@/lib/resend";
 import { expenseCopyMessage, FAKTURA_EMAIL } from "@/lib/expense-email";
 import { expenseToPdf, pdfFileName, type ExpenseFull } from "@/lib/expense-document";
@@ -24,15 +25,34 @@ async function wrongCodeDelay() {
   await new Promise((r) => setTimeout(r, 900));
 }
 
+async function unlocked() {
+  return hasExpenseAccess((await cookies()).get(EXPENSE_COOKIE)?.value);
+}
+
+/** Første steg: riktig fellesord gir en informasjonskapsel som slipper deg inn til skjemaet i 12 timer. */
+export async function unlockExpenseForm(formData: FormData) {
+  if (!isSupabaseConfigured() || !expenseCodeConfigured()) redirect(`${PAGE}?feil=stengt`);
+  const token = expenseAccessToken();
+  if (!checkExpenseCode(formData.get("code")) || !token) {
+    await wrongCodeDelay();
+    redirect(`${PAGE}?feil=kode`);
+  }
+  (await cookies()).set(EXPENSE_COOKIE, token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: PAGE,
+    maxAge: 60 * 60 * 12,
+  });
+  redirect(PAGE);
+}
+
 export type UploadTarget = { path: string; token: string } | { error: "kode" | "feil" };
 
-/** Gir nettleseren lov til å laste opp ÉN kvittering til den private bøtten, etter at fellesordet er sjekket. */
-export async function receiptUploadTarget(code: string, ext: string): Promise<UploadTarget> {
+/** Gir nettleseren lov til å laste opp ÉN kvittering til den private bøtten, når fellesordet er godkjent. */
+export async function receiptUploadTarget(ext: string): Promise<UploadTarget> {
   if (!isSupabaseConfigured() || !expenseCodeConfigured()) return { error: "feil" };
-  if (!checkExpenseCode(code)) {
-    await wrongCodeDelay();
-    return { error: "kode" };
-  }
+  if (!(await unlocked())) return { error: "kode" };
   const clean = ext.toLowerCase().replace(/[^a-z0-9]/g, "");
   if (!ALLOWED_EXT.includes(clean)) return { error: "feil" };
   const path = `public/${crypto.randomUUID()}.${clean}`;
@@ -45,10 +65,7 @@ export async function receiptUploadTarget(code: string, ext: string): Promise<Up
 export async function submitPublicExpense(formData: FormData) {
   if (!isSupabaseConfigured() || !expenseCodeConfigured()) redirect(`${PAGE}?feil=stengt`);
   if (looksLikeBot(formData)) redirect(`${PAGE}/takk`); // late som om det gikk bra
-  if (!checkExpenseCode(formData.get("code"))) {
-    await wrongCodeDelay();
-    redirect(`${PAGE}?feil=kode`);
-  }
+  if (!(await unlocked())) redirect(PAGE);
 
   const date = text(formData, "expense_date", 10);
   if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(Date.parse(date)) || date > todayOslo()) redirect(`${PAGE}?feil=dato`);

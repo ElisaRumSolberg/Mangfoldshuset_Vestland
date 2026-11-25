@@ -61,9 +61,9 @@ export default function ExpenseForm({
   /** Faste tilbud (Leksehjelp, Torsdagssuppe …) og nyere aktiviteter, som valg for «hva gjelder utlegget». */
   programs: string[];
   activities: string[];
-  /** Skjemaet for frivillige uten konto: fellesord, e-post og telefon, og opplasting via serveren. */
+  /** Skjemaet for frivillige uten konto: e-post og telefon, og opplasting via serveren. */
   publicMode?: boolean;
-  uploadTarget?: (code: string, ext: string) => Promise<UploadTarget>;
+  uploadTarget?: (ext: string) => Promise<UploadTarget>;
   /** Ekstra skjulte felt (spam-felt) fra serverkomponenten. */
   extra?: React.ReactNode;
 }) {
@@ -74,7 +74,6 @@ export default function ExpenseForm({
   const [rows, setRows] = useState<Row[]>([emptyRow(1)]);
   const [receipts, setReceipts] = useState<Receipt[]>([]);
   const [noReceipt, setNoReceipt] = useState(false);
-  const [code, setCode] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
   const [choice, setChoice] = useState("");
   const [custom, setCustom] = useState("");
@@ -121,12 +120,7 @@ export default function ExpenseForm({
 
     const supabase = createClient();
     let userId = "";
-    if (publicMode) {
-      if (!code.trim()) {
-        setReceipts((rs) => [...rs, { id: nextReceipt.current++, name: files[0].name, state: "error", message: t("Skriv inn fellesordet først.") }]);
-        return;
-      }
-    } else {
+    if (!publicMode) {
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -159,9 +153,9 @@ export default function ExpenseForm({
       const fileExt = ext.length >= 2 ? ext : "jpg";
       const contentType = blob.type || (isPdf ? "application/pdf" : undefined);
       if (publicMode && uploadTarget) {
-        const target = await uploadTarget(code, fileExt);
+        const target = await uploadTarget(fileExt);
         if ("error" in target) {
-          update({ state: "error", message: target.error === "kode" ? t("Fellesordet stemmer ikke.") : t("Opplastingen feilet. Prøv igjen.") });
+          update({ state: "error", message: target.error === "kode" ? t("Tilgangen har gått ut. Last inn siden på nytt og skriv fellesordet igjen.") : t("Opplastingen feilet. Prøv igjen.") });
           continue;
         }
         const { error } = await supabase.storage.from("receipts").uploadToSignedUrl(target.path, target.token, blob, { contentType });
@@ -271,14 +265,6 @@ export default function ExpenseForm({
 
       <div className={preview ? "hidden" : "flex flex-col gap-6"}>
       {extra}
-
-      {publicMode && (
-        <section className="rounded-xl border border-line bg-cream p-5">
-          <label htmlFor="e-code" className={label}>{t("Fellesord")} *</label>
-          <input id="e-code" name="code" required value={code} onChange={(e) => setCode(e.target.value)} autoComplete="off" className={field} />
-          <p className={hint}>{t("Ordet får du av regnskapsføreren eller styret.")}</p>
-        </section>
-      )}
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>

@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HoneypotFields from "@/components/HoneypotFields";
 import { AdminLangProvider, LangSwitch } from "@/components/admin/AdminLang";
 import ExpenseForm from "@/app/admin/(dashboard)/utlegg/ExpenseForm";
 import { getAdminLang, getT } from "@/lib/admin-i18n-server";
-import { expenseCodeConfigured } from "@/lib/expense-access";
+import { expenseCodeConfigured, EXPENSE_COOKIE, hasExpenseAccess } from "@/lib/expense-access";
 import { todayOslo } from "@/lib/recurring";
 import { loadExpenseTargets } from "@/lib/expense-targets";
 import { isSupabaseConfigured } from "@/lib/supabase/isConfigured";
 import { createClient } from "@/lib/supabase/server";
-import { receiptUploadTarget, submitPublicExpense } from "./actions";
+import { receiptUploadTarget, submitPublicExpense, unlockExpenseForm } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -36,14 +37,15 @@ const ERRORS: Record<string, string> = {
   stengt: "Skjemaet er ikke åpent akkurat nå.",
 };
 
-/** Utleggsskjema for frivillige uten admin-konto. Ikke lenket fra menyen; krever et fellesord. */
+/** Utleggsskjema for frivillige uten admin-konto. Ikke lenket fra menyen; krever fellesordet før skjemaet vises. */
 export default async function PublicExpensePage({ searchParams }: { searchParams: Promise<{ feil?: string }> }) {
   const { feil } = await searchParams;
   const lang = await getAdminLang();
   const t = await getT();
   const open = isSupabaseConfigured() && expenseCodeConfigured();
 
-  const targets = open ? await loadExpenseTargets(await createClient(), todayOslo()) : { programs: [], activities: [] };
+  const unlocked = open && hasExpenseAccess((await cookies()).get(EXPENSE_COOKIE)?.value);
+  const targets = unlocked ? await loadExpenseTargets(await createClient(), todayOslo()) : { programs: [], activities: [] };
 
   return (
     <AdminLangProvider lang={lang}>
@@ -63,7 +65,23 @@ export default async function PublicExpensePage({ searchParams }: { searchParams
           </p>
         )}
 
-        {open ? (
+        {open && !unlocked ? (
+          <form action={unlockExpenseForm} className="mt-8 rounded-xl border border-line bg-cream p-6">
+            <label htmlFor="code" className="mb-1 block text-sm font-medium text-ink">{t("Fellesord")}</label>
+            <input
+              id="code"
+              name="code"
+              required
+              autoComplete="off"
+              autoCapitalize="none"
+              className="w-full rounded-lg border border-line bg-white px-3 py-3 text-base outline-none focus:border-fig"
+            />
+            <p className="mt-1 text-xs text-ink-soft">{t("Ordet får du av regnskapsføreren eller styret.")}</p>
+            <button type="submit" className="mt-4 min-h-12 rounded-lg bg-fig px-7 text-sm font-semibold text-white transition-colors hover:bg-fig-dark">
+              {t("Åpne skjemaet")}
+            </button>
+          </form>
+        ) : open ? (
           <ExpenseForm
             action={submitPublicExpense}
             defaultName=""

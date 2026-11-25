@@ -672,4 +672,6 @@ export const TR: Record<string, string> = {
   "Kontonummeret må være 11 siffer og gyldig, for eksempel 1234.56.78903. Sjekk at du har skrevet det riktig.": "Hesap numarası 11 haneli ve geçerli olmalı, örneğin 1234.56.78903. Doğru yazdığını kontrol et.",
   "Skriv under i feltet for underskrift før du sender.": "Göndermeden önce imza alanına imza at.",
   "Huk av for at opplysningene er riktige før du sender.": "Göndermeden önce bilgilerin doğru olduğunu işaretle.",
+  "Åpne skjemaet": "Formu aç",
+  "Tilgangen har gått ut. Last inn siden på nytt og skriv fellesordet igjen.": "Erişim süresi doldu. Sayfayı yenile ve ortak şifreyi tekrar yaz.",
 };
