@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { formInt, formUrl, formUrls } from "@/lib/form-url";
 import { done, failed } from "@/lib/admin-flash";
 import { requireEditor } from "@/lib/auth-guard";
+import { checkProgram } from "@/lib/admin-validation";
 
 function text(formData: FormData, key: string) {
   const v = formData.get(key);
@@ -63,6 +64,8 @@ function refresh() {
 
 export async function addProgram(formData: FormData) {
   await requireEditor();
+  const problem = checkProgram(formData);
+  if (problem) failed("/admin/tilbud", problem);
   const supabase = await createClient();
   const { error } = await supabase.from("recurring_programs").insert({
     ...fields(formData),
@@ -75,6 +78,8 @@ export async function addProgram(formData: FormData) {
 
 export async function updateProgram(id: string, formData: FormData) {
   await requireEditor();
+  const problem = checkProgram(formData);
+  if (problem) failed(`/admin/tilbud/${id}`, problem);
   const supabase = await createClient();
   const updates: Record<string, unknown> = {
     ...fields(formData),

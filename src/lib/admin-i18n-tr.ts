@@ -131,6 +131,18 @@ export const TR: Record<string, string> = {
     "Önce bir PDF dosyası yüklemelisin. Dosyanın yüklendiği yazana kadar bekle, sonra «Legg til» düğmesine bas.",
   "Noen obligatoriske felt manglet. Fyll ut feltene som er merket med stjerne (*).":
     "Bazı zorunlu alanlar eksikti. Yıldızlı (*) alanları doldur.",
+  "E-postadressen ser ikke riktig ut. Den skal se slik ut: navn@eksempel.no.":
+    "E-posta adresi doğru görünmüyor. Şöyle olmalı: isim@ornek.no.",
+  "En dato mangler eller finnes ikke. Velg datoen i kalenderfeltet.":
+    "Bir tarih eksik ya da böyle bir gün yok. Tarihi takvim alanından seç.",
+  "Fødselsdatoen er ikke gyldig eller er i fremtiden. Sjekk dag, måned og år.":
+    "Doğum tarihi geçersiz ya da gelecekte. Gün, ay ve yılı kontrol et.",
+  "Slutten kommer før starten. Sjekk dato og klokkeslett for start og slutt.":
+    "Bitiş, başlangıçtan önce görünüyor. Başlangıç ve bitiş tarihini ve saatini kontrol et.",
+  "En av de avlyste datoene er skrevet feil. Skriv dem slik: 2026-12-24, 2026-12-31.":
+    "İptal tarihlerinden biri yanlış yazılmış. Şöyle yaz: 2026-12-24, 2026-12-31.",
+  "Et tallfelt har en ugyldig verdi. Bruk tall fra 0 og oppover, innenfor grensene i feltet.":
+    "Bir sayı alanında geçersiz değer var. 0 ve üzeri, alanın sınırları içinde bir sayı yaz.",
   "Lukk meldingen": "Mesajı kapat",
 
   // Hata sayfası

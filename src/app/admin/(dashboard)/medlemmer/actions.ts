@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { done, failed } from "@/lib/admin-flash";
 import { requireOwner } from "@/lib/auth-guard";
+import { checkMember } from "@/lib/admin-validation";
 import { feeForPerson } from "@/lib/membership-fee";
 import { coverageYear, yearEnd } from "@/lib/membership-year";
 import { isMethod } from "@/lib/payments-report";
@@ -105,6 +106,8 @@ export async function sendReceipt(id: string) {
 
 export async function addMember(formData: FormData) {
   await requireOwner();
+  const problem = checkMember(formData, todayOslo());
+  if (problem) failed("/admin/medlemmer", problem);
   const supabase = await createClient();
   const expires = (formData.get("expires_at") as string) || null;
 
@@ -150,6 +153,8 @@ export async function updateMember(id: string, formData: FormData) {
   await requireOwner();
   const supabase = await createClient();
   const back = `/admin/medlemmer/${id}`;
+  const problem = checkMember(formData, todayOslo());
+  if (problem) failed(back, problem);
 
   const text = (k: string) => {
     const v = formData.get(k);

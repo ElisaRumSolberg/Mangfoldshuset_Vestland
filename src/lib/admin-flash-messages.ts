@@ -37,6 +37,12 @@ export const FLASH_ERR = {
   "ugyldig-linje": "En av linjene mangler antall eller pris, eller har et ugyldig tall. Sjekk linjene og prøv igjen.",
   "mangler-kvittering": "Legg ved bilde eller PDF av kvitteringen, eller huk av for at du ikke har kvittering.",
   "mangler-felt": "Noen obligatoriske felt manglet. Fyll ut feltene som er merket med stjerne (*).",
+  "ugyldig-epost": "E-postadressen ser ikke riktig ut. Den skal se slik ut: navn@eksempel.no.",
+  "ugyldig-dato-felt": "En dato mangler eller finnes ikke. Velg datoen i kalenderfeltet.",
+  "ugyldig-fodselsdato": "Fødselsdatoen er ikke gyldig eller er i fremtiden. Sjekk dag, måned og år.",
+  "slutt-for-start": "Slutten kommer før starten. Sjekk dato og klokkeslett for start og slutt.",
+  "ugyldig-avlyst-dato": "En av de avlyste datoene er skrevet feil. Skriv dem slik: 2026-12-24, 2026-12-31.",
+  "ugyldig-tall": "Et tallfelt har en ugyldig verdi. Bruk tall fra 0 og oppover, innenfor grensene i feltet.",
 } as const;
 
 export type FlashOk = keyof typeof FLASH_OK;

@@ -39,6 +39,8 @@ export default async function AdminStatistikkPage() {
           <input
             name="participants"
             type="number"
+            min={0}
+            step={1}
             defaultValue={get("participants")}
             className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
           />
@@ -53,6 +55,8 @@ export default async function AdminStatistikkPage() {
           <input
             name="volunteer_hours"
             type="number"
+            min={0}
+            step={1}
             defaultValue={get("volunteer_hours")}
             className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm outline-none focus:border-fig"
           />

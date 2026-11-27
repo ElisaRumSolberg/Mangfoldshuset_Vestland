@@ -5,9 +5,12 @@ import { createClient } from "@/lib/supabase/server";
 import { formInt, formList, formText, formUrl, formUrls } from "@/lib/form-url";
 import { done, failed } from "@/lib/admin-flash";
 import { requireEditor } from "@/lib/auth-guard";
+import { checkActivity } from "@/lib/admin-validation";
 
 export async function addActivity(formData: FormData) {
   await requireEditor();
+  const problem = checkActivity(formData);
+  if (problem) failed("/admin/aktiviteter", problem);
   const supabase = await createClient();
   const imageUrl = formUrl(formData, "image_url");
   const videoUrl = formUrl(formData, "video_url");
@@ -41,6 +44,8 @@ export async function addActivity(formData: FormData) {
 
 export async function updateActivity(id: string, formData: FormData) {
   await requireEditor();
+  const problem = checkActivity(formData);
+  if (problem) failed(`/admin/aktiviteter/${id}`, problem);
   const supabase = await createClient();
   const imageUrl = formUrl(formData, "image_url");
   const videoUrl = formUrl(formData, "video_url");

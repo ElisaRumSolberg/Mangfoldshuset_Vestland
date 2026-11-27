@@ -4,9 +4,12 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { done, failed } from "@/lib/admin-flash";
 import { requireOwner } from "@/lib/auth-guard";
+import { checkStats } from "@/lib/admin-validation";
 
 export async function updateStats(formData: FormData) {
   await requireOwner();
+  const problem = checkStats(formData);
+  if (problem) failed("/admin/statistikk", problem);
   const supabase = await createClient();
 
   const updates = [
